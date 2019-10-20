@@ -17,13 +17,14 @@
             <li><a href="{{route('examen-cab.index')}}"><i class="fa fa-circle-o"></i> Tipo de examen</a></li>
             <li><a href="{{route('examen-det.index')}}"><i class="fa fa-circle-o"></i> Sub Tipo de examen</a></li>
           </ul>
-    <li>
-        <a href="{{route('persona.index')}}">
-            <i class="fa  fa-users"></i> <span>Gestión de Personas</span>
-        </a>
+        <li>
+            <a href="{{route('persona.index')}}">
+                <i class="fa  fa-users"></i> <span>Gestión de Personas</span>
+            </a>
+        </li>
+        <li>
         <a href="{{route('registro-analisis.index')}}">
             <i class="fa  fa-heartbeat"></i> <span>Gestión de Análisis</span>
         </a>
-    </li>
         </li>
 </ul>

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Persona extends Model
@@ -37,6 +38,22 @@ class Persona extends Model
     }
     public function scopeSoloMedico($query){
         return $query->where('tipo_persona','empleado');
+    }
+
+    public function getfecNacimientoAttribute()
+    {
+        return Carbon::parse($this->fecha_nacimiento);
+    }
+
+    public function getfecRegistroAttribute()
+    {
+        return Carbon::parse($this->fecha_registro);
+    }
+    public function analisis(){
+        if($this->es_paciente){
+            return $this->hasMany(RegistroAnalisis::class,'paciente_id','id');
+        }
+        return $this->hasMany(RegistroAnalisis::class,'empleado_id','id');
     }
 
 }

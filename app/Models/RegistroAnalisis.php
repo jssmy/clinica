@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\User;
+use Faker\Provider\Person;
+use http\Env\Request;
 use Illuminate\Database\Eloquent\Model;
 
 class RegistroAnalisis extends Model
@@ -12,11 +15,15 @@ class RegistroAnalisis extends Model
     protected $guarded=['id'];
 
     public function paciente(){
-        return $this->hasOne(Persona::class,'paciente_id','id');
+        return $this->hasOne(Persona::class,'id','paciente_id');
     }
 
     public function medico(){
-        return $this->hasOne(Persona::class,'empleado_id','id');
+        return $this->hasOne(Persona::class,'id','empleado_id');
+    }
+
+    public function usuario(){
+        return $this->hasOne(User::class,'id','usuario_id');
     }
 
 }

@@ -36,10 +36,153 @@
 
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
     <style>
         label.error{
             color: #d63b3b;
         }
+        .content-wrapper {
+            min-height: 100%;
+            background-color: #fff;
+            z-index: 800;
+        }
+
+        .tab-pane table, .tab-pane table thead tr{
+            background: #fff;
+        }
+
+        #search-section {
+            padding: 30px;
+        }
+
+        .box {
+            background: #f6f6f6;
+            border-top: 1px solid white;
+        }
+
+        .title-section {
+            color: #665a5a;
+            font-weight: bold;
+        }
+
+        .content-title {
+            align-items: center;
+            display: flex;
+            flex: 1;
+        }
+
+        .content-close {
+            display: flex;
+            align-items: center;
+            color: #969191;
+        }
+
+        .content-section {
+            background: #f8f8f8;
+        }
+
+        .box-header {
+            background: #fff !important;
+            cursor:pointer;
+            display: flex;
+        }
+        .box-title {
+            color: #665a5a;
+            font-weight: bold;
+            font-size: 14px !important;
+        }
+
+        .collapse-icon {
+            margin-left: 6px;
+            color: #969191; cursor: pointer;
+            font-size: 27px;
+        }
+
+        .mt-text-red {
+            color: #f60e63;
+        }
+
+        .mt-text-green {
+            color: #5cc500;
+        }
+
+        .mt-text-orange {
+            color: #ff9851;
+        }
+
+        .mt-bg-red {
+            background: #e9426d; /*#f60e63;*/
+        }
+
+        .mt-bg-green {
+            background: #5cc500;
+        }
+
+        .mt-bg-orange {
+            background: #ff9851;
+        }
+
+        .mt-bg-gray {
+            background: #eaeaea;
+        }
+
+        .mt-info {
+            background: #00dede;
+            color: #fff;
+            border-radius: 4px;
+        }
+
+        .control-label{
+            color: #4e4e4e;
+        }
+
+        .select2.select2-container {
+            width: 100% !important;
+        }
+
+        .select2-container--default .select2-selection--single {
+            background-color: #fff;
+            border-radius: 0px;
+            border: 1px solid #d2d6de;
+            height: 34px;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #3c8dbc;
+            color: #fff;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: #fff;
+        }
+
+        label.error {
+            color: #ff5b46;
+        }
+
+        input[type=text].error {
+            box-shadow: 0px 0px 2px 0px;
+            border-color: #ff5b46;
+        }
+
+        input[type=email].error {
+            box-shadow: 0px 0px 2px 0px;
+            border-color: #ff5b46;
+        }
+
+        select.error {
+            box-shadow: 0px 0px 2px 0px;
+            border-color: #ff5b46;
+        }
+
+        textarea.error {
+            box-shadow: 0px 0px 2px 0px;
+            border-color: #ff5b46;
+        }
+        .btn{
+            border-radius: 15px;
+        }
+
     </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
@@ -68,7 +211,7 @@
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="public/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
-              <span class="hidden-xs">Joset Manihuari</span>
+              <span class="hidden-xs">{{auth()->user()->persona->nombre}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
@@ -76,8 +219,8 @@
                 <img src="public/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
 
                 <p>
-                  Joset Manihuari
-                  <small>Member since Nov. 2012</small>
+                  {{auth()->user()->persona->nombre}}
+                  <small>Se unió el {{auth()->user()->fecha_registro}}</small>
                 </p>
               </li>
               <!-- Menu Body -->
@@ -87,11 +230,12 @@
               </li>
               <!-- Menu Footer-->
               <li class="user-footer">
-                <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
-                </div>
                 <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                    <form action="{{route('logout.store')}}" method="post">
+                        <input type="hidden" name="_token" value="{{csrf_token()}}">
+                        <button  type="submit" class="btn btn-default btn-flat">Cerrar sesión</button>
+                    </form>
+
                 </div>
               </li>
             </ul>
@@ -110,8 +254,8 @@
           <img src="public/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p>Joset</p>
-          <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+          <p>{{auth()->user()->persona->nombre}}</p>
+          <a href="#"><i class="fa fa-circle text-success"></i> Conectado</a>
         </div>
       </div>
 
@@ -286,10 +430,10 @@
             success: function(message){
                 if(message.message){
                     toastr["success"](message.message);
+                    return true;
                 }
             },
             error: function (err) {
-
                 if (err.status == 401) {
                     bootbox.dialog({
                         title: 'Alerta',

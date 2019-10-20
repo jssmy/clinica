@@ -29,7 +29,8 @@ class PersonaController extends Controller
     public function crear(Request $request){
         $persona=Persona::create([
             'nombre'=>$request->nombre,
-            'apellido_paterno'=>$request->apellido_materno,
+            'apellido_paterno'=>$request->apellido_paterno,
+            'apellido_materno'=>$request->apellido_materno,
             'numero_documento'=>$request->numero_documento,
             'direccion'=>$request->direccion,
             'telefono'=>$request->telefono,
@@ -103,5 +104,10 @@ class PersonaController extends Controller
         }
 
         return response()->json(['message'=>'Se ha actualizado los datos de la persona']);
+    }
+
+    public function datosPersonales (Request $request){
+        $persona=Persona::where('numero_documento',$request->numero_documento)->first();
+        return view('layouts.main.load-sections',compact('persona'));
     }
 }

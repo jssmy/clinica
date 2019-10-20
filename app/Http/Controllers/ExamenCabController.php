@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ExamenCab;
+use App\Models\ExamenDet;
 use Illuminate\Http\Request;
 
 class ExamenCabController extends Controller
@@ -50,4 +51,9 @@ class ExamenCabController extends Controller
         $examenCab->save();
         return response()->json(['message'=>'Se ha actualizado el examen cab']);
     }
+
+    public function subMotivoList($motivo_id){
+        return response()->json(ExamenDet::activo()->where('examen_cab_id',$motivo_id)->get());
+    }
+
 }

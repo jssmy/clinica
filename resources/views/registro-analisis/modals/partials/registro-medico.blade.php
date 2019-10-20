@@ -1,39 +1,25 @@
 <div class="col-sm-12">
     <br>
-    <label>Datos del Médico</label>
+    <label><i class="fa  fa-user-md"></i> Datos del Médico</label>
     <hr style="margin-top: 0px;">
-    <form id="form-update" action="{{route('persona.editar',$persona)}}">
+
         <input type="hidden" name="_token" value="{{csrf_token()}}">
-        <input type="hidden" name="tipo_persona" value="">
-        <div class="row" style="margin-top: 15px;">
-            <div class="col-sm-6">
-                <label>DNI</label>
-                <input type="number" readonly name="numero_documento" class="form-control" value="{{$persona->numero_documento}}">
-            </div>
-            <div class="col-sm-6">
-                <label>Número de  Colegiatura</label>
-                <input type="number" readonly name="numero_colegiatura" class="form-control required" value="{{optional($persona->empleado)->numero_colegiatura}}">
-            </div>
-        </div>
-        <div class="row" style="margin-top: 15px;">
-            <div class="col-sm-12">
-                <label>Nombres</label>
-                <input type="text" readonly name="nombre" class="form-control required" value="{{$persona->nombre_completo}}">
-            </div>
-        </div>
-        <div class="row" style="margin-top: 15px;">
-            <div class="col-sm-6">
-                <label>Apellido Paterno</label>
-                <input type="text" readonly name="apellido_paterno" class="form-control required" value="{{$persona->apellido_paterno}}">
-            </div>
-            <div class="col-sm-6">
-                <label>Apellido Materno</label>
-                <input type="text" readonly name="apellido_materno" class="form-control required" value="{{$persona->apellido_materno}}">
+        <input type="hidden" name="medico_id" value="{{$persona->id}}">
+        <div>
+            <span style="font-size: 25px; color: #337ab7"> {{$persona->nombre_completo}}  </span>
+            <br>
+            <div class="invoice-col" style="padding:10px; ">
+                <div style="padding-top: 5px">
+                    <span style="color: #606060; font-weight: bold;">Nro. Documento:</span>
+                    <span style="color: rgba(33, 32, 36, 0.52)">{{$persona->numero_documento}}</span>
+                </div>
+                <div style="padding-top: 5px">
+                    <span style="color: #606060; font-weight: bold;">Nro. Colegiatura
+                    </span>
+                    <span style="color: rgba(33, 32, 36, 0.52)">{{optional($persona->empleado)->numero_colegiatura}}</span>
+                </div>
             </div>
         </div>
 
-    </form>
-    <br>
-    <br>
-    <br>
+
 </div>

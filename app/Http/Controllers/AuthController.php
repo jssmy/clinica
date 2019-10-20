@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Validator;
 class AuthController extends Controller
 {
@@ -15,11 +16,14 @@ class AuthController extends Controller
     }
 
     public function loginForm(){
+
+        if(Auth::check()) return redirect()->route('clinica.index');
         return view('layouts.login');
     }
 
     public function login(Request $request){
         $usuario = $this->user();
+        //dd(md5(\request()->contrasena),$request->all());
         if(!$usuario) return redirect()->route('login-form');
 
         auth()->guard()->login($usuario);
@@ -28,11 +32,15 @@ class AuthController extends Controller
 
     protected function user()
     {
+
         return User::where('usuario',\request()->usuario)
                     ->where('contrasena',md5(\request()->contrasena))->first();
 
     }
 
-
+    public function logout(Request $request){
+        \auth()->logout();
+        return redirect()->route('login-form');
+    }
 
 }

@@ -144,6 +144,12 @@ Route::middleware("auth.session")->group(function (){
          *Rutas para activar y desactivar examen cab
          */
         Route::put('/edidar/{accion}/{tipo_id}', 'ExamenCabController@editarEstado')->name('examen-cab.editar.estado');
+
+        /**
+         * Submotivo
+         */
+
+        Route::get('obtener-submotivo/{motivo_id}','ExamenCabController@subMotivoList')->name('examen-cab.submotivo');
     });
 
     Route::group(['prefix' => 'examen-det'], function() {
@@ -186,6 +192,10 @@ Route::middleware("auth.session")->group(function (){
          *Rutas para activar y desactivar persona
          */
         Route::put('/edidar/{accion}/{tipo_id}', 'PersonaController@editarEstado')->name('persona.editar.estado');
+
+
+        /**datos de persona**/
+        Route::get('datos-personales','PersonaController@datosPersonales')->name('persona.dato.personal');
     });
 
     Route::group(['prefix' => 'registro-analisis'], function() {
@@ -194,7 +204,7 @@ Route::middleware("auth.session")->group(function (){
         /**
          *Rutas para crear analisis
          */
-        Route::get('/crear-form', 'RegistroAnalisisController@crearForm')->name('registro-analisis.crear-form');
+        Route::get('/crear-form/{persona}', 'RegistroAnalisisController@crearForm')->name('registro-analisis.crear-form');
         Route::post('/crear', 'RegistroAnalisisController@crear')->name('registro-analisis.crear');
 
         /**
@@ -210,6 +220,10 @@ Route::middleware("auth.session")->group(function (){
 
         Route::get('registro-contrar-persona/{tipo}/{numero_documento}','RegistroAnalisisController@encontrarPersona')->name('registro.encontrar-presona');
 
+        Route::get('load-analisis/{persona}','RegistroAnalisisController@analisisTable')->name('load.analisis.table');
+
+
+
     });
 
 });
@@ -219,3 +233,4 @@ Route::get('iniciar-sesion','AuthController@loginForm')->name('login-form');
 
 Route::post('iniciar-sesion-store','AuthController@login')->name('login.store');
 
+Route::post('cerrar-sesion','AuthController@logout')->name('logout.store');
