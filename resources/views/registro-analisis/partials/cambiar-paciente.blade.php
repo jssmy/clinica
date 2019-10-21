@@ -94,6 +94,7 @@
             success: function (view) {
                 $("#registro-paciente-resultado").html(view);
                 btn.html(btn.data('search'));
+
             },beforeSend: function () {
                 btn.html(btn.data('searching'));
                 btn.attr('disabled',true);

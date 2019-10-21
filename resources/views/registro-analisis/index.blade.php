@@ -61,9 +61,8 @@
     <script src="{{URL::asset('public/plugins/bootbox/bootbox.min.js')}}"></script>
     <script>
 
-        var url_index ='';
         var load_analisis_url ="{{route('load.analisis.table','persona_id')}}";
-            url_index = load_analisis_url;
+
 
         $(".btn-editar-form").on('click',function(){
 
@@ -225,15 +224,20 @@
             if($(this).parent().parent().hasClass('pagination')){
                 if($(this).hasClass('disabled')) return  false;
                 $(this).addClass('disabled');
-                url_index = $(this).attr('href');
-                load_table();
+                load_table($(this).attr('href'));
                 return false;
             }
 
         });
-        function load_table(){
+        function load_table(paginate_url){
+            var url=paginate_url;
+            if(paginate_url==undefined){
+                url =load_analisis_url;
+                url = url.replace('persona_id',params.persona.id)
+            }
+
             $.ajax({
-                url: url_index.replace('persona_id',params.persona.id),
+                url:url ,
                 type:'get',
                 success: function (view) {
                     $("#registros-analisis").html(view);
@@ -300,7 +304,7 @@
                 var dialog = bootbox.dialog({
                     title: "<b>Resultados de análisis</b>",
                     message: view,
-                    size: 'medium',
+                    size: 'large',
                     buttons: {
                         cancel: {
                             label: "CERRAR",
@@ -311,9 +315,11 @@
                         },
                     }
                 });
+                $(".input-numeric").inputFilter(function (value) {
+                    return format_numeric(value);
+                });
             });
         });
-
         $(document).on('click','.btn-cabiar-paciente',function () {
             var url = $(this).data('url');
             $.get(url,function (view) {
@@ -335,7 +341,7 @@
                             callback: function () {
 
                                 var form = $("#form-cambiar-paciente");
-                                if(!$("input[name=paciente_id]").val()) return false;
+                                if(!$("#form-cambiar-paciente input[name=paciente_id]").val()) return false;
                                 var url = form.attr('action');
                                 $.ajax({
                                     url : url,
@@ -344,7 +350,7 @@
                                     beforeSend: function () {
 
                                     },complete: function () {
-
+                                        load_table();
                                     }
 
                                 });

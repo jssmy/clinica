@@ -28,4 +28,5 @@ class RestultadoAnalisis extends Model
         return $this->hasOne(ExamenDet::class,'id','examen_det_id');
     }
 
+
 }

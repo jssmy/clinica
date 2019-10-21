@@ -76,14 +76,14 @@ class RegistroAnalisisController extends Controller
             }
         });
 
-
-
         return response()->json(['message'=>'Se ha registrado correctamente el análisis']);
     }
 
-
     public function analisisTable(Request $request,$persona_id){
-        $registros = RegistroAnalisis::where('paciente_id',$persona_id)->paginate(8);
+        $registros = RegistroAnalisis::with(['resultados'=>function($query){
+            $query->whereNotNull('comentario')->whereNotNull('resultado');
+        }])->where('paciente_id',$persona_id)->paginate(8);
+
         return view('registro-analisis.partials.registro-table',compact('registros'));
     }
 
@@ -106,4 +106,15 @@ class RegistroAnalisisController extends Controller
         $analisis->save();
         return response()->json(['message'=>'El análisis fue movido a otro paciente']);
     }
+
+    public function guardarResultadoAnalisis(Request $request, RestultadoAnalisis $resultadoAnalisis){
+        //dd($resultadoAnalisis);
+        $resultadoAnalisis->comentario = $request->comentario;
+        $resultadoAnalisis->resultado = $request->resultado;
+        $resultadoAnalisis->save();
+
+        return response()->json(['message'=>'Se ha guarado el resultado del examen']);
+    }
+
+
 }

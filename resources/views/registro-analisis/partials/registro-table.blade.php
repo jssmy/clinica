@@ -2,7 +2,7 @@
         <div class="box-header with-border" data-toggle="collapse" href="#" aria-expanded="true">
             <div class="content-title">
                 <h4 class="box-title">
-                    ANÁLISIS REGISTRADOS <span class="badge" style="background-color: #5cc500;"> 0</span>
+                    ANÁLISIS REGISTRADOS <span class="badge" style="background-color: #5cc500;"> {{$registros->total()}}</span>
                 </h4>
 
             </div>
@@ -48,7 +48,9 @@
                                                 class="btn btn-xs btn-success btn-ver-resultados">
                                             <i class="fa fa-search-plus"></i>
                                         </button>
-                                        <button data-url="{{route('registro.analisis.cambiar',$registro->id)}}" title="Cambiar de paciente" class="btn btn-xs btn-info btn-cabiar-paciente"><i class="fa fa-share"></i></button>
+                                        @if($registro->resultados->isEmpty())
+                                            <button data-url="{{route('registro.analisis.cambiar',$registro->id)}}" title="Cambiar de paciente" class="btn btn-xs btn-info btn-cabiar-paciente"><i class="fa fa-share"></i></button>
+                                        @endif
                                         <button title="Imprimir" class="btn btn-xs btn-default"><i class="fa fa-print"></i></button>
                                     </td>
                                 </tr>

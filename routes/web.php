@@ -230,6 +230,11 @@ Route::middleware("auth.session")->group(function (){
 
         /** obtener resultados de analisis store**/
         Route::put('/{analisis}/cambiar/store','RegistroAnalisisController@cambiarPacienteStore')->name('registro.analisis.cambiar.store');
+
+        /** gurdar resultados**/
+        Route::put('/guardar-resultados/{resultadoAnalisis}','RegistroAnalisisController@guardarResultadoAnalisis')->name('registro.analisis.guardar-resultado');
+
+
     });
 
 });

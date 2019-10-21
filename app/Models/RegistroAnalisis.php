@@ -37,4 +37,8 @@ class RegistroAnalisis extends Model
     {
         return Carbon::parse($this->fecha_registro);
     }
+
+    public function resultados(){
+        return $this->hasMany(RestultadoAnalisis::class,'analisis_id','id');
+    }
 }

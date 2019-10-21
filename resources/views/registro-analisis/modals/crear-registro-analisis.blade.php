@@ -140,9 +140,7 @@
             var tr="<tr><td>"+input+examen_cab_text+"</td><td>"+examen_det_text+"</td><td>"+eliminar+"</tr>";
             $("#tbl-motivos").append(tr);
         }
-
     })
-
     $(document).on('click','.eliminar_tipo_examen',function (e) {
         e.preventDefault();
         $(this).parent().parent().remove();
