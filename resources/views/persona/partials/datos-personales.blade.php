@@ -33,13 +33,13 @@
                             <div style="padding-top: 5px">
                                 <span style="color: #606060; font-weight: bold;">Nro. Historia clínica:
                                 </span>
-                                <span style="color: rgba(33, 32, 36, 0.52)">{{optional($persona->paciente)->numero_historia_clinica}}</span>
+                                <span style="color: rgba(33, 32, 36, 0.52)">{{ $persona->paciente ?  $persona->paciente->numero_historia_clinica : '-'}}</span>
                             </div>
                             @else
                                 <div style="padding-top: 5px">
                                 <span style="color: #606060; font-weight: bold;">Nro. Colegiatura:
                                 </span>
-                                    <span style="color: rgba(33, 32, 36, 0.52)">{{optional($persona->medico)->numero_colegiatura}}</span>
+                                    <span style="color: rgba(33, 32, 36, 0.52)">{{$persona->medico ? $persona->medico->numero_colegiatura : '-'}}</span>
                                 </div>
                             @endif
                             <div style="padding-top: 5px">
@@ -62,21 +62,24 @@
                             </div>
                         </div>
                     </div>
-                    @if(!request()->has('section'))
+
                         <div style="display: flex;">
                         <div style="display: flex; padding:10px; align-content: flex-end; align-items: flex-end;" class="text-center">
                             <div>
+                                @if(request()->section=='edit_persona')
                                 <a style="margin-right: 30px" href="#"><i class="fa fa-user"></i> Editar datos personales</a>
-                                <a href="#" id="btn-limpiar"><i class="fa fa-remove"></i> Limpiar</a>
-
+                                @endif
+                                @if(!in_array(request()->section,['registro_analisis']))
+                                    <a href="#" id="btn-limpiar"><i class="fa fa-remove"></i> Limpiar</a>
+                                @endif
                             </div>
                         </div>
                     </div>
-                    @endif
+
                 </div>
             </div>
         </div>
-        @if(!request()->has('section'))
+        @if(request()->section=='edit_person')
         <div id="content-ultimo-recibo"
              class="fade in active content-section"
              style="flex:1; background: #f8f8f8; border-radius: 11px; max-width: 300px;">

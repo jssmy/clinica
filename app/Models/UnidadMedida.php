@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,7 +13,7 @@ class UnidadMedida extends Model
     protected $guarded=['id','fecha_registro','fecha_actualizacion'];
     public $timestamps=false;
 
-    public function getesActivoAttribute() : bool {
+    public function getesActivoAttribute(){
         return !! $this->estado;
     }
 
@@ -25,6 +26,10 @@ class UnidadMedida extends Model
     }
     public function scopeActivo($query){
         return $query->where('estado',1);
+    }
+
+    public function usuario(){
+        return $this->hasOne(User::class,'id','usuario_id');
     }
 
 }

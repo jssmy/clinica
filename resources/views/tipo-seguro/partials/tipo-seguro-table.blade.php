@@ -32,7 +32,7 @@
                             <td>
                                 <label class='label label-{{$tipo->es_activo ? "info" : "danger"}}'>{{$tipo->es_activo ? 'ACTIVO' : 'INACTIVO'}}</label>
                             </td>
-                            <td>#</td>
+                            <td>{{$tipo->usuario? $tipo->usuario->usuario : ''}}</td>
                             <td>{{$tipo->fecha_registro->format('d/m/Y')}}</td>
                             <td>
                                 @if($tipo->es_activo)

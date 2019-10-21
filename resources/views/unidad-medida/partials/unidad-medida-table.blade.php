@@ -1,16 +1,7 @@
 <div class="col-md-12">
     <div class="box box-primary">
         <div class="box-header with-border">
-            <!---
-              <h3 class="box-title">Inbox</h3>
-            --->
             <div class="box-tools pull-right">
-                <!--
-                  <div class="has-feedback">
-                    <input type="text" class="form-control input-sm" placeholder="Search Mail">
-                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                  </div>
-                  -->
             </div>
             <!-- /.box-tools -->
         </div>
@@ -43,7 +34,7 @@
                             <td>
                                 <label class='label label-{{$unidad->es_activo ? "info" : "danger"}}'>{{$unidad->es_activo ? 'ACTIVO' : 'INACTIVO'}}</label>
                             </td>
-                            <td>#</td>
+                            <td>{{$unidad->usuario ? $unidad->usuario->usuario : ''}}</td>
                             <td>{{$unidad->fecha_registro->format('d/m/Y')}}</td>
                             <td>
                                 @if($unidad->es_activo)

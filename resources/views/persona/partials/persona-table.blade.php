@@ -22,8 +22,12 @@
                         <th>DNI</th>
                         <th>Nombres</th>
                         <th>Fecha Nacimiento</th>
+                        <th>Dirección</th>
                         <th>Género</th>
-                        <th>Contacto</th>
+                        <th>Estado civil</th>
+                        <th>Teléfono</th>
+                        <th>Usuario registro</th>
+                        <th>Fecha registro</th>
                         <th>Opciones</th>
                     </tr>
                     </thead>
@@ -33,8 +37,12 @@
                             <td>{{$persona->numero_documento}}</td>
                             <td>{{$persona->nombre_completo}}</td>
                             <td>{{$persona->fecha_nacimiento}}</td>
+                            <td>{{$persona->direccion}}</td>
                             <td>{{$persona->genero_completo}}</td>
+                            <td>{{$persona->estadoCivil ? $persona->estadoCivil->nombre : ''}}</td>
                             <td>{{$persona->telefono}}</td>
+                            <td>{{$persona->usuario? $persona->usuario->usuario : ''}}</td>
+                            <td>{{ $persona->fec_registro->format('d/m/Y')  }}</td>
                             <td>
                                 <button data-url="{{route('persona.editar-form',$persona)}}" title='Editar' class="btn btn-xs btn-default btn-editar-form"><i class='fa fa-pencil'></i></button>
                             </td>

@@ -1,11 +1,13 @@
 @extends('layouts.app')
 @section('title','Insumos')
 @section('content')
+
     <div id="index-table" class="row">
         @include('insumo.partials.insumo-table')
     </div>
 @endsection
 @section('scripts')
+
     <script id="crear-nuevo" type="text/template">
     @include('insumo.modals.crear-insumo')
     </script>
@@ -58,6 +60,9 @@
                             }
                         }
                     });
+                    $(".input-numeric").inputFilter(function (value) {
+                        return format_numeric(value);
+                    });
                 }
             });
         });
@@ -107,6 +112,9 @@
                     }
                 }
             });
+            $(".input-numeric").inputFilter(function (value) {
+                return format_numeric(value);
+            });
 
         });
 
@@ -150,12 +158,15 @@
                 }
             });
         });
-        $(document).on("click","ul.pagination li.page-item a", function (e) {
-            if($(this).hasClass('disabled')) return  false;
-            $(this).addClass('disabled');
-            url_index = $(this).attr('href');
-            load_table();
-            return false;
+        $(document).on("click","a", function (e) {
+            if($(this).parent().parent().hasClass('pagination')){
+                if($(this).hasClass('disabled')) return  false;
+                $(this).addClass('disabled');
+                url_index = $(this).attr('href');
+                load_table();
+                return false;
+            }
+
         });
         function load_table(){
             $.ajax({

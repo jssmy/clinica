@@ -30,7 +30,7 @@
         </div>
         <div class="col-sm-6">
             <label>Teléfono</label>
-            <input type="number" name="telefono" class="form-control required">
+            <input type="text" name="telefono" class="form-control required input-digits">
         </div>
     </div>
     <div class="row" style="margin-top: 15px;">
@@ -91,6 +91,9 @@
             $("#datos-adicionales").html($("#tpl-persona-empleado").html());
         }
         $("input[name=tipo_persona]").val($(this).data('tipo'));
+        $(".input-digits").inputFilter(function (value) {
+            return format_digits(value);
+        });
 
     });
 </script>

@@ -1,16 +1,7 @@
 <div class="col-md-12">
     <div class="box box-primary">
         <div class="box-header with-border">
-            <!---
-              <h3 class="box-title">Inbox</h3>
-            --->
             <div class="box-tools pull-right">
-                <!--
-                  <div class="has-feedback">
-                    <input type="text" class="form-control input-sm" placeholder="Search Mail">
-                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                  </div>
-                  -->
             </div>
             <!-- /.box-tools -->
         </div>
@@ -41,11 +32,11 @@
                         <tr>
                             <td class='mailbox-name'>{{$insumo->nombre}}</td>
                             <td title="{{$insumo->descripcion}}" style="cursor:pointer;" >{{$insumo->descripcion}}</td>
-                            <td>{{optional($insumo->medida)->nombre}}</td>
+                            <td>{{$insumo->medida? $insumo->medida->nombre : ''}}</td>
                             <td>
                                 <label class='label label-{{$insumo->es_activo ? "info" : "danger"}}'>{{$insumo->es_activo ? 'ACTIVO' : 'INACTIVO'}}</label>
                             </td>
-                            <td>#</td>
+                            <td>{{$insumo->usuario? $insumo->usuario->usuario : '' }}</td>
                             <td>{{$insumo->fecha_registro->format('d/m/Y')}}</td>
                             <td>
                                 @if($insumo->es_activo)

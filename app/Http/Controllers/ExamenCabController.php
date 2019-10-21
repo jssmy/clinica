@@ -26,7 +26,7 @@ class ExamenCabController extends Controller
         ExamenCab::create([
             'nombre'=>$request->nombre,
             'descripcion'=>$request->descripcion,
-            'usuario_id'=>123123
+            'usuario_id'=>auth()->user()->id
         ]);
         return response()->json(['message'=>'Se ha creado el examen cab']);
     }

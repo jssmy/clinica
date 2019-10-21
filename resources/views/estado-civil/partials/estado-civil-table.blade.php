@@ -33,9 +33,9 @@
                     @forelse($estados as $estado)
                         <tr>
                             <td>{{$estado->nombre}}</td>
-                            <th></th>
-                            <td><label class='label label-{{$estado->es_activo ? "info" : "danger"}}'>{{$estado->es_activo ? 'ACTIVO' : 'INACTIVO'}}</label></td>
-                            <td>{{$estado->fecha_registro}}</td>
+                            <th><label class='label label-{{$estado->es_activo ? "info" : "danger"}}'>{{$estado->es_activo ? 'ACTIVO' : 'INACTIVO'}}</label></th>
+                            <td>{{$estado->usuario? $estado->usuario->usuario : ''}}</td>
+                            <td>{{$estado->fec_registro->format('d/m/Y')}}</td>
                             <td>
                                 @if($estado->es_activo)
                                     <button data-accion="inactivar" data-url="{{route('estado-civil.editar.estado',['inactivar',$estado])}}"  title='Inactivar' class="btn btn-xs btn-default btn-actualizar-estado"><i class='fa fa-remove'></i></button>

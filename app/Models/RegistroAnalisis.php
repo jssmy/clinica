@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\User;
+use Carbon\Carbon;
 use Faker\Provider\Person;
 use http\Env\Request;
 use Illuminate\Database\Eloquent\Model;
@@ -26,4 +27,14 @@ class RegistroAnalisis extends Model
         return $this->hasOne(User::class,'id','usuario_id');
     }
 
+    public  static function generarCodigo(){
+        $sufijo = self::selectRaw('max(id) as numero')->first();
+        $sufijo = $sufijo ? $sufijo->numero : 0;
+        return "RC-".str_pad($sufijo,9,'0',STR_PAD_LEFT)."-".now()->format('Y');
+    }
+
+    public function getfecRegistroAttribute()
+    {
+        return Carbon::parse($this->fecha_registro);
+    }
 }

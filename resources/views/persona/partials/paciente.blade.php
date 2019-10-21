@@ -8,7 +8,9 @@
             @foreach($tipo_seguros as $tipo)
                 <option
                     @if(isset($persona))
-                        {{optional($persona->paciente)->tipo_seguro_id==$tipo->id ? 'selected' : ''}}
+                        @if($persona->paciente)
+                            {{$persona->paciente->tipo_seguro_id==$tipo->id ? 'selected' : ''}}
+                        @endif
                     @endif
                     value="{{$tipo->id}}">{{$tipo->nombre}}</option>
             @endforeach
@@ -16,6 +18,6 @@
     </div>
     <div class="col-sm-6">
         <label>Número de Historia Clínica</label>
-        <input name="numero_historia"  class="form-control required" value="{{$persona->paciente->numero_historia_clinica ?? ''}}">
+        <input name="numero_historia"  type="text" class="form-control required input-digits" value="{{isset($persona) ? ($persona->paciente? $persona->paciente->numero_historia_clinica : '') : ''}}">
     </div>
 </div>

@@ -19,10 +19,18 @@
                 <div style="min-width: 300px; width: 50%" class="invoice-col">
                     <div class="input-group input-group-lg">
                         <div class="input-group-btn">
+
                             <button class="btn btn-default" style="color: #fff;background: #31708f;font-size: 14px;">Nro. documento</button>
+
+                            <!---
+                            <select  class="btn btn-default" style="color: #fff;background: #31708f;font-size: 14px;">
+                                <option value="numero_documento">Nro. Documento</option>
+                                <option value="numero_analisis">Nro. Análsis</option>
+                            </select>
+                            -->
                         </div>
                         <!-- /btn-group -->
-                        <input id="txt-numero" type="text" name="numero" class="form-control input-digits" placeholder="buscar paciente">
+                        <input data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar paciente">
                         <div class="input-group-btn">
                             <button id="btn-consultar"
                                     data-search="<span class='fa fa-search' style='color: #fff;background: #31708f;'></span>"
@@ -133,32 +141,10 @@
                                 label: "GUARDAR",
                                 className: 'btn btn-default btn-sm btn-info btn-guardar-nuevo',
                                 callback: function(){
+
+                                    if(motivosArr.length<=0 || $("input[name=medico_id]").length<=0) return false;
+
                                     var form = $("#form-store");
-                                    console.log(form);
-                                    form.validate({
-                                        rules : {
-                                            numero_documento_paciente : {
-                                                required : true
-                                            },numero_historia_paciente: {
-                                                required : true
-                                            }, nombre_paciente:  {
-                                                required : true
-                                            }, numero_documento_medico: {
-                                                required : true
-                                            }, numero_colegiatura_medico: {
-                                                required : true
-                                            },nombre_medico: {
-                                                required : true
-                                            }, examen_cab_id: {
-                                                required: true
-                                            },examen_det_id:{
-                                                required: true
-                                            }
-                                        }
-                                    });
-
-
-                                    if(!form.valid()) return false;
 
                                     var url = form.attr('action');
                                     var btn = $(".btn-guardar-nuevo");
@@ -181,6 +167,14 @@
                             }
                         }
                     });
+                    $(".input-numeric").inputFilter(function (value) {
+                        return format_numeric(value);
+                    });
+                    /*Numeros sin decimal*/
+                    $(".input-digits").inputFilter(function (value) {
+                        return format_digits(value);
+                    });
+
                 }
             });
 
@@ -211,15 +205,13 @@
                                 url: url,
                                 type: 'put',
                                 data: {_token : $("#_token").val()},
-                                success: function (message) {
-
-                                },
                                 beforeSend: function () {
                                     btn.html("<i class='fa  fa-circle-o-notch fa-spin'> </i> ESPERE");
                                     btn.attr('disabled',true);
                                 },complete: function () {
                                     btn.html('CONFIRMAR');
                                     btn.removeAttr('disabled');
+                                    load_table();
                                 }
                             });
                             return false;
@@ -229,13 +221,15 @@
             });
         });
 
-        $(document).on("click","ul.pagination li.page-item a", function (e) {
+        $(document).on("click","a", function (e) {
+            if($(this).parent().parent().hasClass('pagination')){
+                if($(this).hasClass('disabled')) return  false;
+                $(this).addClass('disabled');
+                url_index = $(this).attr('href');
+                load_table();
+                return false;
+            }
 
-            if($(this).hasClass('disabled')) return  false;
-            $(this).addClass('disabled');
-            url_index = $(this).attr('href');
-            load_table();
-            return false;
         });
         function load_table(){
             $.ajax({
@@ -266,7 +260,9 @@
                     $('#search-section').fadeOut();
                     params.persona = JSON.parse($("#hdh-persona").val());
                     console.log(params);
-                    load_analisis();
+                    if(params.persona.tipo_persona=='paciente'){
+                        load_analisis();
+                    }
                 },
                 beforeSend: function(){
                     btn.html("<i class='fa fa-circle-o-notch fa-spin'></i> Buscando");
@@ -295,12 +291,68 @@
             $("#main-section").fadeOut();
             $("#txt-numero").focus();
             params={};
+            motivosArr={};
         });
 
-        $("#txt-numero").on('keypress', function(e){
-            if (e.which === 13) { //enter
-                $("#btn-consultar").trigger('click');
-            }
+        $(document).on('click','.btn-ver-resultados',function () {
+            var url = $(this).data('url');
+            $.get(url,function (view) {
+                var dialog = bootbox.dialog({
+                    title: "<b>Resultados de análisis</b>",
+                    message: view,
+                    size: 'medium',
+                    buttons: {
+                        cancel: {
+                            label: "CERRAR",
+                            className: 'btn btn-sm btn-default',
+                            callback: function(){
+                                return true;
+                            }
+                        },
+                    }
+                });
+            });
+        });
+
+        $(document).on('click','.btn-cabiar-paciente',function () {
+            var url = $(this).data('url');
+            $.get(url,function (view) {
+                var dialog = bootbox.dialog({
+                    title: "<b>Mover análisis</b>",
+                    message: view,
+                    size: 'medium',
+                    buttons: {
+                        cancel: {
+                            label: "CERRAR",
+                            className: 'btn btn-sm btn-default',
+                            callback: function(){
+                                return true;
+                            }
+                        },
+                        ok: {
+                            label : 'MOVER ANÁLISIS',
+                            className: 'btn btn-sm btn-info',
+                            callback: function () {
+
+                                var form = $("#form-cambiar-paciente");
+                                if(!$("input[name=paciente_id]").val()) return false;
+                                var url = form.attr('action');
+                                $.ajax({
+                                    url : url,
+                                    type : 'put',
+                                    data: form.serializeArray(),
+                                    beforeSend: function () {
+
+                                    },complete: function () {
+
+                                    }
+
+                                });
+                            }
+                        }
+                    }
+                });
+            });
         });
 
     </script>

@@ -10,7 +10,7 @@ class EstadoCivilController extends Controller
     //
 
     public function index(Request $request){
-        $estados = EstadoCivil::paginate(12);
+        $estados = EstadoCivil::with('usuario')->paginate(12);
         if($request->ajax()){
             return view('estado-civil.partials.estado-civil-table',compact('estados'));
         }
@@ -24,7 +24,7 @@ class EstadoCivilController extends Controller
     public function crear(Request $request){
         EstadoCivil::create([
             'nombre'=>$request->nombre,
-            'usuario_id'=>122233
+            'usuario_id'=>auth()->user()->id
         ]);
         return response()->json(['message'=>'Se ha registrado el estado civil']);
     }
@@ -47,7 +47,7 @@ class EstadoCivilController extends Controller
         $estado = EstadoCivil::find($estado_id);
         $estado->nombre = $request->nombre;
         $estado->save();
-        return response()->json(['Se ha actualizado el perfil']);
+        return response()->json(['message'=>'Se ha actualizado el perfil']);
     }
 
 }

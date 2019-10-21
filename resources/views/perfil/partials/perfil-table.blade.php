@@ -1,16 +1,7 @@
 <div class="col-md-12">
     <div class="box box-primary">
         <div class="box-header with-border">
-            <!---
-              <h3 class="box-title">Inbox</h3>
-            --->
             <div class="box-tools pull-right">
-                <!--
-                  <div class="has-feedback">
-                    <input type="text" class="form-control input-sm" placeholder="Search Mail">
-                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                  </div>
-                  -->
             </div>
             <!-- /.box-tools -->
         </div>
@@ -41,8 +32,8 @@
                             <td>{{$perfil->id}}</td>
                             <td>{{$perfil->descripcion}}</td>
                             <td><label class='label label-{{$perfil->es_activo ? "info" : "danger"}}'>{{$perfil->es_activo ? 'ACTIVO' : 'INACTIVO'}}</label></td>
-                            <td>#</td>
-                            <td>{{$perfil->fecha_registro}}</td>
+                            <td>{{$perfil->usuario? $perfil->usuario->usuario : ''}}</td>
+                            <td>{{$perfil->fec_registro? $perfil->fec_registro->format('d/m/Y') : ''}}</td>
                             <td>
                                 @if($perfil->es_activo)
                                     <button data-accion="inactivar" data-url="{{route('perfil.editar.estado',['inactivar',$perfil])}}"  title='Inactivar' class="btn btn-xs btn-default btn-actualizar-estado"><i class='fa fa-remove'></i></button>

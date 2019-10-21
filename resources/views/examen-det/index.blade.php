@@ -150,12 +150,15 @@
                 }
             });
         });
-        $(document).on("click","ul.pagination li.page-item a", function (e) {
-            if($(this).hasClass('disabled')) return  false;
-            $(this).addClass('disabled');
-            url_index = $(this).attr('href');
-            load_table();
-            return false;
+        $(document).on("click","a", function (e) {
+            if($(this).parent().parent().hasClass('pagination')){
+                if($(this).hasClass('disabled')) return  false;
+                $(this).addClass('disabled');
+                url_index = $(this).attr('href');
+                load_table();
+                return false;
+            }
+
         });
         function load_table(){
             $.ajax({

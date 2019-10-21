@@ -11,7 +11,7 @@ class InsumoController extends Controller
     //
     public function index(Request $request)
     {
-        $insumos = Insumo::with('medida')->paginate(12);
+        $insumos = Insumo::with('medida','usuario')->paginate(12);
         if($request->ajax()){
             return view('insumo.partials.insumo-table',compact('insumos'));
         }
@@ -31,7 +31,7 @@ class InsumoController extends Controller
             'uso'=>$request->uso,
             'unidad_medida_id'=>$request->unidad_medida_id,
             'cantidad'=>$request->cantidad,
-            'usuario_id'=>2323,
+            'usuario_id'=>auth()->user()->id,
         ]);
         return response()->json(['message'=>'Se ha creado el insumo']);
     }
@@ -57,7 +57,7 @@ class InsumoController extends Controller
         $insumo->descripcion = $request->descripcion;
         $insumo->uso = $request->uso;
         $insumo->unidad_medida_id = $request->unidad_medida_id;
-        $insumo->cantidad = $request->canitida;
+        $insumo->cantidad = $request->cantidad;
         $insumo->save();
 
         $insumo->bitacora()->create([
@@ -69,7 +69,7 @@ class InsumoController extends Controller
             'estado'=>$insumo->estado,
             'usuario_id'=>$insumo->usuario_id,
             'fecha_registro'=>$insumo->fecha_creacion,
-            'usuario_accion_id'=>213232
+            'usuario_accion_id'=>auth()->user()->id
         ]);
         return response()->json(['message'=>'Se ha actualizado el insumo']);
     }

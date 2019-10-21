@@ -12,7 +12,7 @@ class ExamenDetController extends Controller
     //
 
     public function index(Request $request){
-        $examenes = ExamenDet::paginate(12);
+        $examenes = ExamenDet::with('usuario')->paginate(12);
         $tipo_examenes = ExamenCab::activo()->get();
         $insumos = Insumo::activo()->get();
         if($request->ajax()){
@@ -32,7 +32,7 @@ class ExamenDetController extends Controller
             'descripcion'=>$request->descripcion,
             'examen_cab_id'=>$request->tipo_examen,
             'insumo_id'=>$request->insumo,
-            'usuario_id'=>12121
+            'usuario_id'=>auth()->user()->id
         ]);
 
         return response()->json(['message'=>"Se ha registrado el sub-tipo de examen"]);

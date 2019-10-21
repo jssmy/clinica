@@ -30,7 +30,7 @@
         </div>
         <div class="col-lg-6">
             <label for="cantidad">Cantidad</label>
-            <input class="form-control required" name="cantidad" value="{{$insumo->cantidad}}">
+            <input class="form-control required input-numeric" name="cantidad" value="{{$insumo->cantidad}}">
         </div>
     </div>
 

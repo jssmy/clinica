@@ -33,8 +33,8 @@
                             <td>{{$examen->nombre}}</td>
                             <td>{{$examen->descripcion}}</td>
                             <td><label class='label label-{{$examen->es_activo ? "info" : "danger"}}'>{{$examen->es_activo ? 'ACTIVO' : 'INACTIVO'}}</label></td>
-                            <td>#</td>
-                            <td>{{$examen->fecha_registro}}</td>
+                            <td>{{$examen->usuario? $examen->usuario->usuario : ''}}</td>
+                            <td>{{$examen->fec_registro->format('d/m/Y')}}</td>
                             <td>
                                 @if($examen->es_activo)
                                     <button data-accion="inactivar" data-url="{{route('examen-det.editar.estado',['inactivar',$examen])}}"  title='Inactivar' class="btn btn-xs btn-default btn-actualizar-estado"><i class='fa fa-remove'></i></button>

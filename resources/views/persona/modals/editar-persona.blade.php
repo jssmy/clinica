@@ -15,11 +15,11 @@
     <div class="row" style="margin-top: 15px;">
         <div class="col-sm-6">
             <label>DNI</label>
-            <input type="number" name="numero_documento" class="form-control required" value="{{$persona->numero_documento}}">
+            <input type="text" name="numero_documento" class="form-control required input-digits" value="{{$persona->numero_documento}}">
         </div>
         <div class="col-sm-6">
             <label>Teléfono</label>
-            <input type="number" name="telefono" class="form-control required" value="{{$persona->telefono}}">
+            <input type="text" name="telefono" class="form-control required input-digits" value="{{$persona->telefono}}">
         </div>
     </div>
     <div class="row" style="margin-top: 15px;">
@@ -63,8 +63,13 @@
         </div>
     </div>
     <div id="datos-adicionales" class="row" style="margin-top: 15px;">
-        @includeWhen($persona->es_paciente,'persona.partials.paciente')
-        @includeWhen(!$persona->es_paciente,'persona.partials.empleado')
+        @if($persona->es_paciente)
+            @include('persona.partials.paciente')
+        @else
+            @include('persona.partials.empleado')
+        @endif
+
+
     </div>
 </form>
 

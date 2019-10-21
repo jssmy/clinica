@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -55,5 +56,15 @@ class Persona extends Model
         }
         return $this->hasMany(RegistroAnalisis::class,'empleado_id','id');
     }
+
+    public function estadoCivil(){
+        return$this->hasOne(EstadoCivil::class,'id','estado_civil_id');
+    }
+
+    public function usuario(){
+        return $this->hasOne(User::class,'id','usuario_id');
+    }
+
+
 
 }

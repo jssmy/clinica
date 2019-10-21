@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,7 +13,7 @@ class Insumo extends Model
     protected $table='insumos';
     public $timestamps=false;
 
-    public function getesActivoAttribute() : bool {
+    public function getesActivoAttribute()  {
         return  !! $this->estado;
     }
 
@@ -29,5 +30,9 @@ class Insumo extends Model
     }
     public function medida(){
         return $this->hasOne(UnidadMedida::class,'id','unidad_medida_id');
+    }
+
+    public function usuario(){
+        return $this->hasOne(User::class,'id','usuario_id');
     }
 }

@@ -11,7 +11,7 @@ class PerfilController extends Controller
     //
 
     public function index(Request $request){
-        $perfiles = Perfil::paginate(15);
+        $perfiles = Perfil::with('usuario')->paginate(15);
         if($request->ajax()){
             return view('perfil.partials.perfil-table',compact('perfiles'));
         }
@@ -27,7 +27,7 @@ class PerfilController extends Controller
         Perfil::create([
             'id'=>$request->perfil,
             'descripcion'=>$request->descripcion,
-            'usuario_id'=>12321
+            'usuario_id'=>auth()->user()->id
         ]);
 
         return response()->json(['message'=>'Se ha registrado el perfil']);

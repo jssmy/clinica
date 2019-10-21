@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CambiarAnalisisRequest;
 use App\Models\AnalisisTipoExamen;
 use App\Models\EstadoCivil;
 use App\Models\ExamenCab;
+use App\Models\ExamenDet;
+use App\Models\Insumo;
 use App\Models\Persona;
 use App\Models\RegistroAnalisis;
+use App\Models\RestultadoAnalisis;
 use Illuminate\Http\Request;
 
 class RegistroAnalisisController extends Controller
@@ -54,22 +58,22 @@ class RegistroAnalisisController extends Controller
                 /* crear registro de analisis */
                 'paciente_id'=>$request->paciente_id,
                 'empleado_id'=>$request->medico_id,
-                'usuario_id'=>auth()->user()->id
+                'usuario_id'=>auth()->user()->id,
+                'codigo'=>RegistroAnalisis::generarCodigo(),
             ]);
             /*crear analisis + tipos de examne */
             $tipos_examen = $request->tipos_examen;
-            foreach ($tipos_examen  as $examen_cab_id => $tipo){
-                foreach ($tipo as $exment_det_id){
-                    AnalisisTipoExamen::create([
-                        'usuario_id'=>auth()->user()->id,
-                        'analisis_id'=>$analisis->id,
-                        'examen_cab_id'=>$examen_cab_id,
-                        'examen_dex_id'=>$exment_det_id
-                    ]);
-                }
+            foreach ($tipos_examen  as $examen_cab_id => $exmanen_det_id){
+                AnalisisTipoExamen::create([
+                    'usuario_id'    => auth()->user()->id,
+                    'analisis_id'   => $analisis->id,
+                    'examen_cab_id' => $examen_cab_id,
+                    'examen_det_id' => $exmanen_det_id,
+                ]);
+                $insumo = ExamenDet::find($exmanen_det_id)->insumo()->first();
+                $insumo->cantidad = (int)$insumo->cantidad - 1;
+                $insumo->save();
             }
-
-
         });
 
 
@@ -83,5 +87,23 @@ class RegistroAnalisisController extends Controller
         return view('registro-analisis.partials.registro-table',compact('registros'));
     }
 
+    public function resultadosAnalisis($analisis_id){
+        //dd($analisis_id);
+        $resultados = RestultadoAnalisis::with('tipoExamen','subTipoExamen')
+                        ->where('analisis_id',$analisis_id)
+                        ->get();
+        //dd($resultados,$analisis_id);
+        return view('registro-analisis.modals.resultados-analisis',compact('resultados'));
+    }
 
+    public function cambiarPacienteForm(RegistroAnalisis $analisis){
+        $analisis = $analisis->load('medico');
+        return view('registro-analisis.partials.cambiar-paciente',compact('analisis'));
+    }
+
+    public function cambiarPacienteStore(CambiarAnalisisRequest $request,RegistroAnalisis $analisis){
+        $analisis->paciente_id = $request->paciente_id;
+        $analisis->save();
+        return response()->json(['message'=>'El análisis fue movido a otro paciente']);
+    }
 }

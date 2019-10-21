@@ -222,8 +222,14 @@ Route::middleware("auth.session")->group(function (){
 
         Route::get('load-analisis/{persona}','RegistroAnalisisController@analisisTable')->name('load.analisis.table');
 
+        /** obtener resultados de analisis**/
+        Route::get('/{analisis_id}/resultados','RegistroAnalisisController@resultadosAnalisis')->name('registro.analisis.resultados');
 
+        /** obtener resultados de analisis**/
+        Route::get('/{analisis}/cambiar','RegistroAnalisisController@cambiarPacienteForm')->name('registro.analisis.cambiar');
 
+        /** obtener resultados de analisis store**/
+        Route::put('/{analisis}/cambiar/store','RegistroAnalisisController@cambiarPacienteStore')->name('registro.analisis.cambiar.store');
     });
 
 });

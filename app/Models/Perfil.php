@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\User;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Perfil extends Model
@@ -12,8 +14,17 @@ class Perfil extends Model
     public $incrementing=false;
     public $timestamps=false;
 
-    public function getesActivoAttribute() : bool {
+    public function getesActivoAttribute()  {
         return  !! $this->estado;
+    }
+
+    public function usuario(){
+        return $this->hasOne(User::class,'id','usuario_id');
+    }
+
+    public function getfecRegistroAttribute()
+    {
+        return Carbon::parse($this->fecha_registro);
     }
 
 }

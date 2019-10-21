@@ -10,7 +10,7 @@ class UnidadMedidaController extends Controller
     //
     public function index(Request $request){
 
-        $unidades=UnidadMedida::paginate(12);
+        $unidades=UnidadMedida::with('usuario')->paginate(12);
         if($request->ajax()){
             return view('unidad-medida.partials.unidad-medida-table',compact('unidades'));
         }
@@ -25,7 +25,7 @@ class UnidadMedidaController extends Controller
         UnidadMedida::create([
             'nombre'=>$request->nombre,
             'descripcion'=>$request->descripcion,
-            'usuario_id'=>11212
+            'usuario_id'=>auth()->user()->id
         ]);
 
         return response()->json(['message'=>'Se ha registrado la unidad de medida']);
@@ -47,7 +47,7 @@ class UnidadMedidaController extends Controller
             'usuario_id'=>$unidad->usuario_id,
             'fecha_registro'=>$unidad->fecha_registro,
             'estado'=>$unidad->estado,
-            'usuario_accion_id'=>1212
+            'usuario_accion_id'=>auth()->user()->id
         ]);
 
         return response()->json(['message'=>'Se ha actualizado correctamente']);

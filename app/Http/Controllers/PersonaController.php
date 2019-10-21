@@ -12,10 +12,12 @@ class PersonaController extends Controller
 {
     //
     public function index(Request $request){
-        $personas = Persona::paginate(12);
+
+        $personas = Persona::with('estadoCivil','usuario')->paginate(12);
         if($request->ajax()){
             return view('persona.partials.persona-table',compact('personas'));
         }
+
         $estados = EstadoCivil::activo()->get();
         $tipo_seguros=TipoSeguro::activo()->get();
 
@@ -38,19 +40,19 @@ class PersonaController extends Controller
             'genero'=>$request->genero,
             'estado_civil_id'=>$request->estado_civil,
             'tipo_persona'=>strtolower($request->tipo_persona),
-            'usuario_id'=>121212
+            'usuario_id'=>auth()->user()->id
         ]);
 
         if(strtolower($request->tipo_persona)=='empleado'){
             $persona->empleado()->create([
                 'numero_colegiatura'=>$request->numero_colegiatura,
-                'usuario_id'=>232323
+                'usuario_id'=>auth()->user()->id
             ]);
         }else if(strtolower($request->tipo_persona)=='paciente'){
             $persona->paciente()->create([
                 'tipo_seguro_id'=>$request->tipo_seguro,
                 'numero_historia_clinica'=>$request->numero_historia,
-                'usuario_id'=>121212
+                'usuario_id'=>auth()->user()->id
             ]);
         }
         return response()->json(['message'=>'La persona fue creado']);
@@ -81,7 +83,7 @@ class PersonaController extends Controller
                     $persona->paciente()->create([
                         'tipo_seguro_id'=>$request->tipo_seguro,
                         'numero_historia_clinica'=>$request->numero_historia,
-                        'usuario_id'=>1121221
+                        'usuario_id'=>auth()->user()->id
                     ]);
                 }else {
                     /** deitar */
@@ -94,7 +96,7 @@ class PersonaController extends Controller
                 if(!$persona->empleado){
                     $persona->empleado()->create([
                         'numero_colegiatura'=>$request->numero_colegiatura,
-                        'usuario_id'=>121212
+                        'usuario_id'=>auth()->user()->id
                     ]);
                 }else{
                     $persona->empleado()->update([

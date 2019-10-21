@@ -1,28 +1,10 @@
-<!--
-<div class="col-md-12">
-    <div class="box box-primary">
-        <div class="box-header with-border">
-
-
-        </div>
-
-        <div class="box-body no-padding">
-
-
-
-        </div>
-
-
-    </div>
-
-</div>
--->
 <div class="panel box">
-        <div class="box-header with-border" data-toggle="collapse" href="#collapseContactabilidad" aria-expanded="true">
+        <div class="box-header with-border" data-toggle="collapse" href="#" aria-expanded="true">
             <div class="content-title">
                 <h4 class="box-title">
-                    ANÁLISIS REGISTRADOS
+                    ANÁLISIS REGISTRADOS <span class="badge" style="background-color: #5cc500;"> 0</span>
                 </h4>
+
             </div>
             <div class="content-icon">
                 <span class="collapse-icon fa fa-angle-up"></span>
@@ -30,10 +12,13 @@
         </div>
         <div id="collapseContactabilidad" class="panel-collapse collapse in" aria-expanded="true" style="">
             <div class="box-body">
-
                     <div class="mailbox-controls">
-                        <a href="#" data-url="{{route('registro-analisis.crear-form','persona_id')}}" id="btn-nuevo"> <i class="fa fa-plus"></i> Registrar nuevo análsis
-                        </a>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <a style="padding-top: 10px;" href="#" data-url="{{route('registro-analisis.crear-form','persona_id')}}" id="btn-nuevo"> <i class="fa fa-plus"></i> Registrar nuevo análsis
+                                </a>
+                            </div>
+                        </div>
                     </div>
                     <div class="table-responsive mailbox-messages">
                         <table class="table table-hover table-striped" style="font-size:13px;">
@@ -51,15 +36,19 @@
                             <tbody>
                             @forelse($registros as $registro)
                                 <tr>
-                                    <td>{{$registro->id}}</td>
+                                    <td>{{$registro->codigo}}</td>
                                     <td>{{$registro->paciente->nombre_completo}}</td>
                                     <td>{{$registro->paciente->numero_documento}}</td>
-                                    <td>{{$registro->medico->nombre_completo}}</td>
-                                    <td>{{optional($registro->usuario)->usuario}}</td>
+                                    <td>{{$registro->medico? $registro->medico->nombre_completo : ''}}</td>
+                                    <td>{{$registro->usuario? $registro->usuario->usuario : ''}}</td>
                                     <td>{{$registro->fecha_registro}}</td>
                                     <td>
-                                        <button title="Ver detalle" class="btn btn-xs btn-success"><i class="fa fa-search-plus"></i></button>
-                                        <button title="Editar" class="btn btn-xs btn-info"><i class="fa fa-pencil"></i></button>
+                                        <button data-url="{{route('registro.analisis.resultados',$registro->id)}}"
+                                                title="Ver resultados"
+                                                class="btn btn-xs btn-success btn-ver-resultados">
+                                            <i class="fa fa-search-plus"></i>
+                                        </button>
+                                        <button data-url="{{route('registro.analisis.cambiar',$registro->id)}}" title="Cambiar de paciente" class="btn btn-xs btn-info btn-cabiar-paciente"><i class="fa fa-share"></i></button>
                                         <button title="Imprimir" class="btn btn-xs btn-default"><i class="fa fa-print"></i></button>
                                     </td>
                                 </tr>
@@ -78,4 +67,3 @@
             </div>
         </div>
     </div>
-

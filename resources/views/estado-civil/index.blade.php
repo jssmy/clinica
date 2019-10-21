@@ -106,7 +106,6 @@
                                     load_table();
                                 }
                             });
-
                         }
                     }
                 }
@@ -120,7 +119,7 @@
 
             var dialog = bootbox.dialog({
                 title: "<b>¡ALERTA!</b>",
-                message: "<b>¿Estás seguro de "+accion+" el insumo?</b>",
+                message: "<b>¿Estás seguro de "+accion+" el estado civil?</b>",
                 size: 'medium',
                 buttons: {
                     cancel: {
@@ -154,12 +153,14 @@
                 }
             });
         });
-        $(document).on("click","ul.pagination li.page-item a", function (e) {
-            if($(this).hasClass('disabled')) return  false;
-            $(this).addClass('disabled');
-            url_index = $(this).attr('href');
-            load_table();
-            return false;
+        $(document).on("click","a", function (e) {
+            if($(this).parent().parent().hasClass('pagination')){
+                if($(this).hasClass('disabled')) return  false;
+                $(this).addClass('disabled');
+                url_index = $(this).attr('href');
+                load_table();
+                return false;
+            }
         });
         function load_table(){
             $.ajax({

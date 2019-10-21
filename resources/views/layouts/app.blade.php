@@ -38,6 +38,9 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
     <style>
+        ul.pagination li a,ul.pagination li span{
+            border-radius: 50% !important;
+        }
         label.error{
             color: #d63b3b;
         }
@@ -268,6 +271,7 @@
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <section class="content">
+        <div class="notify-message"></div>
       @yield('content')
     </section>
   </div>
@@ -468,7 +472,7 @@
                     if (err.responseJSON.errors.numero_empresas != undefined) {
                         $(".notify-message:last").html(msg_alert_422(err.responseJSON.errors));
                     } else {
-                        $(".notify-message:last").html(msg_422(err.responseJSON.errors));
+                        $(".notify-message:last").html(msg_alert_422(err.responseJSON.errors));
                     }
 
                     $("html, body").animate({
@@ -504,6 +508,13 @@
                 });
             };
         }(jQuery));
+
+        $(document).on('keypress','.input-submit', function (e) {
+            if (e.which === 13) { //enter
+                $("#"+$(this).data('btn')).trigger('click');
+            }
+        });
+
 
         /*Numeros con decimal*/
         $(".input-numeric").inputFilter(function (value) {

@@ -9,7 +9,8 @@ class TipoSeguroController extends Controller
     //
 
     public function index(Request $request){
-        $tipoSeguros = TipoSeguro::paginate(12);
+        $tipoSeguros = TipoSeguro::with('usuario')->paginate(12);
+
         if($request->ajax()){
             return view('tipo-seguro.partials.tipo-seguro-table',compact('tipoSeguros'));
         }
@@ -38,7 +39,7 @@ class TipoSeguroController extends Controller
         TipoSeguro::create([
             'nombre'=>$request->nombre,
             'descripcion'=>$request->descripcion,
-            'usuario_id'=>122
+            'usuario_id'=>auth()->user()->id
         ]);
         return response()->json(['message'=>'Se ha registrado el tipo de seguro']);
     }
