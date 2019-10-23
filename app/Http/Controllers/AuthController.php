@@ -23,10 +23,11 @@ class AuthController extends Controller
 
     public function login(Request $request){
         $usuario = $this->user();
-        //dd(md5(\request()->contrasena),$request->all());
+
         if(!$usuario) return redirect()->route('login-form');
 
         auth()->guard()->login($usuario);
+
         return redirect()->route('clinica.index');
     }
 
@@ -42,5 +43,6 @@ class AuthController extends Controller
         \auth()->logout();
         return redirect()->route('login-form');
     }
+
 
 }
