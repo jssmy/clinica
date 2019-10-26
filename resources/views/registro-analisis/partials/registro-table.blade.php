@@ -15,8 +15,12 @@
                     <div class="mailbox-controls">
                         <div class="row">
                             <div class="col-sm-6">
-                                <a style="padding-top: 10px;" href="#" data-url="{{route('registro-analisis.crear-form','persona_id')}}" id="btn-nuevo"> <i class="fa fa-plus"></i> Registrar nuevo análsis
-                                </a>
+                                @if($persona->paciente)
+                                    <a style="padding-top: 10px;" href="#" data-url="{{route('registro-analisis.crear-form','persona_id')}}" id="btn-nuevo"> <i class="fa fa-plus"></i> Registrar nuevo análsis
+                                    </a>
+                                @else
+                                    <span style="cursor: pointer" title="Por favor registro el número de historia clínica del paciente" class="label label-warning">SIN HISTORIAL CLÍNICO</span>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -48,7 +52,7 @@
                                                 class="btn btn-xs btn-success btn-ver-resultados">
                                             <i class="fa fa-search-plus"></i>
                                         </button>
-                                        @if($registro->resultados->isEmpty())
+                                        @if(!$registro->es_aprobado)
                                             <button data-url="{{route('registro.analisis.cambiar',$registro->id)}}" title="Cambiar de paciente" class="btn btn-xs btn-info btn-cabiar-paciente"><i class="fa fa-share"></i></button>
                                         @endif
                                         <button title="Imprimir" class="btn btn-xs btn-default"><i class="fa fa-print"></i></button>

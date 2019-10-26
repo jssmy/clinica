@@ -27,4 +27,8 @@ class Perfil extends Model
         return Carbon::parse($this->fecha_registro);
     }
 
+    public function scopeActivo($query){
+        return $query->where('estado',1);
+    }
+
 }

@@ -41,4 +41,14 @@ class RegistroAnalisis extends Model
     public function resultados(){
         return $this->hasMany(RestultadoAnalisis::class,'analisis_id','id');
     }
+
+    public function getaprobadoAttribute()
+    {
+        return !! $this->resultados()->whereNotNull('resultado')->count();
+    }
+    public function getesAprobadoAttribute()
+    {
+        return $this->estado=='AP';
+    }
+
 }

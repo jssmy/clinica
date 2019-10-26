@@ -31,9 +31,8 @@
   <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-
   <![endif]-->
-
+    @yield('styles')
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
@@ -555,6 +554,14 @@
         jQuery.validator.addMethod("length", function (value, element, params) {
             return $(element).val().length == params;
         }, "Por favor, ingresar un valor de {0} de longitud.");
+
+        jQuery.validator.addMethod("minlength", function (value, element, params) {
+            return $(element).val().length >= params;
+        }, "Por favor, ingresar un valor mayor a {0} caracteres.");
+
+        jQuery.validator.addMethod("maxlength", function (value, element, params) {
+            return $(element).val().length <= params;
+        }, "Por favor, ingresar un valor menor a {0} caracteres.");
 
         jQuery.validator.addMethod("alphanumeric", function (value, element) {
             return this.optional(element) || /^[\w]+$/i.test(value);

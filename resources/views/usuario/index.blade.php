@@ -7,7 +7,7 @@
         <div class="row">
             <div style="padding-bottom: 24px" class="text-center">
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
-                    <i class="fa  {{$tipo_persona=='medico' ? 'fa-user-md' : 'fa-stethoscope' }}"></i> Gestión de {{$tipo_persona=='medico' ? 'Médico' : 'Paciente'}}
+                    <i class="fa  fa-user-plus"></i> Gestión de usuarios
                 </span>
             </div>
         </div>
@@ -17,24 +17,26 @@
                 <div style="min-width: 300px; width: 50%" class="invoice-col">
                     <div class="input-group input-group-lg">
                         <div class="input-group-btn">
-                            <button class="btn btn-default" style="color: #fff;background: #31708f;font-size: 14px;">Nro. documento</button>
+                            <select  class="btn btn-default" style="color: #fff;background: #31708f;font-size: 14px;">
+                                <option value="numero_documento">Nro. documento</option>
+                                <option value="nombre_usuario">Nombre usuario</option>
+                            </select>
+                            <!--
+                            <button class="btn btn-default" >Nro. documento</button>
+                            -->
                         </div>
                         <!-- /btn-group -->
-                        <input data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar {{$tipo_persona=='medico' ? 'médico' : 'paciente'}}">
+                        <input data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar usuario">
                         <div class="input-group-btn">
                             <button id="btn-consultar"
                                     data-search="<span class='fa fa-search' style='color: #fff;background: #31708f;'></span>"
                                     data-loading="<i class='fa fa-circle-o-notch fa-spin'></i> Buscando"
                                     class="btn btn-default"
-                                    data-url="{{route('persona.dato.personal',$tipo_persona)}}"
+                                    data-url="{{route('persona.dato.personal','medico')}}"
                                     title="buscar..." style="color: #fff;background: #31708f; font-size: 15px">
                                 <span class="fa fa-search" style="color: #fff;background: #31708f;"></span>
                             </button>
                         </div>
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <a style="margin-top: 30px;" href="{{route('persona.crear-form',$tipo_persona)}}"  > <i class="fa fa-plus"></i> Registrar nuevo {{$tipo_persona=='medico' ? 'médico' : 'paciente'}}
-                        </a>
                     </div>
                 </div>
                 <!-- /.col -->
@@ -50,9 +52,12 @@
     </div>
 @endsection
 @section('scripts')
+    <script id="tpl-crear-nuevo" type="text/template">
+        @include('usuario.modals.crear-usuario')
+    </script>
     <script src="{{URL::asset('public/plugins/bootbox/bootbox.min.js')}}"></script>
     <script>
-        var url_index ="{{route('persona.index',$tipo_persona)}}";
+        var url_index ="{{route('usuario.index')}}";
 
         $(document).on('click',".btn-editar-form",function(){
 
@@ -160,7 +165,7 @@
             $('#message').html('');
             var btn = $(this);
             params.numero_documento = $("#txt-numero").val();
-            params.section='edit_persona';
+            params.section='gestion_usuario';
             $.ajax({
                 url: url,
                 type: 'get',
@@ -201,5 +206,52 @@
                 }
             });
         }
+        $(document).on('click','#btn-nuevo', function () {
+            var url = $(this).attr('href');
+            var dialog = bootbox.dialog({
+                title: "<b>Nuevo usuario</b>",
+                message: $("#tpl-crear-nuevo").html(),
+                size: 'small',
+                buttons: {
+                    cancel: {
+                        label: "CANCELAR",
+                        className: 'btn btn-sm btn-default',
+                        callback: function(){
+                            console.log('Custom cancel clicked');
+                        }
+                    },
+                    ok: {
+                        label: "GUARDAR",
+                        className: 'btn btn-default btn-sm btn-info btn-actualizar',
+                        callback: function(){
+
+                            var form = $("#form-store");
+
+                            if(!form.valid()) return false;
+
+                            var btn = $(".btn-actualizar");
+                            $.ajax({
+                                url : url,
+                                type : 'post',
+                                data : form.serializeArray(),
+                                success: function(message){
+                                    toastr['success'](message.message);
+                                    $("#btn-consultar").trigger('click');
+                                },
+                                beforeSend: function () {
+                                    btn.html("<i class='fa  fa-circle-o-notch fa-spin'> </i> GUARDANDO");
+                                    btn.attr('disabled',true);
+                                }, complete: function () {
+                                    btn.html('GUARDAR');
+                                    btn.removeAttr('disabled');
+
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+            return false;
+        });
     </script>
 @endsection

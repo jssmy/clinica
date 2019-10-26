@@ -28,5 +28,14 @@ class RestultadoAnalisis extends Model
         return $this->hasOne(ExamenDet::class,'id','examen_det_id');
     }
 
+    public function analisis(){
+        return $this->hasOne(RegistroAnalisis::class,'id','analisis_id');
+    }
+
+    public function getfecResultadoAttribute()
+    {
+        return $this->fecha_resultado ?  Carbon::parse($this->fecha_resultado) : null;
+    }
+
 
 }

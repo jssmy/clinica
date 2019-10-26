@@ -19,7 +19,7 @@ class RegistroAnalisisController extends Controller
 
     public function index(Request $request){
 
-        return view('registro-analisis.index',compact('registros','tiposExamen'));
+        return view('registro-analisis.index');
     }
 
     public function crearForm(Persona $persona){
@@ -45,8 +45,6 @@ class RegistroAnalisisController extends Controller
             if(!$persona){
                 return response('elemento no encotrado',422);
             }
-            //return view('registro-analisis.modals.partials.registro-medico',compact('persona'));
-
         }
         return view('persona.partials.datos-personales',compact('persona'));
     }
@@ -63,36 +61,39 @@ class RegistroAnalisisController extends Controller
             ]);
             /*crear analisis + tipos de examne */
             $tipos_examen = $request->tipos_examen;
-            foreach ($tipos_examen  as $examen_cab_id => $exmanen_det_id){
-                AnalisisTipoExamen::create([
-                    'usuario_id'    => auth()->user()->id,
-                    'analisis_id'   => $analisis->id,
-                    'examen_cab_id' => $examen_cab_id,
-                    'examen_det_id' => $exmanen_det_id,
-                ]);
-                $insumo = ExamenDet::find($exmanen_det_id)->insumo()->first();
-                $insumo->cantidad = (int)$insumo->cantidad - 1;
-                $insumo->save();
+
+            foreach ($tipos_examen  as $examen_cab_id => $subTipos){
+                foreach ($subTipos as $exmanen_det_id){
+                    AnalisisTipoExamen::create([
+                        'usuario_id'    => auth()->user()->id,
+                        'analisis_id'   => $analisis->id,
+                        'examen_cab_id' => $examen_cab_id,
+                        'examen_det_id' => $exmanen_det_id,
+                    ]);
+                    $insumo = ExamenDet::find($exmanen_det_id)->insumo()->first();
+                    $insumo->cantidad = (int)$insumo->cantidad - 1;
+                    $insumo->save();
+                }
             }
         });
 
         return response()->json(['message'=>'Se ha registrado correctamente el análisis']);
     }
 
-    public function analisisTable(Request $request,$persona_id){
-        $registros = RegistroAnalisis::with(['resultados'=>function($query){
-            $query->whereNotNull('comentario')->whereNotNull('resultado');
-        }])->where('paciente_id',$persona_id)->paginate(8);
+    public function analisisTable(Request $request,Persona $persona){
+        $persona = $persona->load('paciente');
+        $registros = RegistroAnalisis::where('paciente_id',$persona->id)
+                                            ->orderBy('fecha_registro','desc')
+                                            ->paginate(8);
 
-        return view('registro-analisis.partials.registro-table',compact('registros'));
+        return view('registro-analisis.partials.registro-table',compact('registros','persona'));
     }
 
     public function resultadosAnalisis($analisis_id){
-        //dd($analisis_id);
-        $resultados = RestultadoAnalisis::with('tipoExamen','subTipoExamen')
+                $resultados = RestultadoAnalisis::with('tipoExamen','subTipoExamen')
                         ->where('analisis_id',$analisis_id)
                         ->get();
-        //dd($resultados,$analisis_id);
+
         return view('registro-analisis.modals.resultados-analisis',compact('resultados'));
     }
 
@@ -108,12 +109,19 @@ class RegistroAnalisisController extends Controller
     }
 
     public function guardarResultadoAnalisis(Request $request, RestultadoAnalisis $resultadoAnalisis){
-        //dd($resultadoAnalisis);
-        $resultadoAnalisis->comentario = $request->comentario;
-        $resultadoAnalisis->resultado = $request->resultado;
-        $resultadoAnalisis->save();
+        \DB::transaction(function () use ($request,&$resultadoAnalisis){
+            $resultadoAnalisis->comentario = $request->comentario;
+            $resultadoAnalisis->resultado = $request->resultado;
+            $resultadoAnalisis->fecha_resultado=now();
+            $analisis = $resultadoAnalisis->analisis;
+            if($analisis->aprobado) {
+                $analisis->estado = 'AP';
+                $analisis->save();
+            }
+            $resultadoAnalisis->save();
+        });
 
-        return response()->json(['message'=>'Se ha guarado el resultado del examen']);
+        return response()->json(['message'=>'Se ha guarado el resultado del examen','resultado_analisis'=>$resultadoAnalisis]);
     }
 
 

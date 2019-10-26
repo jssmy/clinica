@@ -33,13 +33,21 @@
                             <div style="padding-top: 5px">
                                 <span style="color: #606060; font-weight: bold;">Nro. Historia clínica:
                                 </span>
-                                <span style="color: rgba(33, 32, 36, 0.52)">{{ $persona->paciente ?  $persona->paciente->numero_historia_clinica : '-'}}</span>
+
+                                    @if($persona->paciente)
+                                    <span style="color: rgba(33, 32, 36, 0.52)">
+                                        {{$persona->paciente->numero_historia_clinica}}
+                                    </span>
+                                    @else
+                                    <span style="cursor: pointer" title="Por favor registro el número de historia clínica del paciente" class="label label-warning">SIN HISTORIAL CLÍNICO</span>
+                                    @endif
+
                             </div>
                             @else
                                 <div style="padding-top: 5px">
                                 <span style="color: #606060; font-weight: bold;">Nro. Colegiatura:
                                 </span>
-                                    <span style="color: rgba(33, 32, 36, 0.52)">{{$persona->medico ? $persona->medico->numero_colegiatura : '-'}}</span>
+                                    <span style="color: rgba(33, 32, 36, 0.52)">{{$persona->empleado ? $persona->empleado->numero_colegiatura : '-'}}</span>
                                 </div>
                             @endif
                             <div style="padding-top: 5px">
@@ -67,7 +75,7 @@
                         <div style="display: flex; padding:10px; align-content: flex-end; align-items: flex-end;" class="text-center">
                             <div>
                                 @if(request()->section=='edit_persona')
-                                <a style="margin-right: 30px" href="#"><i class="fa fa-user"></i> Editar datos personales</a>
+                                <a style="margin-right: 30px" href="{{route('persona.editar-form',[$tipo_persona,$persona])}}"><i class="fa fa-user"></i> Editar datos personales</a>
                                 @endif
                                 @if(!in_array(request()->section,['registro_analisis']))
                                     <a href="#" id="btn-limpiar"><i class="fa fa-remove"></i> Limpiar</a>
@@ -77,6 +85,42 @@
                     </div>
 
                 </div>
+                @if(!$persona->es_paciente)
+                    <div style="display: flex; flex: 1; flex-direction: column;  justify-content: space-around;">
+                    <div style="display: flex">
+                            <div class="invoice-col" style="padding:10px;">
+                                <div style="padding-top: 5px">
+                                    <span style="color: #606060; font-weight: bold;">DATOS DE USUARIO</span>
+                                </div>
+                                <div style="padding-top: 5px">
+                                    <span style="color: #606060; font-weight: bold;">Nombre usuario :</span>
+                                    <span style="color: rgba(33, 32, 36, 0.52)">{{$persona->usuario ? $persona->usuario->usuario : '-'}}</span>
+                                </div>
+                                <div style="padding-top: 5px">
+                                    <span style="color: #606060; font-weight: bold;">Fecha de registro :</span>
+                                    <span style="color: rgba(33, 32, 36, 0.52)">{{$persona->usuario ? $persona->usuario->fecha_registro : '-'}}</span>
+                                </div>
+                            </div>
+                    </div>
+                    <div style="display: flex;">
+                        <div style="display: flex; padding:10px; align-content: flex-end; align-items: flex-end;" class="text-center">
+                            <div>
+                                @if(request()->section=='gestion_usuario')
+                                    @if(!$persona->usuario)
+                                        <a href="{{route('usuario.crear',$persona)}}" id="btn-nuevo"><i class="fa fa-plus"></i> Crear usuario</a>
+                                    @else
+                                        <!---
+                                         <a href="#" id="btn-limpiar"><i class="fa fa-plus"></i> Resetear clave</a>
+                                         <a style="padding-left: 15px;" href="#" id="btn-limpiar"><i class="fa fa-plus"></i> Desactivar</a>
+                                         -->
+                                    @endif
+                                @endif
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
         @if(request()->section=='edit_person')
@@ -100,6 +144,13 @@
         @endif
     </div>
 </div>
-
-
-
+<script>
+    $('#btn-limpiar').on('click', function(){
+        $("#txt-numero").val('');
+        $("#search-section").fadeIn();
+        $("#main-section").fadeOut();
+        $("#txt-numero").focus();
+        params={};
+        motivosArr={};
+    });
+</script>
