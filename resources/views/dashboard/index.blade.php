@@ -31,7 +31,7 @@
                                     class="btn btn-default"
                                     data-tipo_persona="{{$tipo_reporte}}"
 
-                                    data-url="{{route('persona.dato.personal','paciente')}}"
+                                    data-url="{{route('persona.dato.personal',$tipo_persona)}}"
                                     title="buscar..." style="color: #fff;background: #31708f; font-size: 15px">
                                 <span class="fa fa-search" style="color: #fff;background: #31708f;"></span>
                             </button>

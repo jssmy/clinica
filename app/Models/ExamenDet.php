@@ -6,7 +6,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class ExamenDet extends Model
+class ExamenDet extends Entity
 {
     //
     protected $guarded=['id'];

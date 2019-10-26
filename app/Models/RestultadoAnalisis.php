@@ -6,7 +6,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class RestultadoAnalisis extends Model
+class RestultadoAnalisis extends Entity
 {
     //
     protected $table='analisis_tipo_examen';

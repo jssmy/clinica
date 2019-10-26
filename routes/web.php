@@ -271,7 +271,7 @@ Route::group(['middleware' => 'auth.session'], function () {
     });
 
     Route::group(['prefix' => 'dashboard'], function() {
-        Route::get('/{tipo_reporte}','DashboardController@index')->name('dashboard.index');
+        Route::get('/{tipo_reporte}/{tipo_persona}','DashboardController@index')->name('dashboard.index');
         Route::get('/mostrar-reporte/{persona}/{tipo_reporte}','DashboardController@mostrarReporte')->name('dashboard.mostrar-reporte');
     });
 });

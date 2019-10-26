@@ -8,7 +8,7 @@ use Faker\Provider\Person;
 use http\Env\Request;
 use Illuminate\Database\Eloquent\Model;
 
-class RegistroAnalisis extends Model
+class RegistroAnalisis extends Entity
 {
     //
     protected $table='registro_analisis';

@@ -40,8 +40,8 @@
                 </span>
         </a>
         <ul class="treeview-menu">
-            <li><a href="{{route('dashboard.index','paciente-atendido')}}"><i class="fa fa-circle-o"></i> Paciente atendido</a></li>
-            <li><a href="{{route('persona.index','medico')}}"><i class="fa fa-circle-o"></i> Profesional médico</a></li>
+            <li><a href="{{route('dashboard.index',['paciente-atendido','paciente'])}}"><i class="fa fa-circle-o"></i> Paciente atendido</a></li>
+            <li><a href="{{route('dashboard.index',['medico-examen-emision','empleado'])}}"><i class="fa fa-circle-o"></i> Profesional médico</a></li>
             <li><a href="{{route('persona.index','medico')}}"><i class="fa fa-circle-o"></i>Profesional de laboratorio</a></li>
             <li><a href="{{route('persona.index','medico')}}"><i class="fa fa-circle-o"></i>Insumos</a></li>
             <li><a href="{{route('persona.index','medico')}}"><i class="fa fa-circle-o"></i> Producción general del mes</a></li>
