@@ -11,7 +11,7 @@
 |
 */
 
-Route::middleware("auth.session")->group(function (){
+Route::group(['middleware' => 'auth.session'], function () {
 
     Route::get('/', function () {
         return view('welcome');
@@ -274,9 +274,7 @@ Route::middleware("auth.session")->group(function (){
         Route::get('/{tipo_reporte}','DashboardController@index')->name('dashboard.index');
         Route::get('/mostrar-reporte/{persona}/{tipo_reporte}','DashboardController@mostrarReporte')->name('dashboard.mostrar-reporte');
     });
-
 });
-
 
 Route::get('iniciar-sesion','AuthController@loginForm')->name('login-form');
 

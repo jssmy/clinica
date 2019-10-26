@@ -112,7 +112,7 @@ class RegistroAnalisisController extends Controller
         \DB::transaction(function () use ($request,&$resultadoAnalisis){
             $resultadoAnalisis->comentario = $request->comentario;
             $resultadoAnalisis->resultado = $request->resultado;
-            $resultadoAnalisis->fecha_resultado=now();
+            $resultadoAnalisis->fecha_resultado=date("Y-m-d");
             $analisis = $resultadoAnalisis->analisis;
             if($analisis->aprobado) {
                 $analisis->estado = 'AP';

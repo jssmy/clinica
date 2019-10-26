@@ -43,7 +43,7 @@ class PersonaController extends Controller
                 'numero_documento'=>$request->numero_documento,
                 'direccion'=>$request->direccion,
                 'telefono'=>$request->telefono,
-                'fecha_nacimiento'=>now(),
+                'fecha_nacimiento'=>date("Y-m-d"),
                 'genero'=>$request->genero,
                 'estado_civil_id'=>$request->estado_civil,
                 'tipo_persona'=>strtolower($request->tipo_persona)=='medico' ? 'empleado' : 'paciente',

@@ -30,7 +30,7 @@ class RegistroAnalisis extends Model
     public  static function generarCodigo(){
         $sufijo = self::selectRaw('max(id) as numero')->first();
         $sufijo = $sufijo ? $sufijo->numero : 0;
-        return "RC-".str_pad($sufijo,9,'0',STR_PAD_LEFT)."-".now()->format('Y');
+        return "RC-".str_pad($sufijo,9,'0',STR_PAD_LEFT)."-".date('Y');
     }
 
     public function getfecRegistroAttribute()
