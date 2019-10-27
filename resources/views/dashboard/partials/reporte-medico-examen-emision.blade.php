@@ -1,7 +1,46 @@
 <div class="row">
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box bg-aqua">
+    <div class="col-sm-8">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">Exámenes realizados</h3>
+            </div>
+            <div class="box-body">
+                <div id="chartdiv_medico" style="height: 233px; width: 700px;" height="233" width="467"></div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">Estado de exámenes</h3>
+            </div>
+            <div class="box-body">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>{{round(($analisis->where('estado','PR')->count()/$analisis->count())*100,2)}}%</h3>
+                        <p>Exámenes sin resultado</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-ios-pie-outline"></i>
+                    </div>
+                </div>
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>{{round(($analisis->where('estado','AP')->count()/$analisis->count())*100,2)}}%</h3>
+                        <p>Exámenes con resultado</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-ios-pie-outline"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- /.box-body -->
+        </div>
+
+    </div>
+    <div class="col-sm-12">
+        <div class="small-box bg-info">
             <div class="inner">
                 <h3>{{$resultados->flatten()->sum('cantidad_sub_tipo')}}</h3>
                 <p>Total de exámenes</p>
@@ -11,45 +50,7 @@
             </div>
         </div>
     </div>
-    <!-- ./col -->
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box bg-green">
-            <div class="inner">
-                <h3>{{$analisis->unique('paciente_id')->count()}}</h3>
-                <p>Total de pacientes atendidos</p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-ios-medkit-outline"></i>
-            </div>
-        </div>
-    </div>
-    <!-- ./col -->
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box bg-info">
-            <div class="inner">
-                <h3>{{round(($analisis->where('estado','PR')->count()/$analisis->count())*100,2)}}%</h3>
-                <p>Exámenes preparados</p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-ios-pie-outline"></i>
-            </div>
-        </div>
-    </div>
-    <!-- ./col -->
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box bg-info">
-            <div class="inner">
-                <h3>{{round(($analisis->where('estado','AP')->count()/$analisis->count())*100,2)}}%</h3>
-                <p>Exámenes aprobados</p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-ios-pie-outline"></i>
-            </div>
-        </div>
-    </div>
+
     <!-- ./col -->
 </div>
 <div class="panel box">
@@ -103,3 +104,37 @@
         </div>
     </div>
 </div>
+
+<script>
+    am4core.ready(function() {
+
+// Themes begin
+        am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create chart instance
+        var chart = am4core.create("chartdiv_medico", am4charts.PieChart);
+
+// Add data
+
+        var data= JSON.parse('{!! json_encode($endPieData) !!}');
+        chart.data = data;
+
+// Set inner radius
+        chart.innerRadius = am4core.percent(50);
+
+// Add and configure Series
+        var pieSeries = chart.series.push(new am4charts.PieSeries());
+        pieSeries.dataFields.value = "litres";
+        pieSeries.dataFields.category = "country";
+        pieSeries.slices.template.stroke = am4core.color("#fff");
+        pieSeries.slices.template.strokeWidth = 2;
+        pieSeries.slices.template.strokeOpacity = 1;
+
+// This creates initial animation
+        pieSeries.hiddenState.properties.opacity = 1;
+        pieSeries.hiddenState.properties.endAngle = -90;
+        pieSeries.hiddenState.properties.startAngle = -90;
+
+    }); // end am4core.ready()
+</script>

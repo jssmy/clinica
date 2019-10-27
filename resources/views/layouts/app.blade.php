@@ -257,7 +257,7 @@
         </div>
         <div class="pull-left info">
           <p>{{auth()->user()->persona->nombre}}</p>
-          <a href="#"><i class="fa fa-circle text-success"></i> Conectado</a>
+          <a href="#"><i class="fa fa-circle text-success"></i> </a>
         </div>
       </div>
 
@@ -431,6 +431,7 @@
                 'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
             },
             success: function(message){
+                if(message==undefined) return  true;
                 if(message.message){
                     toastr["success"](message.message);
                     return true;

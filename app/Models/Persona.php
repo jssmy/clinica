@@ -6,7 +6,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Persona extends Model
+class Persona extends Entity
 {
     //
     protected $table='personas';

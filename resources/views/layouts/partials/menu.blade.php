@@ -42,8 +42,8 @@
         <ul class="treeview-menu">
             <li><a href="{{route('dashboard.index',['paciente-atendido','paciente'])}}"><i class="fa fa-circle-o"></i> Paciente atendido</a></li>
             <li><a href="{{route('dashboard.index',['medico-examen-emision','empleado'])}}"><i class="fa fa-circle-o"></i> Profesional médico</a></li>
-            <li><a href="{{route('persona.index','medico')}}"><i class="fa fa-circle-o"></i>Profesional de laboratorio</a></li>
-            <li><a href="{{route('persona.index','medico')}}"><i class="fa fa-circle-o"></i>Insumos</a></li>
+            <li><a href="#"><i class="fa fa-circle-o"></i>Profesional de laboratorio</a></li>
+            <li><a href="{{route('dashboard.stock-insumo')}}"><i class="fa fa-circle-o"></i>Insumos</a></li>
             <li><a href="{{route('persona.index','medico')}}"><i class="fa fa-circle-o"></i> Producción general del mes</a></li>
             <li><a href="{{route('persona.index','medico')}}"><i class="fa fa-circle-o"></i> Tiempo promedio de atención</a></li>
             <li><a href="{{route('persona.index','medico')}}"><i class="fa fa-circle-o"></i> Patologias anormales</a></li>

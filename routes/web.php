@@ -267,12 +267,14 @@ Route::group(['middleware' => 'auth.session'], function () {
         /** gurdar resultados**/
         Route::put('/guardar-resultados/{resultadoAnalisis}','RegistroAnalisisController@guardarResultadoAnalisis')->name('registro.analisis.guardar-resultado');
 
+        Route::get('imprimir-documento/{analisis}','RegistroAnalisisController@imprimir')->name('registro.analsis.imprimir');
 
     });
 
     Route::group(['prefix' => 'dashboard'], function() {
-        Route::get('/{tipo_reporte}/{tipo_persona}','DashboardController@index')->name('dashboard.index');
+        Route::get('/main/{tipo_reporte}/{tipo_persona?}','DashboardController@index')->name('dashboard.index');
         Route::get('/mostrar-reporte/{persona}/{tipo_reporte}','DashboardController@mostrarReporte')->name('dashboard.mostrar-reporte');
+        Route::get('stock-insumo','DashboardController@reporteStockInsumo')->name('dashboard.stock-insumo');
     });
 });
 

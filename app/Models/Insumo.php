@@ -6,7 +6,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class Insumo extends Model
+class Insumo extends Entity
 {
     //
     protected $guarded=['id','fecha_registro'];

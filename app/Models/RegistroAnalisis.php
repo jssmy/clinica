@@ -44,7 +44,7 @@ class RegistroAnalisis extends Entity
 
     public function getaprobadoAttribute()
     {
-        return !! $this->resultados()->whereNotNull('resultado')->count();
+        return  $this->resultados()->whereNull('resultado')->count() == 0 ? true : false;
     }
     public function getesAprobadoAttribute()
     {

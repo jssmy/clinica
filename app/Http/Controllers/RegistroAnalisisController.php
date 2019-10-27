@@ -11,6 +11,7 @@ use App\Models\Insumo;
 use App\Models\Persona;
 use App\Models\RegistroAnalisis;
 use App\Models\RestultadoAnalisis;
+use App\utils\fpdf\FPDF;
 use Illuminate\Http\Request;
 
 class RegistroAnalisisController extends Controller
@@ -112,16 +113,36 @@ class RegistroAnalisisController extends Controller
         \DB::transaction(function () use ($request,&$resultadoAnalisis){
             $resultadoAnalisis->comentario = $request->comentario;
             $resultadoAnalisis->resultado = $request->resultado;
-            $resultadoAnalisis->fecha_resultado=date("Y-m-d");
+            $resultadoAnalisis->fecha_resultado=date("Y-m-d H:i:s");
             $analisis = $resultadoAnalisis->analisis;
+            $resultadoAnalisis->save();
             if($analisis->aprobado) {
                 $analisis->estado = 'AP';
                 $analisis->save();
             }
-            $resultadoAnalisis->save();
         });
 
         return response()->json(['message'=>'Se ha guarado el resultado del examen','resultado_analisis'=>$resultadoAnalisis]);
+    }
+
+    public function imprimir(RegistroAnalisis $analisis){
+        $analisis = $analisis->load('paciente','medico');
+
+        $pdf = new FPDF();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial','B',14);
+        $pdf->MultiCell(70,4,utf8_decode('Laboratorio Clínico C.S Santa Rosa'),0,'C');
+        $pdf->SetFont('Arial',NULL,11);
+        $pdf->SetXY(80,9);
+        $pdf->MultiCell(70,4,utf8_decode('Lima, Perú'),0,'j');
+        $pdf->SetTextColor(255,255,255);
+        $pdf->SetFont('Arial','B',11);
+        //$pdf->SetXY(18,20);
+        $pdf->Ln(15);
+        $pdf->SetX(18);
+        $pdf->Cell(175,8,utf8_decode('FORMULARIO PARA LA HISTORIA CLÍNICA'),1,0,'C',1);
+        $pdf->Output();
+        exit;
     }
 
 

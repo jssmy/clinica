@@ -149,7 +149,9 @@
         $("#txt-numero").val('');
         $("#search-section").fadeIn();
         $("#main-section").fadeOut();
+        $("#reporte").fadeIn();
         $("#txt-numero").focus();
+
         params={};
         motivosArr={};
     });

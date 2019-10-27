@@ -1,60 +1,56 @@
 <div class="row">
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box bg-aqua">
-            <div class="inner">
-                <h3>{{$analisis->count()}}</h3>
-                <p>Análisis registrados</p>
+    <div class="col-sm-8">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">Exámenes realizados</h3>
             </div>
-            <div class="icon">
-                <i class="ion ion-clipboard"></i>
+            <div class="box-body">
+                <div id="chartdiv" style="height: 233px; width: 700px;" height="233" width="467"></div>
             </div>
+            <!-- /.box-body -->
         </div>
     </div>
-    <!-- ./col -->
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box bg-green">
-            <div class="inner">
-                @php
-                    $examenes = 0;
-                    $analisis->each(function ($examen) use (&$examenes){ $examenes+=$examen->resultados->unique('tipoExamen')->count();});
-                @endphp
-                <h3>{{$examenes}}</h3>
-                <p>Exámenes realizados</p>
+    <div class="col-sm-4">
+        <div class="box box-danger">
+            <div class="box-header with-border">
+                <h3 class="box-title">Estado de exámenes</h3>
             </div>
-            <div class="icon">
-                <i class="ion ion-ios-medkit-outline"></i>
+            <div class="box-body">
+                <div class="small-box bg-info">
+                    <div class="inner">
+                        <h3>@if($allAnalisis->count())
+                                {{round($allAnalisis->where('estado','PR')->count()/$allAnalisis->count(),2)*100}}
+                            @else
+                                0
+                            @endif
+                            %
+                        </h3>
+                        <p>Exámenes sin resultados</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-ios-pie-outline"></i>
+                    </div>
+                </div>
+                <div style="margin-bottom: 0px;" class="small-box bg-teal-active">
+                    <div class="inner">
+                        <h3>@if($allAnalisis->count())
+                                {{round($allAnalisis->where('estado','AP')->count()/$allAnalisis->count(),2)*100}}
+                        @else
+                                0
+                        @endif
+                        %
+                        </h3>
+                        <p>Exámenes con resultados</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-ios-pie-outline"></i>
+                    </div>
+                </div>
             </div>
+            <!-- /.box-body -->
         </div>
+
     </div>
-    <!-- ./col -->
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box bg-yellow">
-            <div class="inner">
-                <h3>{{$analisis->pluck('resultados')->flatten()->pluck('subTipoExamen')->count()}}</h3>
-                <p>Sub-tipos de exámenes realizados</p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-thermometer"></i>
-            </div>
-        </div>
-    </div>
-    <!-- ./col -->
-    <div class="col-lg-3 col-xs-6">
-        <!-- small box -->
-        <div class="small-box bg-red">
-            <div class="inner">
-                <h3>{{round($analisis->pluck('resultados')->flatten()->avg('resultado'),2)}}</h3>
-                <p>Resultado promedio</p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-ios-pie"></i>
-            </div>
-        </div>
-    </div>
-    <!-- ./col -->
 </div>
 <div class="panel box">
     <div class="box-header with-border" data-toggle="collapse" href="#" aria-expanded="true">
@@ -76,7 +72,6 @@
                 <table class="table table-hover table-striped" style="font-size:13px;">
                     <thead style="background-color: #3c8dbc; color: white">
                     <tr>
-                        <th>Código</th>
                         <th>Tipo Examen</th>
                         <th>Sub-tipo examen</th>
                         <th>Fecha resultado</th>
@@ -85,18 +80,28 @@
                     </tr>
                     </thead>
                     <tbody>
-                        @foreach($analisis as $registro)
-                                @foreach($registro->resultados as $resultado)
+                        @foreach($analisis as $tipo_examen => $sub_tipos)
+                                @foreach($sub_tipos as $sub_tipo_examen => $resultados)
                                     <tr>
                                         @if($loop->first)
-                                        <td rowspan="{{$registro->resultados->count()}}">{{$registro->codigo}}</td>
+                                            <td rowspan="{{$sub_tipos->flatten()->count()}}">{{$tipo_examen}} </td>
                                         @endif
-                                        <td>{{$resultado->tipoExamen ? $resultado->tipoExamen->nombre : '' }}</td>
-                                        <td>{{$resultado->subTipoExamen ? $resultado->subTipoExamen->nombre : ''}}</td>
-                                        <td>{{$resultado->fec_resultado ? $resultado->fec_resultado->format('d/m/Y') : ''}}</td>
-                                        <td>{{$resultado->resultado}}</td>
-                                    </tr>
+                                        @foreach($resultados as $resultado)
+                                            @if($loop->first)
+                                                <td rowspan="{{$resultados->count()}}">{{$sub_tipo_examen}}</td>
+                                            @endif
+                                                @if($resultado->resultado)
+                                                    <td>{{$resultado->fecha_resultado}}</td>
+                                                    <td>{{$resultado->resultado}}</td>
+                                                @else
+                                                    <td colspan="2" class="text-center"><label style="width: 80px;" class="label label-warning">SIN RESULTADO</label></td>
+                                                @endif
+
+                                            </tr>
+                                        @endforeach
+
                                 @endforeach
+
                         @endforeach
                     </tbody>
                 </table>
@@ -111,3 +116,35 @@
         </div>
     </div>
 </div>
+<script>
+    am4core.ready(function() {
+
+// Themes begin
+        am4core.useTheme(am4themes_animated);
+// Themes end
+
+// Create chart instance
+        var chart = am4core.create("chartdiv", am4charts.PieChart);
+
+// Add data
+        var data= JSON.parse('{!! json_encode($endDataPie) !!}');
+        chart.data = data;
+
+// Set inner radius
+        chart.innerRadius = am4core.percent(50);
+
+// Add and configure Series
+        var pieSeries = chart.series.push(new am4charts.PieSeries());
+        pieSeries.dataFields.value = "litres";
+        pieSeries.dataFields.category = "country";
+        pieSeries.slices.template.stroke = am4core.color("#fff");
+        pieSeries.slices.template.strokeWidth = 2;
+        pieSeries.slices.template.strokeOpacity = 1;
+
+// This creates initial animation
+        pieSeries.hiddenState.properties.opacity = 1;
+        pieSeries.hiddenState.properties.endAngle = -90;
+        pieSeries.hiddenState.properties.startAngle = -90;
+
+    }); // end am4core.ready()
+</script>

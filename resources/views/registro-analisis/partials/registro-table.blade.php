@@ -55,7 +55,7 @@
                                         @if(!$registro->es_aprobado)
                                             <button data-url="{{route('registro.analisis.cambiar',$registro->id)}}" title="Cambiar de paciente" class="btn btn-xs btn-info btn-cabiar-paciente"><i class="fa fa-share"></i></button>
                                         @endif
-                                        <button title="Imprimir" class="btn btn-xs btn-default"><i class="fa fa-print"></i></button>
+                                        <a href="{{route('registro.analsis.imprimir',$registro)}}" target="_blank" title="Imprimir" class="btn btn-xs btn-default"><i class="fa fa-print"></i></a>
                                     </td>
                                 </tr>
                             @empty <tr class="text-center"><td colspan="7">No hay registrados</td></tr>

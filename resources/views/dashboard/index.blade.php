@@ -30,7 +30,6 @@
                                     data-loading="<i class='fa fa-circle-o-notch fa-spin'></i> Buscando"
                                     class="btn btn-default"
                                     data-tipo_persona="{{$tipo_reporte}}"
-
                                     data-url="{{route('persona.dato.personal',$tipo_persona)}}"
                                     title="buscar..." style="color: #fff;background: #31708f; font-size: 15px">
                                 <span class="fa fa-search" style="color: #fff;background: #31708f;"></span>
@@ -44,7 +43,13 @@
         <div id="message">
 
         </div>
+
     </section>
+    <div id="reporte"  style="padding-top: 0px; background: transparent; border: 0px;">
+        @if($tipo_persona=='empleado')
+            @include('dashboard.partials.main-reporte-examen-medico')
+        @endif
+    </div>
 
     <div id="main-section"  style="padding-top: 0px; background: transparent; border: 0px;">
 
@@ -52,7 +57,9 @@
 
 @endsection
 @section('scripts')
-
+    <script src="https://www.amcharts.com/lib/4/core.js"></script>
+    <script src="https://www.amcharts.com/lib/4/charts.js"></script>
+    <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
     <script src="{{URL::asset('public/plugins/bootbox/bootbox.min.js')}}"></script>
     <script>
         var load_reporte_url="{{route('dashboard.mostrar-reporte',['persona_id',$tipo_reporte])}}";
@@ -85,8 +92,10 @@
                     $("#main-section").html(view);
                     $('#main-section').fadeIn();
                     $('#search-section').fadeOut();
+                    $("#reporte").fadeOut();
                     params.persona = JSON.parse($("#hdh-persona").val());
                     load_reporte();
+
 
                 },
                 beforeSend: function(){
@@ -107,7 +116,5 @@
                 $("#registros-analisis").html(view);
             });
         }
-
-
     </script>
 @endsection
