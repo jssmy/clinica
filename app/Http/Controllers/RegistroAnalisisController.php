@@ -108,9 +108,10 @@ class RegistroAnalisisController extends Controller
     }
 
     public function guardarResultadoAnalisis(Request $request, RestultadoAnalisis $resultadoAnalisis){
-        //dd($resultadoAnalisis);
+
         $resultadoAnalisis->comentario = $request->comentario;
         $resultadoAnalisis->resultado = $request->resultado;
+        $analisis = $resultadoAnalisis->analisis;
         $resultadoAnalisis->save();
 
         return response()->json(['message'=>'Se ha guarado el resultado del examen']);
