@@ -11,7 +11,7 @@
 |
 */
 
-Route::middleware("auth.session")->group(function (){
+Route::group(['middleware' => 'auth.session'], function () {
 
     Route::get('/', function () {
         return view('welcome');
@@ -174,18 +174,18 @@ Route::middleware("auth.session")->group(function (){
     });
 
     Route::group(['prefix' => 'persona'], function() {
-        Route::get('/', 'PersonaController@index')->name('persona.index');
+        Route::get('/gestion/{tipo_persona}', 'PersonaController@index')->name('persona.index');
 
         /**
          *Rutas para crear persona
          */
-        Route::get('/crear-form', 'PersonaController@crearForm')->name('persona.crear-form');
+        Route::get('/crear-form/{tipo_persona}', 'PersonaController@crearForm')->name('persona.crear-form');
         Route::post('/crear', 'PersonaController@crear')->name('persona.crear');
 
         /**
          *rutas para editar persona
          */
-        Route::get('/edidar-form/{persona}', 'PersonaController@editarForm')->name('persona.editar-form');
+        Route::get('/edidar-form/{tipo_persona}/{persona}', 'PersonaController@editarForm')->name('persona.editar-form');
         Route::put('/edidar/{persona}', 'PersonaController@editar')->name('persona.editar');
 
         /**
@@ -195,7 +195,40 @@ Route::middleware("auth.session")->group(function (){
 
 
         /**datos de persona**/
-        Route::get('datos-personales','PersonaController@datosPersonales')->name('persona.dato.personal');
+        Route::get('datos-personales/{tipo_persona}/{tipo_busqueda?}','PersonaController@datosPersonales')->name('persona.dato.personal');
+
+        /** gestion de personas **/
+
+
+    });
+
+    Route::group(['prefix' => 'usuario'], function() {
+        Route::get('/', 'UsuarioController@index')->name('usuario.index');
+
+        /**
+         *Rutas para crear usuario
+         */
+        Route::get('/crear-form/', 'UsuarioController@crearForm')->name('usuario.crear-form');
+        Route::post('/crear/{persona}', 'UsuarioController@crear')->name('usuario.crear');
+
+        /**
+         *rutas para editar persona
+         */
+        Route::get('/edidar-form/{usuario}', 'UsuarioController@editarForm')->name('usuario.editar-form');
+        Route::put('/edidar/{persona}', 'UsuarioController@editar')->name('usuario.editar');
+
+        /**
+         *Rutas para activar y desactivar persona
+         */
+        Route::put('/edidar/{accion}/{tipo_id}', 'UsuarioController@editarEstado')->name('usuario.editar.estado');
+
+
+        /**datos de persona**/
+        Route::get('datos-personales/{tipo_persona}','UsuarioController@datosPersonales')->name('usuario.dato.personal');
+
+        /** gestion de personas **/
+
+
     });
 
     Route::group(['prefix' => 'registro-analisis'], function() {
@@ -234,14 +267,27 @@ Route::middleware("auth.session")->group(function (){
         /** gurdar resultados**/
         Route::put('/guardar-resultados/{resultadoAnalisis}','RegistroAnalisisController@guardarResultadoAnalisis')->name('registro.analisis.guardar-resultado');
 
+        Route::get('imprimir-documento/{analisis}','RegistroAnalisisController@imprimir')->name('registro.analsis.imprimir');
 
     });
 
+    Route::group(['prefix' => 'dashboard'], function() {
+        Route::get('/main/{tipo_reporte}/{tipo_persona?}','DashboardController@index')->name('dashboard.index');
+        Route::get('/mostrar-reporte/{persona}/{tipo_reporte}','DashboardController@mostrarReporte')->name('dashboard.mostrar-reporte');
+        Route::get('stock-insumo','DashboardController@reporteStockInsumo')->name('dashboard.stock-insumo');
+        Route::get('tiempo-atencion','DashboardController@reporteTiempoAtencion')->name('dashboard.tiempo-atencion');
+        Route::get('paciente-atendido',function (){
+            return redirect()->route('dashboard.index',['paciente-atendido','paciente']);
+        })->name('dashboard.paciente-atendido');
+        Route::get('profesional-medico',function (){
+            return redirect()->route('dashboard.index',['medico-examen-emision','empleado']);
+        })->name('dashboard.profesional-medico');
+    });
 });
-
 
 Route::get('iniciar-sesion','AuthController@loginForm')->name('login-form');
 
 Route::post('iniciar-sesion-store','AuthController@login')->name('login.store');
 
 Route::post('cerrar-sesion','AuthController@logout')->name('logout.store');
+

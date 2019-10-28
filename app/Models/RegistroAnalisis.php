@@ -8,7 +8,7 @@ use Faker\Provider\Person;
 use http\Env\Request;
 use Illuminate\Database\Eloquent\Model;
 
-class RegistroAnalisis extends Model
+class RegistroAnalisis extends Entity
 {
     //
     protected $table='registro_analisis';
@@ -30,7 +30,7 @@ class RegistroAnalisis extends Model
     public  static function generarCodigo(){
         $sufijo = self::selectRaw('max(id) as numero')->first();
         $sufijo = $sufijo ? $sufijo->numero : 0;
-        return "RC-".str_pad($sufijo,9,'0',STR_PAD_LEFT)."-".now()->format('Y');
+        return "RC-".str_pad($sufijo,9,'0',STR_PAD_LEFT)."-".date('Y');
     }
 
     public function getfecRegistroAttribute()
@@ -41,4 +41,14 @@ class RegistroAnalisis extends Model
     public function resultados(){
         return $this->hasMany(RestultadoAnalisis::class,'analisis_id','id');
     }
+
+    public function getaprobadoAttribute()
+    {
+        return  $this->resultados()->whereNull('resultado')->count() == 0 ? true : false;
+    }
+    public function getesAprobadoAttribute()
+    {
+        return $this->estado=='AP';
+    }
+
 }

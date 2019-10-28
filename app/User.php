@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Perfil;
 use App\Models\Persona;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,9 +18,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
+    protected $guarded=['id'];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -42,4 +41,8 @@ class User extends Authenticatable
     public function persona(){
         return $this->hasOne(Persona::class,'id','persona_id');
     }
+    public function perfil(){
+        return $this->hasOne(Perfil::class,'id','perfil_id');
+    }
+
 }

@@ -27,4 +27,13 @@ class Perfil extends Model
         return Carbon::parse($this->fecha_registro);
     }
 
+    public function scopeActivo($query){
+        return $query->where('estado',1);
+    }
+
+    public function menus()
+    {
+        return $this->belongsToMany( Menu::class, 'accesos', 'perfil_id');
+    }
+
 }

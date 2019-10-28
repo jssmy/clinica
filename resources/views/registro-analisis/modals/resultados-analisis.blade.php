@@ -4,6 +4,7 @@
         <tr>
             <td>Tipo</td>
             <td>Sub-tipo</td>
+            <td>Fecha resultado</td>
             <td>Comentario</td>
             <td>Resultado</td>
             <td>Opciones</td>
@@ -14,11 +15,12 @@
                 <tr>
                     <td>{{$resultado->tipoExamen ? $resultado->tipoExamen->nombre : ''}}</td>
                     <td>{{$resultado->subTipoExamen ? $resultado->subTipoExamen->nombre : ''}}</td>
+                    <td>{{$resultado->fec_resultado ? $resultado->fec_resultado->format('d/m/Y') : '' }}</td>
                     <td>
                         @if($resultado->comentario)
                             {{$resultado->comentario}}
                         @else
-                            <textarea  id="comentario{{$resultado->id}}" class="required" name="comentario" style="width: 400px;"></textarea>
+                            <textarea maxlength="200"  id="comentario{{$resultado->id}}" class="required" name="comentario" style="width: 400px;"></textarea>
                         @endif
                     </td>
                     <td>
@@ -35,7 +37,7 @@
                                 data-resultado="resultado{{$resultado->id}}"
                                 data-url="{{route('registro.analisis.guardar-resultado',$resultado)}}"
                                 data-form="form-guardar-resultado{{$resultado->id}}"
-                                class="btn  btn-xs btn-success btn-guardar-resultados"><i class="fa fa-save"></i> Guardar</button>
+                                class="btn  btn-sm btn-success btn-guardar-resultados"><i class="fa fa-save"></i> GUARDAR</button>
                         @endif
                     </td>
                 </tr>
@@ -51,7 +53,7 @@
         var comentario=$("#"+$(this).data('comentario')).val();
         var resultado =$("#"+$(this).data('resultado')).val();
         //console.log(comentario,resultado);
-        if(comentario=="" || resultado=="") return false;
+        if(resultado=="") return false;
         var data={
             comentario :  comentario,
             resultado :   resultado,

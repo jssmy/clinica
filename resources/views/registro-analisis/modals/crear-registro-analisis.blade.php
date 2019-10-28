@@ -133,10 +133,11 @@
         console.log(examen_det,examen_det_text,examen_cab,examen_cab_text);
         if(examen_det!="" && examen_cab!="" && $.inArray(examen_det,motivosArr)==-1){
             motivosArr.push(examen_det);
+            console.log(motivosArr);
             var eliminar ="<td style='display: flex !important;text-align: center !important;justify-content: space-around !important;'><a id='"+examen_det+"' href='#' class='eliminar_tipo_examen'> <i class='fa fa-remove'></i></a></td>";
             //var inputResultado="<input type='hidden' name='tipos_examen["+examen_cab+"]["+examen_det+"][resultado]' value='"+resultado+"'>";
             //var inputComentario="<input type='hidden' name='tipos_examen["+examen_cab+"]["+examen_det+"][comentario]' value='"+comentario+"'>";
-            var input="<input type='hidden' name='tipos_examen["+examen_cab+"]' value='"+examen_det+"'>";
+            var input="<input type='hidden' name='tipos_examen["+examen_cab+"][]' value='"+examen_det+"'>";
             var tr="<tr><td>"+input+examen_cab_text+"</td><td>"+examen_det_text+"</td><td>"+eliminar+"</tr>";
             $("#tbl-motivos").append(tr);
         }

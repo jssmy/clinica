@@ -6,7 +6,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class RestultadoAnalisis extends Model
+class RestultadoAnalisis extends Entity
 {
     //
     protected $table='analisis_tipo_examen';
@@ -31,6 +31,12 @@ class RestultadoAnalisis extends Model
     public function analisis(){
         return $this->hasOne(RegistroAnalisis::class,'id','analisis_id');
     }
+
+    public function getfecResultadoAttribute()
+    {
+        return $this->fecha_resultado ?  Carbon::parse($this->fecha_resultado) : null;
+    }
+
 
 
 }

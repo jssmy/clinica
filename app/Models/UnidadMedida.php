@@ -6,7 +6,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
-class UnidadMedida extends Model
+class UnidadMedida extends Entity
 {
     //
     protected $table='unidad_medidas';

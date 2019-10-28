@@ -19,15 +19,7 @@
                 <div style="min-width: 300px; width: 50%" class="invoice-col">
                     <div class="input-group input-group-lg">
                         <div class="input-group-btn">
-
                             <button class="btn btn-default" style="color: #fff;background: #31708f;font-size: 14px;">Nro. documento</button>
-
-                            <!---
-                            <select  class="btn btn-default" style="color: #fff;background: #31708f;font-size: 14px;">
-                                <option value="numero_documento">Nro. Documento</option>
-                                <option value="numero_analisis">Nro. Análsis</option>
-                            </select>
-                            -->
                         </div>
                         <!-- /btn-group -->
                         <input data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar paciente">
@@ -36,7 +28,7 @@
                                     data-search="<span class='fa fa-search' style='color: #fff;background: #31708f;'></span>"
                                     data-loading="<i class='fa fa-circle-o-notch fa-spin'></i> Buscando"
                                     class="btn btn-default"
-                                    data-url="{{route('persona.dato.personal')}}"
+                                    data-url="{{route('persona.dato.personal','paciente')}}"
                                     title="buscar..." style="color: #fff;background: #31708f; font-size: 15px">
                                 <span class="fa fa-search" style="color: #fff;background: #31708f;"></span>
                             </button>
@@ -289,14 +281,7 @@
 
         }
 
-        $(document).on('click', '#btn-limpiar', function(){
-            $("#txt-numero").val('');
-            $("#search-section").fadeIn();
-            $("#main-section").fadeOut();
-            $("#txt-numero").focus();
-            params={};
-            motivosArr={};
-        });
+
 
         $(document).on('click','.btn-ver-resultados',function () {
             var url = $(this).data('url');

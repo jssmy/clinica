@@ -31,9 +31,8 @@
   <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-
   <![endif]-->
-
+    @yield('styles')
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
@@ -196,9 +195,9 @@
     <!-- Logo -->
     <a href="index2.html" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>C</b>LI</span>
+      <span class="logo-mini"><b>Snt</b>R</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Clínica</b></span>
+      <span class="logo-lg"><b>Santa Rosa</b></span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -213,13 +212,13 @@
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="public/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+              <img src="{{URL::asset('/public/dist/img/clinica.jpg')}}" class="user-image" alt="User Image">
               <span class="hidden-xs">{{auth()->user()->persona->nombre}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="public/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                <img src="{{URL::asset('/public/dist/img/clinica.jpg')}}" class="img-circle" alt="User Image">
 
                 <p>
                   {{auth()->user()->persona->nombre}}
@@ -254,11 +253,11 @@
       <!-- Sidebar user panel -->
       <div class="user-panel">
         <div class="pull-left image">
-          <img src="public/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+          <img src="{{URL::asset('/public/dist/img/clinica.jpg')}}" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
           <p>{{auth()->user()->persona->nombre}}</p>
-          <a href="#"><i class="fa fa-circle text-success"></i> Conectado</a>
+          <a href="#"><i class="fa fa-circle text-success"></i> </a>
         </div>
       </div>
 
@@ -432,6 +431,7 @@
                 'X-CSRF-TOKEN': $("meta[name='csrf-token']").attr('content')
             },
             success: function(message){
+                if(message==undefined) return  true;
                 if(message.message){
                     toastr["success"](message.message);
                     return true;
@@ -555,6 +555,14 @@
         jQuery.validator.addMethod("length", function (value, element, params) {
             return $(element).val().length == params;
         }, "Por favor, ingresar un valor de {0} de longitud.");
+
+        jQuery.validator.addMethod("minlength", function (value, element, params) {
+            return $(element).val().length >= params;
+        }, "Por favor, ingresar un valor mayor a {0} caracteres.");
+
+        jQuery.validator.addMethod("maxlength", function (value, element, params) {
+            return $(element).val().length <= params;
+        }, "Por favor, ingresar un valor menor a {0} caracteres.");
 
         jQuery.validator.addMethod("alphanumeric", function (value, element) {
             return this.optional(element) || /^[\w]+$/i.test(value);
