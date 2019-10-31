@@ -10,7 +10,7 @@
         <div class="row">
             <div style="padding-bottom: 24px" class="text-center">
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
-                    <i class="fa  fa-bar-chart"></i> Reportes
+                    Reportes
                 </span>
             </div>
         </div>

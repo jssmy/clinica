@@ -276,6 +276,9 @@ Route::group(['middleware' => 'auth.session'], function () {
         Route::get('/mostrar-reporte/{persona}/{tipo_reporte}','DashboardController@mostrarReporte')->name('dashboard.mostrar-reporte');
         Route::get('stock-insumo','DashboardController@reporteStockInsumo')->name('dashboard.stock-insumo');
         Route::get('tiempo-atencion','DashboardController@reporteTiempoAtencion')->name('dashboard.tiempo-atencion');
+
+        Route::get('patologia-anormal','DashboardController@reportePatologiaAnormal')->name('dashboard.patologia-anormal');
+
         Route::get('paciente-atendido',function (){
             return redirect()->route('dashboard.index',['paciente-atendido','paciente']);
         })->name('dashboard.paciente-atendido');

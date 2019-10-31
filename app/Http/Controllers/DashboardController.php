@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\QueryPatologiaAnormal;
 use App\Models\Entity;
 use App\Models\ExamenCab;
 use App\Models\ExamenDet;
@@ -16,7 +17,7 @@ use Illuminate\Http\Request;
 class DashboardController extends Controller
 {
     //
-
+    use QueryPatologiaAnormal;
     public function index($tipo_reporte,$tipo_persona=null){
 
         $personas = Persona::join(RegistroAnalisis::getTableName().' as analisis','analisis.empleado_id',Persona::getTableName().'.id')
@@ -125,6 +126,24 @@ class DashboardController extends Controller
         //$analisis = RegistroAnalisis::
         return view('dashboard.tiempo-atencion');
 
+    }
+
+    public function reportePatologiaAnormal(Request $request){
+
+        if($request->ajax()){
+
+            list($fecha_inicio,$fecha_fin) = explode('hasta',str_replace(" ","",$request->fecha_resultado));
+            //$fecha_inicio = explode("-",$fecha_inicio);
+            //$fecha_fin =explode("-",$fecha_fin);
+            //$fecha_inicio_formated =    $fecha_inicio[2]."-".$fecha_inicio[1]."-".$fecha_inicio[0];
+            //$fecha_fin_formated =       $fecha_fin[2]."-".$fecha_fin[1]."-".$fecha_fin[0];
+            ///dd($request->numero_documento,$fecha_fin,$fecha_inicio);
+            $patologias = self::getPatologias($request->numero_documento,$fecha_inicio,$fecha_fin);
+
+            return view('dashboard.partials.reporte-patologia-anormal-table',compact('patologias'));
+        }
+
+        return view('dashboard.patologia-anormal');
     }
 
 
