@@ -22,34 +22,43 @@ class UnidadMedidaController extends Controller
     }
 
     public function crear(Request $request){
-        UnidadMedida::create([
-            'nombre'=>$request->nombre,
-            'descripcion'=>$request->descripcion,
-            'usuario_id'=>auth()->user()->id
-        ]);
+        \DB::transaction(function () use($request){
+            $unidad =UnidadMedida::create([
+                'nombre'=>$request->nombre,
+                'descripcion'=>$request->descripcion,
+                'usuario_id'=>auth()->user()->id
+            ]);
+            $unidad->bitacora()->create([
+                'nombre'=>$request->nombre,
+                'descripcion'=>$request->descripcion,
+                'estado'=>1,
+                'usuario_accion_id'=>auth()->user()->id
+            ]);
+        });
 
         return response()->json(['message'=>'Se ha registrado la unidad de medida']);
     }
 
     public function editarForm($unidad_id){
-        $unidad = UnidadMedida::with('bitacora')->find($unidad_id);
+        $unidad = UnidadMedida::with('bitacora.usuario_accion')->find($unidad_id);
+
         return view('unidad-medida.modals.editar-unidad-medida',compact('unidad'));
     }
 
     public function editar(Request $request,$unidad_id){
-        $unidad = UnidadMedida::find($unidad_id);
-        $unidad->nombre = $request->nombre;
-        $unidad->descripcion = $request->descripcion;
-        $unidad->save();
-        $unidad->bitacora()->create([
-            'nombre'=>$request->nombre,
-            'descripcion'=>$request->descripcion,
-            'usuario_id'=>$unidad->usuario_id,
-            'fecha_registro'=>$unidad->fecha_registro,
-            'estado'=>$unidad->estado,
-            'usuario_accion_id'=>auth()->user()->id
-        ]);
-
+        \DB::transaction(function () use($request,$unidad_id){
+            $unidad = UnidadMedida::find($unidad_id);
+            $unidad->nombre = $request->nombre;
+            $unidad->descripcion = $request->descripcion;
+            $unidad->save();
+            $unidad->bitacora()->create([
+                'nombre'=>$request->nombre,
+                'descripcion'=>$request->descripcion,
+                'estado'=>$unidad->estado,
+                'estado'=>$unidad->estado,
+                'usuario_accion_id'=>auth()->user()->id
+            ]);
+        });
         return response()->json(['message'=>'Se ha actualizado correctamente']);
     }
 
@@ -61,6 +70,5 @@ class UnidadMedidaController extends Controller
         $message = strtolower($accion)=='activar' ? 'activado' : 'inactivado';
         return response()->json(['message'=>"El tipo de seguro fue $message."]);
     }
-
 
 }

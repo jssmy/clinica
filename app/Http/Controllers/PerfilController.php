@@ -24,11 +24,19 @@ class PerfilController extends Controller
 
     public function crear(Request $request){
 
-        Perfil::create([
-            'id'=>$request->perfil,
-            'descripcion'=>$request->descripcion,
-            'usuario_id'=>auth()->user()->id
-        ]);
+        \DB::transaction(function () use ($request){
+            $perfil = Perfil::create([
+                'id'=>$request->perfil,
+                'descripcion'=>$request->descripcion,
+                'usuario_id'=>auth()->user()->id
+            ]);
+            $perfil->bitacora()->create([
+                'id'=>$request->perfil,
+                'descripcion'=>$request->descripcion,
+                'estado'=>1,
+                'usuario_accion_id'=>auth()->id()
+            ]);
+        });
 
         return response()->json(['message'=>'Se ha registrado el perfil']);
     }
@@ -45,15 +53,22 @@ class PerfilController extends Controller
     }
 
     public function editarForm($perfil_id){
-        $perfil = Perfil::find($perfil_id);
+        $perfil = Perfil::with('bitacora.usuario_accion')->find($perfil_id);
         return view('perfil.modals.editar-perfil',compact('perfil'));
     }
 
     public function editar(Request $request,$perfil_id){
-        $perfil = Perfil::find($perfil_id);
-        $perfil->id=$request->perfil;
-        $perfil->descripcion = $request->descripcion;
-        $perfil->save();
-        return response()->json(['Se ha actualizado el perfil']);
+        \DB::transaction(function () use ($request,$perfil_id){
+            $perfil = Perfil::find($perfil_id);
+            $perfil->id=$request->perfil;
+            $perfil->descripcion = $request->descripcion;
+            $perfil->save();
+            $perfil->bitacora()->create([
+                'descripcion'=>$request->descripcion,
+                'estado'=>$perfil->estado,
+                'usuario_accion_id'=>auth()->id()
+            ]);
+        });
+        return response()->json(['message'=>'Se ha actualizado el perfil']);
     }
 }

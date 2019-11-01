@@ -10,9 +10,13 @@
         <div class="box-body no-padding">
             <div class="mailbox-controls">
                 <!-- Check all button -->
-                <div class="btn-group">
-                    <button data-url="{{route('examen-det.crear-form')}}" id="btn-nuevo" type="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> NUEVO</button>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a style="padding-top: 10px;" href="#" data-url="{{route('examen-det.crear-form')}}" id="btn-nuevo" > <i class="fa fa-plus"></i> Registrar nuevo sub-tipo de examen
+                        </a>
+                    </div>
                 </div>
+
                 <!-- /.pull-right -->
             </div>
             <div class="table-responsive mailbox-messages">
@@ -22,6 +26,8 @@
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Estado</th>
+                        <th>Tipo de examen</th>
+                        <th>Insumo</th>
                         <th>Usuario Registro</th>
                         <th>Fecha Registro</th>
                         <th>Opciones</th>
@@ -33,6 +39,8 @@
                             <td>{{$examen->nombre}}</td>
                             <td>{{$examen->descripcion}}</td>
                             <td><label class='label label-{{$examen->es_activo ? "info" : "danger"}}'>{{$examen->es_activo ? 'ACTIVO' : 'INACTIVO'}}</label></td>
+                            <td>{{$examen->tipo_examen->nombre}}</td>
+                            <td>{{$examen->insumo->nombre}}</td>
                             <td>{{$examen->usuario? $examen->usuario->usuario : ''}}</td>
                             <td>{{$examen->fec_registro->format('d/m/Y')}}</td>
                             <td>

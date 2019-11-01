@@ -6,9 +6,11 @@
         </div>
         <div class="box-body no-padding">
             <div class="mailbox-controls">
-                <!-- Check all button -->
-                <div class="btn-group">
-                    <button data-url="{{route('tipo-aseguro.crear-form')}}" id="btn-nuevo-tipo-seguro" type="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> NUEVO</button>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a style="padding-top: 10px;" href="#" data-url="{{route('tipo-aseguro.crear-form')}}" id="btn-nuevo-tipo-seguro"> <i class="fa fa-plus"></i> Registrar nuevo tipo de seguro
+                        </a>
+                    </div>
                 </div>
                 <!-- /.pull-right -->
             </div>

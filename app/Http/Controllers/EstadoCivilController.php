@@ -22,10 +22,17 @@ class EstadoCivilController extends Controller
     }
 
     public function crear(Request $request){
-        EstadoCivil::create([
-            'nombre'=>$request->nombre,
-            'usuario_id'=>auth()->user()->id
-        ]);
+        \DB::transaction(function () use ($request){
+            $estado = EstadoCivil::create([
+                    'nombre'=>$request->nombre,
+                    'usuario_id'=>auth()->user()->id
+                ]);
+            $estado->bitacora()->create([
+                'nombre'=>$request->nombre,
+                'estado'=>1,
+                'usuario_accion_id'=>auth()->user()->id
+            ]);
+        });
         return response()->json(['message'=>'Se ha registrado el estado civil']);
     }
 
@@ -44,9 +51,17 @@ class EstadoCivilController extends Controller
     }
 
     public function editar(Request $request,$estado_id){
-        $estado = EstadoCivil::find($estado_id);
-        $estado->nombre = $request->nombre;
-        $estado->save();
+        \DB::transaction(function () use ($request,$estado_id){
+            $estado = EstadoCivil::with('bitacora.usuario_accion')->find($estado_id);
+            $estado->nombre = $request->nombre;
+            $estado->save();
+            $estado->bitacora()->create([
+                'nombre'=>$request->nombre,
+                'estado'=>$estado->estado,
+                'usuario_accion_id'=>auth()->user()->id
+            ]);
+        });
+
         return response()->json(['message'=>'Se ha actualizado el perfil']);
     }
 

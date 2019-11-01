@@ -3,7 +3,7 @@
     <hr style="margin-top: 0px;">
     <div class="col-sm-6">
         <label>Tipo Seguro</label>
-        <select name="tipo_seguro" class="form-control required">
+        <select  {{ !isset($persona) ? 'disabled' : '' }} name="tipo_seguro" class="form-control required">
             <option value="">[Seleccione]</option>
             @foreach($tipo_seguros as $tipo)
                 <option
@@ -18,6 +18,6 @@
     </div>
     <div class="col-sm-6">
         <label>Número de Historia Clínica</label>
-        <input name="numero_historia"  type="text" class="form-control required input-digits" value="{{isset($persona) ? ($persona->paciente? $persona->paciente->numero_historia_clinica : '') : ''}}">
+        <input  {{ !isset($persona) ? 'disabled' : '' }} name="numero_historia"  type="text" class="form-control required input-digits" value="{{isset($persona) ? ($persona->paciente? $persona->paciente->numero_historia_clinica : '') : ''}}">
     </div>
 </div>

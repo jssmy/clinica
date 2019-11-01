@@ -1,9 +1,22 @@
 @extends('layouts.app')
 @section('title','Tipos de Examen')
 @section('content')
-    <div id="index-table" class="row">
-        @include('examen-cab.partials.examen-cab-table')
-    </div>
+    <section id="search-section">
+        <!-- title row -->
+        <div class="row">
+            <div style="padding-bottom: 24px" class="text-center">
+                <span class="page-header text-info" style="font-size: 37px; color: #337ab7;">
+                    <span class="fa  fa-clipboard"></span> Tipo de examen
+                </span>
+            </div>
+        </div>
+        <!-- info row -->
+    </section>
+    <section>
+        <div id="index-table" class="row">
+            @include('examen-cab.partials.examen-cab-table')
+        </div>
+    </section>
 @endsection
 @section('scripts')
     <script id="crear-nuevo" type="text/template">

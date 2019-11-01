@@ -43,7 +43,7 @@
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-sm-6">
                                         <label>DNI</label>
-                                        <input length="8" type="text" name="numero_documento" class="form-control required input-digits" value="{{$persona->numero_documento}}">
+                                        <input length="8" readonly type="text" name="numero_documento" class="form-control required input-digits" value="{{$persona->numero_documento}}">
                                     </div>
                                     <div class="col-sm-6">
                                         <label>Teléfono</label>

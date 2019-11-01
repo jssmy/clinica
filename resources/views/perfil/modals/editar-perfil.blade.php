@@ -12,4 +12,31 @@
             <textarea maxlength="50"  id="descripcion" class="form-control required" name="descripcion" rows="3">{{$perfil->descripcion}}</textarea>
         </div>
     </div>
+    <div class="row" style="padding-top: 15px;">
+        <div class="col-sm-12">
+            <label>Historial de acciones</label>
+            <table class="table table-hover table-striped" style="font-size:13px;">
+                <thead style="background-color: #3c8dbc; color: white">
+                <tr>
+                    <th>Perfil</th>
+                    <th>Descripcion</th>
+                    <th>Estado</th>
+                    <th>Usuario acción</th>
+                    <th>Fecha acción</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach($perfil->bitacora as $bitacora)
+                    <tr>
+                        <td>{{$bitacora->perfil_id}}</td>
+                        <td>{{$bitacora->descripcion}}</td>
+                        <td>{{$bitacora->estado ? 'ACTIVO' : 'INACTIVO'}}</td>
+                        <td>{{$bitacora->usuario_accion ?  $bitacora->usuario_accion->usuario : '' }}</td>
+                        <td>{{$bitacora->fecha_accion}}</td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
 </form>

@@ -9,8 +9,11 @@
         <div class="box-body no-padding">
             <div class="mailbox-controls">
                 <!-- Check all button -->
-                <div class="btn-group">
-                    <button data-url="{{route('insumo.crear-form')}}" id="btn-nuevo-insumo" type="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> NUEVO</button>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a style="padding-top: 10px;" href="#" data-url="{{route('insumo.crear-form')}}" id="btn-nuevo-insumo"> <i class="fa fa-plus"></i> Registrar nuevo insumo
+                        </a>
+                    </div>
                 </div>
                 <!-- /.pull-right -->
             </div>
@@ -21,6 +24,8 @@
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Unidad Medida</th>
+                        <th>Uso</th>
+                        <th>Cantidad</th>
                         <th>Estado</th>
                         <th>Usuario Registro</th>
                         <th>Fecha Registro</th>
@@ -33,6 +38,8 @@
                             <td class='mailbox-name'>{{$insumo->nombre}}</td>
                             <td title="{{$insumo->descripcion}}" style="cursor:pointer;" >{{$insumo->descripcion}}</td>
                             <td>{{$insumo->medida? $insumo->medida->nombre : ''}}</td>
+                            <td>{{$insumo->tipo_examen ? $insumo->tipo_examen->nombre : '' }}</td>
+                            <td>{{$insumo->cantidad}}</td>
                             <td>
                                 <label class='label label-{{$insumo->es_activo ? "info" : "danger"}}'>{{$insumo->es_activo ? 'ACTIVO' : 'INACTIVO'}}</label>
                             </td>

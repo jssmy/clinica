@@ -17,7 +17,7 @@
         <div class="row">
             <div style="padding-bottom: 24px" class="text-center">
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
-                    <i class="fa  fa-bar-chart"></i> Reporte stock de insumo
+                    </i> Reporte stock de insumos
                 </span>
             </div>
         </div>
@@ -26,33 +26,64 @@
 
     <div id="main-section"  style="padding-top: 0px; background: transparent; border: 0px;">
         <div id="chartdiv"></div>
+        <div class="panel box">
+            <div class="box-header with-border" data-toggle="collapse" href="#" aria-expanded="true">
+                <div class="content-title">
+                    <h4 class="box-title">
+                        Stock de insumos
+                    </h4>
 
-        <table class="table table-hover table-striped" style="font-size:13px;">
-            <thead style="background-color: #3c8dbc; color: white">
-            <tr>
-                <th>Insumo</th>
-                <th>Cantidad actual</th>
-                <th>Unidad de medida</th>
-                <th>Uso</th>
+                </div>
+                <div class="content-icon">
+                    <span class="collapse-icon fa fa-angle-up"></span>
+                </div>
+            </div>
+            <div id="collapseContactabilidad" class="panel-collapse collapse in" aria-expanded="true" style="">
+                <div class="box-body">
+                    <div class="mailbox-controls">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <a class="pull-right"  style="padding-top: 10px;" target="_blank" href="{{route('dashboard.stock-insumo','download=true')}}">
+                                    <i class="fa fa-download"></i> Descargar reporte
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive mailbox-messages">
+                        <table class="table table-hover table-striped" style="font-size:13px;">
+                            <thead style="background-color: #3c8dbc; color: white">
+                            <tr>
+                                <th>Insumo</th>
+                                <th>Cantidad actual</th>
+                                <th>Unidad de medida</th>
+                                <th>Uso</th>
 
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($insumos as $insumo => $usos)
-                @foreach($usos as $uso)
-                    <tr>
-                        @if($loop->first)
-                            <td rowspan="{{$usos->count()}}">{{$uso->insumo}}</td>
-                            <td rowspan="{{$usos->count()}}">{{$uso->cantidad}}</td>
-                            <td rowspan="{{$usos->count()}}">{{$uso->unidad}}</td>
-                        @endif
-                        <td>{{$uso->uso}}</td>
-                    </tr>
-                @endforeach
-            @endforeach
-            </tbody>
-        </table>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($insumos as $insumo => $usos)
+                                @foreach($usos as $uso)
+                                    <tr>
+                                        @if($loop->first)
+                                            <td rowspan="{{$usos->count()}}">{{$uso->insumo}}</td>
+                                            <td rowspan="{{$usos->count()}}">{{$uso->cantidad}}</td>
+                                            <td rowspan="{{$usos->count()}}">{{$uso->unidad}}</td>
+                                        @endif
+                                        <td>{{$uso->uso}}</td>
+                                    </tr>
+                                @endforeach
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="box-footer no-padding">
+                    <div class="mailbox-controls">
 
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 @endsection

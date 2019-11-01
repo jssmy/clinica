@@ -174,7 +174,7 @@ Route::group(['middleware' => 'auth.session'], function () {
     });
 
     Route::group(['prefix' => 'persona'], function() {
-        Route::get('/gestion/{tipo_persona}', 'PersonaController@index')->name('persona.index');
+        Route::get('/registro/', 'PersonaController@index')->name('persona.index');
 
         /**
          *Rutas para crear persona
@@ -197,14 +197,23 @@ Route::group(['middleware' => 'auth.session'], function () {
         /**datos de persona**/
         Route::get('datos-personales/{tipo_persona}/{tipo_busqueda?}','PersonaController@datosPersonales')->name('persona.dato.personal');
 
-        /** gestion de personas **/
 
+        Route::get('lista/{paciente}','PersonaController@personas')->name('persona.lista');
+
+        Route::get('lista/paciente',function (){
+            return redirect()->route('persona.lista','paciente');
+        })->name('persona.lista.paciente');
+
+        Route::get('lista/medico',function (){
+            return redirect()->route('persona.lista','medico');
+        })->name('persona.lista.medico');
+
+        Route::get('api/validar-dni/{numero_documento}','PersonaController@validarPersona')->name('persona.validar');
 
     });
 
     Route::group(['prefix' => 'usuario'], function() {
         Route::get('/', 'UsuarioController@index')->name('usuario.index');
-
         /**
          *Rutas para crear usuario
          */
@@ -227,6 +236,9 @@ Route::group(['middleware' => 'auth.session'], function () {
         Route::get('datos-personales/{tipo_persona}','UsuarioController@datosPersonales')->name('usuario.dato.personal');
 
         /** gestion de personas **/
+
+        Route::put('resetear/{usuario}','UsuarioController@resetear')->name('usuario.resetear');
+        Route::put('actualizar-estado/{usuario}','UsuarioController@resetear')->name('usuario.actualizar-estado');
 
 
     });
@@ -275,17 +287,24 @@ Route::group(['middleware' => 'auth.session'], function () {
         Route::get('/main/{tipo_reporte}/{tipo_persona?}','DashboardController@index')->name('dashboard.index');
         Route::get('/mostrar-reporte/{persona}/{tipo_reporte}','DashboardController@mostrarReporte')->name('dashboard.mostrar-reporte');
         Route::get('stock-insumo','DashboardController@reporteStockInsumo')->name('dashboard.stock-insumo');
-        Route::get('tiempo-atencion','DashboardController@reporteTiempoAtencion')->name('dashboard.tiempo-atencion');
-
+        Route::get('tiempo-atencion','DashboardController@reportePromedioAtencion')->name('dashboard.tiempo-atencion');
         Route::get('patologia-anormal','DashboardController@reportePatologiaAnormal')->name('dashboard.patologia-anormal');
-
         Route::get('paciente-atendido',function (){
             return redirect()->route('dashboard.index',['paciente-atendido','paciente']);
         })->name('dashboard.paciente-atendido');
         Route::get('profesional-medico',function (){
             return redirect()->route('dashboard.index',['medico-examen-emision','empleado']);
         })->name('dashboard.profesional-medico');
+
+        Route::get('profesional-medico-tecnologo',function (){
+            return redirect()->route('dashboard.index',['medico-examen-emision','empleado','tipo=tecnologo']);
+        })->name('dashboard.profesional-medico-tecnologo');
     });
+
+    Route::group(['prefix'=>'mail'],function (){
+        Route::get('envio-automatico/recuperar-contrasena','MailController@send');
+    });
+
 });
 
 Route::get('iniciar-sesion','AuthController@loginForm')->name('login-form');
@@ -293,4 +312,3 @@ Route::get('iniciar-sesion','AuthController@loginForm')->name('login-form');
 Route::post('iniciar-sesion-store','AuthController@login')->name('login.store');
 
 Route::post('cerrar-sesion','AuthController@logout')->name('logout.store');
-

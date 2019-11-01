@@ -15,7 +15,13 @@
     <div class="row" style="padding-top: 15px;">
         <div class="col-lg-12">
             <label for="uso">Uso</label>
-            <textarea maxlength="500" id="uso" class="form-control required" name="uso" rows="3"></textarea>
+            <select class="form-control required" name="uso">
+                <option value="">[Seleccione]</option>
+                @foreach($tipos_examen as $examen)
+                    <option value="{{$examen->id}}">{{$examen->nombre}}</option>
+                @endforeach
+            </select>
+
         </div>
     </div>
     <div class="row" style="padding-top: 15px;">

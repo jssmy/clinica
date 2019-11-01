@@ -1,9 +1,22 @@
 @extends('layouts.app')
 @section('title','Estado Civil')
 @section('content')
-    <div id="index-table" class="row">
-        @include('estado-civil.partials.estado-civil-table')
-    </div>
+    <section id="search-section">
+        <!-- title row -->
+        <div class="row">
+            <div style="padding-bottom: 24px" class="text-center">
+                <span class="page-header text-info" style="font-size: 37px; color: #337ab7;">
+                    <span class="fa  fa-venus-double"></span> Estado civil
+                </span>
+            </div>
+        </div>
+        <!-- info row -->
+    </section>
+    <section>
+        <div id="index-table" class="row">
+            @include('estado-civil.partials.estado-civil-table')
+        </div>
+    </section>
 @endsection
 
 @section('scripts')

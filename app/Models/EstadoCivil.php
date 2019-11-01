@@ -26,4 +26,8 @@ class EstadoCivil extends Model
     public function getfecRegistroAttribute(){
         return Carbon::parse($this->fecha_registro);
     }
+
+    public function bitacora(){
+        return $this->hasMany(EstadoCivilBitacora::class,'estado_civil_id','id');
+    }
 }

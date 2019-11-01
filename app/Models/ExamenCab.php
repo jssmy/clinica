@@ -26,8 +26,15 @@ class ExamenCab extends Entity
 
     public function getfecRegistroAttribute()
     {
-
         return Carbon::parse($this->fecha_registro);
+    }
+
+    public function bitacora(){
+        return $this->hasMany(ExamenCabBitacora::class,'examen_cab_id','id');
+    }
+
+    public function insumos(){
+        return $this->hasMany(Insumo::class,'examen_cab_id','id');
     }
 
 }

@@ -45,4 +45,8 @@ class User extends Authenticatable
         return $this->hasOne(Perfil::class,'id','perfil_id');
     }
 
+    public function usuario_registro(){
+        return $this->hasOne(User::class,'id','usuario_id');
+    }
+
 }

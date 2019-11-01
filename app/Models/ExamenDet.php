@@ -32,4 +32,13 @@ class ExamenDet extends Entity
     {
         return Carbon::parse($this->fecha_registro);
     }
+    public function bitacora(){
+        return $this->hasMany(ExamenDetBitacora::class,'examen_det_id','id');
+    }
+
+    public function tipo_examen(){
+        return $this->hasOne(ExamenCab::class,'id','examen_cab_id');
+    }
+
+
 }

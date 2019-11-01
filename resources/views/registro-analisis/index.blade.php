@@ -133,7 +133,14 @@
                                 className: 'btn btn-default btn-sm btn-info btn-guardar-nuevo',
                                 callback: function(){
 
-                                    if(motivosArr.length<=0 || $("input[name=medico_id]").length<=0) return false;
+                                    if(motivosArr.length<=0){
+                                        $("#error").html(msg_200('Por favor indique los exámenes a realizar'))
+                                        return false;
+                                    }
+                                    if($("input[name=medico_id]").length<=0){
+                                        $("#error").html(msg_200('Por favor indique el médico responsable'))
+                                        return false;
+                                    }
 
                                     var form = $("#form-store");
 
@@ -239,6 +246,7 @@
         var params={};
         $("#btn-consultar").on('click', function (event, data) {
 
+
             if ($("#txt-numero").val() == ""){
                 return false;
             }
@@ -263,6 +271,7 @@
                 beforeSend: function(){
                     btn.html("<i class='fa fa-circle-o-notch fa-spin'></i> Buscando");
                     btn.attr('disabled', true);
+
                 },
                 complete: function(){
                     btn.html('<span class="fa fa-search" style="color: #fff;background: #31708f;"></span>');

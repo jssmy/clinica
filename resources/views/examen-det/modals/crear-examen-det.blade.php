@@ -6,7 +6,7 @@
             <select name="tipo_examen" class="form-control required">
                 <option value="">[Seleccione]</option>
                 @foreach($tipo_examenes as $tipo)
-                    <option value="{{$tipo->id}}">{{$tipo->nombre}}</option>
+                    <option data-insumos='{!! json_encode($tipo->insumos) !!}' value="{{$tipo->id}}">{{$tipo->nombre}}</option>
                 @endforeach
             </select>
         </div>
@@ -16,9 +16,6 @@
             <label>Insumo</label>
             <select name="insumo" class="form-control required">
                 <option value="">[Seleccione]</option>
-                @foreach($insumos as $insumo)
-                    <option value="{{$insumo->id}}">{{$insumo->nombre}}</option>
-                @endforeach
             </select>
         </div>
     </div>
@@ -34,4 +31,5 @@
             <textarea maxlength="500" id="descripcion" class="form-control required" name="descripcion" rows="4"></textarea>
         </div>
     </div>
+
 </form>

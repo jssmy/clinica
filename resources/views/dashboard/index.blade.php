@@ -10,7 +10,8 @@
         <div class="row">
             <div style="padding-bottom: 24px" class="text-center">
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
-                    Reportes
+                    <span class="fa fa-search"></span>
+                    Buscar {{$tipo_persona=='paciente' ? 'paciente' : 'médico'}}
                 </span>
             </div>
         </div>
@@ -23,14 +24,14 @@
                             <button class="btn btn-default" style="color: #fff;background: #31708f;font-size: 14px;">Nro. documento</button>
                         </div>
                         <!-- /btn-group -->
-                        <input data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar">
+                        <input data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar por número de documento">
                         <div class="input-group-btn">
                             <button id="btn-consultar"
                                     data-search="<span class='fa fa-search' style='color: #fff;background: #31708f;'></span>"
                                     data-loading="<i class='fa fa-circle-o-notch fa-spin'></i> Buscando"
                                     class="btn btn-default"
                                     data-tipo_persona="{{$tipo_reporte}}"
-                                    data-url="{{route('persona.dato.personal',$tipo_persona)}}"
+                                    data-url="{{route('persona.dato.personal',[$tipo_persona,'numero_documento','tipo='.request()->tipo])}}"
                                     title="buscar..." style="color: #fff;background: #31708f; font-size: 15px">
                                 <span class="fa fa-search" style="color: #fff;background: #31708f;"></span>
                             </button>

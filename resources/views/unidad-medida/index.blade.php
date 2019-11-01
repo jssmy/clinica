@@ -1,9 +1,22 @@
 @extends('layouts.app')
 @section('title','Unidades de Medida')
 @section('content')
-    <div id="index-table" class="row">
-        @include('unidad-medida.partials.unidad-medida-table')
-    </div>
+    <section id="search-section">
+        <!-- title row -->
+        <div class="row">
+            <div style="padding-bottom: 24px" class="text-center">
+                <span class="page-header text-info" style="font-size: 37px; color: #337ab7;">
+                    <span class="fa  fa-check-circle"></span> Unidad de medida
+                </span>
+            </div>
+        </div>
+        <!-- info row -->
+    </section>
+   <section>
+       <div id="index-table" class="row">
+           @include('unidad-medida.partials.unidad-medida-table')
+       </div>
+   </section>
 @endsection
 @section('scripts')
     <script id="crear-nuevo" type="text/template">

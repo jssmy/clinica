@@ -221,7 +221,7 @@
                 <img src="{{URL::asset('/public/dist/img/clinica.jpg')}}" class="img-circle" alt="User Image">
 
                 <p>
-                  {{auth()->user()->persona->nombre}}
+                  {{auth()->user()->usuario}}
                   <small>Se unió el {{auth()->user()->fecha_registro}}</small>
                 </p>
               </li>
@@ -251,13 +251,13 @@
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
       <!-- Sidebar user panel -->
-      <div class="user-panel">
+      <div class="user-panel" style="margin-bottom: 30px;">
         <div class="pull-left image">
           <img src="{{URL::asset('/public/dist/img/clinica.jpg')}}" class="img-circle" alt="User Image">
         </div>
-        <div class="pull-left info">
-          <p>{{auth()->user()->persona->nombre}}</p>
-          <a href="#"><i class="fa fa-circle text-success"></i> </a>
+        <div  class="pull-left info">
+          <p style="font-size: 16px;mar">{{auth()->user()->usuario}}</p>
+            <label style="font-size: 11px;">{{auth()->user()->perfil->descripcion}}</label>
         </div>
       </div>
 
@@ -514,7 +514,6 @@
                 $("#"+$(this).data('btn')).trigger('click');
             }
         });
-
 
         /*Numeros con decimal*/
         $(".input-numeric").inputFilter(function (value) {

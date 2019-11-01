@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ExamenCab;
 use App\Models\Insumo;
 use App\Models\UnidadMedida;
 use Illuminate\Http\Request;
@@ -11,12 +12,13 @@ class InsumoController extends Controller
     //
     public function index(Request $request)
     {
-        $insumos = Insumo::with('medida','usuario')->paginate(12);
+        $insumos = Insumo::with('medida','usuario','tipo_examen')->paginate(12);
         if($request->ajax()){
             return view('insumo.partials.insumo-table',compact('insumos'));
         }
         $unidades = UnidadMedida::activo()->get();
-        return view('insumo.index',compact('insumos','unidades'));
+        $tipos_examen = ExamenCab::activo()->get();
+        return view('insumo.index',compact('insumos','unidades','tipos_examen'));
     }
 
     public function crearForm(){
@@ -25,14 +27,29 @@ class InsumoController extends Controller
     }
 
     public function crear(Request $request){
-        Insumo::create([
-            'nombre'=>$request->nombre,
-            'descripcion'=>$request->descripcion,
-            'uso'=>$request->uso,
-            'unidad_medida_id'=>$request->unidad_medida_id,
-            'cantidad'=>$request->cantidad,
-            'usuario_id'=>auth()->user()->id,
-        ]);
+        \DB::transaction(function () use ($request){
+            $insumo =Insumo::create([
+                'nombre'=>$request->nombre,
+                'descripcion'=>$request->descripcion,
+                'uso'=>$request->uso,
+                'unidad_medida_id'=>$request->unidad_medida_id,
+                'cantidad'=>$request->cantidad,
+                'usuario_id'=>auth()->user()->id,
+                'examen_cab_id'=>$request->uso,
+                'estado'=>1
+            ]);
+            $insumo->bitacora()->create([
+                'nombre' =>$request->nombre,
+                'descripcion'=> $request->descripcion,
+                'uso' => $request->uso,
+                'unidad_medida_id' => $request->unidad_medida_id,
+                'cantidad' => $request->cantidad,
+                'estado'=>$insumo->estado,
+                'examen_cab_id'=>$request->uso,
+                'usuario_accion_id'=>auth()->user()->id,
+                'estado'=>1
+            ]);
+        });
         return response()->json(['message'=>'Se ha creado el insumo']);
     }
 
@@ -46,31 +63,35 @@ class InsumoController extends Controller
     }
 
     public function editarForm($insumo_id){
-        $insumo = Insumo::find($insumo_id);
+        $insumo = Insumo::with(['bitacora.usuario_accion','bitacora.medida'])->find($insumo_id);
         $unidades = UnidadMedida::activo()->get();
-        return view('insumo.modals.editar-insumo',compact('insumo','unidades'));
+        $tipos_examen = ExamenCab::activo()->get();
+        return view('insumo.modals.editar-insumo',compact('insumo','unidades','tipos_examen'));
     }
 
     public function editar(Request $request,$insumo_id){
-        $insumo = Insumo::find($insumo_id);
-        $insumo->nombre= $request->nombre;
-        $insumo->descripcion = $request->descripcion;
-        $insumo->uso = $request->uso;
-        $insumo->unidad_medida_id = $request->unidad_medida_id;
-        $insumo->cantidad = $request->cantidad;
-        $insumo->save();
+        \DB::transaction(function () use ($request,$insumo_id){
+            $insumo = Insumo::find($insumo_id);
+            $insumo->nombre= $request->nombre;
+            $insumo->descripcion = $request->descripcion;
+            $insumo->uso = $request->uso;
+            $insumo->unidad_medida_id = $request->unidad_medida_id;
+            $insumo->cantidad = $request->cantidad;
+            $insumo->examen_cab_id = $request->uso;
+            $insumo->save();
 
-        $insumo->bitacora()->create([
-            'nombre' =>$request->nombre,
-            'descripcion'=> $request->descripcion,
-            'uso' => $request->uso,
-            'unidad_medida_id' => $request->unidad_medida_id,
-            'cantidad' => $request->cantidad,
-            'estado'=>$insumo->estado,
-            'usuario_id'=>$insumo->usuario_id,
-            'fecha_registro'=>$insumo->fecha_creacion,
-            'usuario_accion_id'=>auth()->user()->id
-        ]);
+
+            $insumo->bitacora()->create([
+                'nombre' =>$request->nombre,
+                'descripcion'=> $request->descripcion,
+                'uso' => $request->uso,
+                'unidad_medida_id' => $request->unidad_medida_id,
+                'cantidad' => $request->cantidad,
+                'estado'=>$insumo->estado,
+                'examen_cab_id'=>$request->uso,
+                'usuario_accion_id'=>auth()->user()->id
+            ]);
+        });
         return response()->json(['message'=>'Se ha actualizado el insumo']);
     }
 

@@ -23,11 +23,19 @@ class ExamenCabController extends Controller
     }
 
     public function crear(Request $request){
-        ExamenCab::create([
-            'nombre'=>$request->nombre,
-            'descripcion'=>$request->descripcion,
-            'usuario_id'=>auth()->user()->id
-        ]);
+        \DB::transaction(function () use ($request){
+            $examen = ExamenCab::create([
+                'nombre'=>$request->nombre,
+                'descripcion'=>$request->descripcion,
+                'usuario_id'=>auth()->user()->id
+            ]);
+            $examen->bitacora()->create([
+                'nombre'=>$request->nombre,
+                'descripcion'=>$request->descripcion,
+                'estado'=>1,
+                'usuario_accion_id'=>auth()->user()->id
+            ]);
+        });
         return response()->json(['message'=>'Se ha creado el examen cab']);
     }
 
@@ -41,14 +49,21 @@ class ExamenCabController extends Controller
     }
 
     public function editarForm($examen_id){
-        $examen = ExamenCab::find($examen_id);
+        $examen = ExamenCab::with('bitacora.usuario_accion')->find($examen_id);
         return view('examen-cab.modals.editar-examen-cab',compact('examen'));
     }
 
     public function editar(Request $request,ExamenCab $examenCab){
-        $examenCab->nombre = $request->nombre;
-        $examenCab->descripcion = $request->descripcion;
-        $examenCab->save();
+        \DB::transaction(function () use ($request,&$examenCab){
+            $examenCab->nombre = $request->nombre;
+            $examenCab->descripcion = $request->descripcion;
+            $examenCab->save();
+            $examenCab->bitacora()->create([
+                'nombre'=>$request->nombre,
+                'descripcion' => $request->descripcion,
+                'usuario_accion_id'=>auth()->id()
+            ]);
+        });
         return response()->json(['message'=>'Se ha actualizado el examen cab']);
     }
 

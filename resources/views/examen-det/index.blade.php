@@ -1,9 +1,22 @@
 @extends('layouts.app')
 @section('title','Sub-tipos de examen')
 @section('content')
-    <div id="index-table" class="row">
-        @include('examen-det.partials.examen-det-table')
-    </div>
+    <section id="search-section">
+        <!-- title row -->
+        <div class="row">
+            <div style="padding-bottom: 24px" class="text-center">
+                <span class="page-header text-info" style="font-size: 37px; color: #337ab7;">
+                    <span class="fa fa-file-text"></span> Sub-tipo de examen
+                </span>
+            </div>
+        </div>
+        <!-- info row -->
+    </section>
+    <section>
+        <div id="index-table" class="row">
+            @include('examen-det.partials.examen-det-table')
+        </div>
+    </section>
 
 @endsection
 @section('scripts')
@@ -169,5 +182,15 @@
                 }
             });
         }
+        $(document).on('change',"select[name=tipo_examen]",function () {
+            console.log($(this).find('option:selected').data('insumos'));
+            var insumos =$(this).find('option:selected').data('insumos');
+
+            var html ="<option value=''>[Seleccione]</option>";
+            insumos.forEach(function (insumo) {
+                html+="<option value='"+insumo.id+"' >"+insumo.nombre+"</option>";
+            });
+            $("select[name=insumo]").html(html);
+        });
     </script>
 @endsection

@@ -36,4 +36,8 @@ class Perfil extends Model
         return $this->belongsToMany( Menu::class, 'accesos', 'perfil_id');
     }
 
+    public function bitacora(){
+        return $this->hasMany(PerfilBitacora::class,'perfil_id','id');
+    }
+
 }

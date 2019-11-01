@@ -1,9 +1,22 @@
 @extends('layouts.app')
 @section('title','Perfiles')
 @section('content')
-    <div id="index-table" class="row">
-        @include('perfil.partials.perfil-table')
-    </div>
+    <section id="search-section">
+        <!-- title row -->
+        <div class="row">
+            <div style="padding-bottom: 24px" class="text-center">
+                <span class="page-header text-info" style="font-size: 37px; color: #337ab7;">
+                    <span class="fa fa-user-secret"></span> Perfiles
+                </span>
+            </div>
+        </div>
+        <!-- info row -->
+    </section>
+    <section>
+        <div id="index-table" class="row">
+            @include('perfil.partials.perfil-table')
+        </div>
+    </section>
 @endsection
 @section('scripts')
     <script id="crear-nuevo" type="text/template">
@@ -171,3 +184,4 @@
         }
     </script>
 @endsection
+-

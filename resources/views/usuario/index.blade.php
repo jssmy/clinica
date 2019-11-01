@@ -3,7 +3,6 @@
 @section('content')
     <section id="search-section" >
         <!-- title row -->
-
         <div class="row">
             <div style="padding-bottom: 24px" class="text-center">
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
@@ -17,13 +16,7 @@
                 <div style="min-width: 300px; width: 50%" class="invoice-col">
                     <div class="input-group input-group-lg">
                         <div class="input-group-btn">
-                            <select  class="btn btn-default" style="color: #fff;background: #31708f;font-size: 14px;">
-                                <option value="numero_documento">Nro. documento</option>
-                                <option value="nombre_usuario">Nombre usuario</option>
-                            </select>
-                            <!--
-                            <button class="btn btn-default" >Nro. documento</button>
-                            -->
+                            <button style="color: #fff;background: #31708f;font-size: 14px;" class="btn btn-default" >Nro. documento</button>
                         </div>
                         <!-- /btn-group -->
                         <input data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar usuario">
@@ -46,10 +39,13 @@
 
         </div>
     </section>
-
-    <div id="main-section"  style="padding-top: 0px; background: transparent; border: 0px;">
-
-    </div>
+    <section id="main-section"  style="padding-top: 0px; background: transparent; border: 0px;">
+    </section>
+    <section id="usuario-message">
+    </section>
+    <section id="tbl-personas">
+        @include('usuario.partials.usuario-table')
+    </section>
 @endsection
 @section('scripts')
     <script id="tpl-crear-nuevo" type="text/template">
@@ -175,6 +171,8 @@
                     $('#main-section').fadeIn();
                     $('#search-section').fadeOut();
                     params.persona = JSON.parse($("#hdh-persona").val());
+                    params.numero_documento= $("#txt-numero").val();
+                    load_table();
                 },
                 beforeSend: function(){
                     btn.html("<i class='fa fa-circle-o-notch fa-spin'></i> Buscando");
@@ -191,21 +189,25 @@
             if($(this).parent().parent().hasClass('pagination')){
                 if($(this).hasClass('disabled')) return  false;
                 $(this).addClass('disabled');
-                url_index = $(this).attr('href');
-                load_table();
+                load_table($(this).attr('href'));
                 return false;
             }
 
         });
-        function load_table(){
+        function load_table(url){
+            var url_temp = url ? url : url_index;
+            console.log(url_temp);
             $.ajax({
-                url: url_index,
+                url: url_temp,
                 type:'get',
+                data: params,
                 success: function (view) {
-                    $("#index-table").html(view);
+                    $("#tbl-personas").html(view);
+                    params={};
                 }
             });
         }
+
         $(document).on('click','#btn-nuevo', function () {
             var url = $(this).attr('href');
             var dialog = bootbox.dialog({

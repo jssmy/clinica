@@ -18,15 +18,25 @@ class TipoSeguroController extends Controller
     }
 
     public function editarForm($tipo_id){
-        $seguro = TipoSeguro::with('bitacora')->find($tipo_id);
+        $seguro = TipoSeguro::with('bitacora.usuario_accion')->find($tipo_id);
         return view('tipo-seguro.modals.editar-tipo-seguro',compact('seguro'));
     }
 
     public function editar(Request $request,$seguro_id){
-        $seguro = TipoSeguro::find($seguro_id);
-        $seguro->nombre = $request->nombre;
-        $seguro->descripcion = $request->descripcion;
-        $seguro->save();
+        \DB::transaction(function () use ($request,$seguro_id){
+            $seguro = TipoSeguro::find($seguro_id);
+            $seguro->nombre = $request->nombre;
+            $seguro->descripcion = $request->descripcion;
+            $seguro->save();
+
+            $seguro->bitacora()->create([
+                'nombre'=>$seguro->nombre,
+                'descripcion'=>$seguro->descripcion,
+                'usuario_id'=>$seguro->usuario_id,
+                'usuario_accion_id'=>auth()->id()
+            ]);
+
+        });
 
         return response()->json(['message'=>'Se ha actualizado correctamente']);
     }

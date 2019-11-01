@@ -26,7 +26,7 @@ class ModelProvider extends ServiceProvider
     public function boot()
     {
         //
-        TipoSeguro::observe(TipoSeguroObserver::class);
+        //TipoSeguro::observe(TipoSeguroObserver::class);
 
     }
 }

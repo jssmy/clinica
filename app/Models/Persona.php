@@ -65,6 +65,19 @@ class Persona extends Entity
         return $this->hasOne(User::class,'persona_id','id');
     }
 
+    public function usuario_accion(){
+        return $this->hasOne(User::class,'id','usuario_id');
+    }
+
+    public function scopeSoloTecnologo($query){
+        if(request()->tipo=='tecnologo'){
+            $query->whereHas('usuario',function ($q){
+                $q->where('id','TEC');
+            });
+        }
+        return $query;
+    }
+
 
 
 

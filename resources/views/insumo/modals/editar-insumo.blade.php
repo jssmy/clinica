@@ -15,7 +15,17 @@
     <div class="row" style="padding-top: 15px;">
         <div class="col-lg-12">
             <label for="uso">Uso</label>
-            <textarea id="uso" class="form-control required" name="uso" rows="3">{{$insumo->uso}}</textarea>
+            @if($insumo->tipo_examen)
+                <input type="hidden" name="uso" value="{{$insumo->examen_cab_id}}">
+                <input readonly type="text" class="form-control" value="{{$insumo->tipo_examen ? $insumo->tipo_examen->nombre : ''}}">
+            @else
+                <select class="form-control required" name="uso">
+                    <option value="">[Seleccione]</option>
+                    @foreach($tipos_examen as $examen)
+                        <option value="{{$examen->id}}">{{$examen->nombre}}</option>
+                    @endforeach
+                </select>
+            @endif
         </div>
     </div>
     <div class="row" style="padding-top: 15px;">
@@ -30,7 +40,7 @@
         </div>
         <div class="col-lg-6">
             <label for="cantidad">Cantidad</label>
-            <input class="form-control required input-numeric" name="cantidad" value="{{$insumo->cantidad}}">
+            <input readonly class="form-control required input-numeric" name="cantidad" value="{{$insumo->cantidad}}">
         </div>
     </div>
 
@@ -43,10 +53,12 @@
         <table class="table">
             <thead style="background-color: #3c8dbc; color: white">
             <tr>
-                <td>Nombre</td>
-                <td>Descripción</td>
-                <td>Usuario</td>
-                <td>Fecha</td>
+                <th>Nombre</th>
+                <th>Descripción</th>
+                <th>Unidad medida</th>
+                <th>Estado</th>
+                <th>Usuario</th>
+                <th>Fecha acción</th>
             </tr>
             </thead>
             <tbody>
@@ -54,7 +66,9 @@
                 <tr>
                     <td>{{$bitacora->nombre}}</td>
                     <td>{{$bitacora->descripcion}}</td>
-                    <td>#</td>
+                    <td>{{$bitacora->medida->nombre}}</td>
+                    <td>{{$bitacora->estado ? 'ACTIVO' : 'INACTIVO'}}</td>
+                    <td>{{$bitacora->usuario_accion ? $bitacora->usuario_accion->usuario : ''}}</td>
                     <td>{{$bitacora->fecha_accion}}</td>
                 </tr>
             @empty

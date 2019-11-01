@@ -2,126 +2,168 @@
 @section('title','Registros')
 @section('styles')
     <link rel="stylesheet" href="{{URL::asset('public/bower_components/Ionicons/css/ionicons.min.css')}}">
-    <style>
-        #chartdiv {
-            width: 100%;
-            height: 300px;
-        }
-
-    </style>
 @endsection
 @section('content')
-
-    <section id="search-section" >
+    <section id="search-section">
         <!-- title row -->
         <div class="row">
             <div style="padding-bottom: 24px" class="text-center">
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
-                    <i class="fa  fa-bar-chart"></i> Reporte stock de insumo
+                    <span class="fa  fa-hourglass-3"></span>
+                    Reporte de promedio antención
                 </span>
             </div>
         </div>
-
+        <!-- info row -->
     </section>
+    <div class="row">
+        <div class="col-md-3">
+            <button id="btn-consultar" class="btn btn-warning btn-block margin-bottom">Buscar</button>
+            <div class="box box-solid" style="height: 300px;">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Filtros</h3>
+                </div>
+                <div  class="box-body no-padding">
+                    <form id="form-search">
+                        <ul class="nav nav-pills nav-stacked" style="padding-top: 15px;">
+                            <li><input  name="numero_documento_paciente" style="margin-top: 10px; margin-left: 5px; width: 90%" class="form-control input-digits" placeholder="Número de DNI paciente"></li>
+                            <li><input  name="numero_documento_medico" style="margin-top: 10px; margin-left: 5px; width: 90%" class="form-control input-digits" placeholder="Número de DNI médico"></li>
+                            <li><input  name="fecha_registro" style="margin-top: 10px; margin-left: 5px; width: 90%;" class="form-control required input-digits" placeholder="Fecha inicio - Fecha fin"></li>
+                        </ul>
+                    </form>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <button id="btn-limpiar" class="btn btn-default btn-block margin-bottom">Limpiar</button>
+            <!-- /. box -->
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-9">
+            <div class="panel box">
+                <div id="collapseContactabilidad" class="panel-collapse collapse in" aria-expanded="true" style="">
+                    <div class="box-body">
+                        <div class="mailbox-controls">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a id="btn-descargar" class="pull-right"  style="padding-top: 10px;" href="#">
+                                        <i class="fa fa-download"></i> Descargar reporte
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive mailbox-messages">
+                            <div class="table-responsive mailbox-messages">
+                                <table class="table table-hover table-striped" style="font-size:12px;">
+                                    <thead style="background-color: #3c8dbc; color: white">
+                                    <tr>
+                                        <th style="width: 120px;">Cód. registro</th>
+                                        <th>Tipo de examen</th>
+                                        <th>Sub-tipo de examen</th>
+                                        <th>Fecha registro</th>
+                                        <th>Fecha resultado</th>
+                                        <th>Diferencia (min)</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody data-empty='<tr><td colspan="7" class="text-center">No hay registros para mostrar</td></tr>' id="registros-body">
+                                    <tr><td colspan="7" class="text-center">No hay registros para mostrar</td></tr>
+                                    </tbody>
+                                </table>
+                                <!-- /.table -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-footer no-padding">
+                        <div class="mailbox-controls">
 
-    <div id="main-section"  style="padding-top: 0px; background: transparent; border: 0px;">
-        <div id="chartdiv"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <table class="table table-hover table-striped" style="font-size:13px;">
-            <thead style="background-color: #3c8dbc; color: white">
-            <tr>
-                <th>Insumo</th>
-                <th>Cantidad actual</th>
-                <th>Unidad de medida</th>
-                <th>Uso</th>
-
-            </tr>
-            </thead>
-            <tbody>
-            @foreach($insumos as $insumo => $usos)
-                @foreach($usos as $uso)
-                    <tr>
-                        @if($loop->first)
-                            <td rowspan="{{$usos->count()}}">{{$uso->insumo}}</td>
-                            <td rowspan="{{$usos->count()}}">{{$uso->cantidad}}</td>
-                            <td rowspan="{{$usos->count()}}">{{$uso->unidad}}</td>
-                        @endif
-                        <td>{{$uso->uso}}</td>
-                    </tr>
-                @endforeach
-            @endforeach
-            </tbody>
-        </table>
-
+            <!-- /. box -->
+        </div>
+        <!-- /.col -->
     </div>
 
 @endsection
 @section('scripts')
-    <script src="https://www.amcharts.com/lib/4/core.js"></script>
-    <script src="https://www.amcharts.com/lib/4/charts.js"></script>
-    <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
-    <script src="{{URL::asset('public/plugins/bootbox/bootbox.min.js')}}"></script>
-    <script>
-        am4core.ready(function() {
+    <script src="{{URL::asset('/public/bower_components/moment/min/moment.min.js')}}"></script>
+    <script src="{{URL::asset('/public/bower_components/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
+<script>
+    $(document).ready(function () {
+        var url_search = "{{route('dashboard.tiempo-atencion')}}";
 
-// Themes begin
-            am4core.useTheme(am4themes_animated);
-// Themes end
+        $('input[name=fecha_registro]').daterangepicker({
+            autoUpdateInput: false,
+            "locale": {
+                format: "YYYY-MM-DD",
+                "separator": " hasta ",
+                "applyLabel": "Aplicar",
+                "cancelLabel": "Cancelar",
+                "fromLabel": "DE",
+                "toLabel": "HASTA",
+                "customRangeLabel": "Custom",
+                "daysOfWeek": [
+                    "Dom",
+                    "Lun",
+                    "Mar",
+                    "Mie",
+                    "Jue",
+                    "Vie",
+                    "Sáb"
+                ],
+                "monthNames": [
+                    "Enero",
+                    "Febrero",
+                    "Marzo",
+                    "Abril",
+                    "Mayo",
+                    "Junio",
+                    "Julio",
+                    "Agosto",
+                    "Septiembre",
+                    "Octubre",
+                    "Noviembre",
+                    "Diciembre"
+                ],
+                "firstDay": 1
+            }
+        });
 
-// Create chart instance
-            var chart = am4core.create("chartdiv", am4charts.XYChart);
+        $("#btn-consultar").on('click',function () {
 
-// Add data
-            var data= JSON.parse('{!! json_encode($endBarData) !!}');
-            data.map(function (element) {
-                return element.color =chart.colors.next();
+            if(!$("#form-search").valid()) return false;
+            $.ajax({
+                url : url_search,
+                type: 'get',
+                data: $("#form-search").serialize(),
+                success: function (view) {
+                    $("#registros-body").html(view);
+                }
             });
+        });
+    });
 
-            chart.data = data;
+    $("#btn-limpiar").click(function () {
+        $("input[name=numero_documento_paciente]").val("");
+        $("input[name=numero_documento_medico]").val("");
+        $("input[name=fecha_registro]").val("")
+        $("#registros-body").html($("#registros-body").data('empty'));
+    });
+    $(document).on('click',".cancelBtn",function () {
+        $("input[name=fecha_registro]").val("")
+    });
+    $(document).on('click','.applyBtn',function () {
+        $("input[name=daterangepicker_start]").val();
+        $("input[name=daterangepicker_end]").val();
+        $("input[name=fecha_registro]").val($("input[name=daterangepicker_start]").val() + " hasta "+$("input[name=daterangepicker_end]").val());
+    });
+    var url_download="{{route('dashboard.tiempo-atencion')}}";
+    $("#btn-descargar").click(function () {
+        if(!$("#form-search").valid()) return false;
+        window.open(url_download+"?download=true&"+$("#form-search").serialize());
+    });
 
-// Create axes
-            var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-            categoryAxis.dataFields.category = "name";
-            //categoryAxis.renderer.grid.template.disabled = true;
-            categoryAxis.renderer.minGridDistance = 30;
-            //categoryAxis.renderer.inside = true;
-            categoryAxis.renderer.outside = false;
-            categoryAxis.renderer.labels.template.fill = am4core.color("#0a0a0a");
-            categoryAxis.renderer.labels.template.fontSize = 10;
-
-            var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-            valueAxis.renderer.grid.template.strokeDasharray = "4,4";
-            //valueAxis.renderer.labels.template.disabled = true;
-            valueAxis.min = 0;
-
-// Do not crop bullets
-            chart.maskBullets = false;
-
-// Remove padding
-            chart.paddingBottom = 0;
-
-// Create series
-            var series = chart.series.push(new am4charts.ColumnSeries());
-            series.dataFields.valueY = "points";
-            series.dataFields.categoryX = "name";
-            series.columns.template.propertyFields.fill = "color";
-            series.columns.template.propertyFields.stroke = "color";
-            //series.columns.template.column.cornerRadiusTopLeft = 50;
-            //series.columns.template.column.cornerRadiusTopRight = 50;
-            series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/b]";
-
-// Add bullets
-            var bullet = series.bullets.push(new am4charts.Bullet());
-            var image = bullet.createChild(am4core.Image);
-            image.horizontalCenter = "middle";
-            image.verticalCenter = "bottom";
-            image.dy = 10;
-            image.y = am4core.percent(60);
-            //image.propertyFields.href = "bullet";
-            image.tooltipText = series.columns.template.tooltipText;
-            image.propertyFields.fill = "color";
-            image.filters.push(new am4core.DropShadowFilter());
-
-        }); // end am4core.ready()
-    </script>
+</script>
 @endsection

@@ -106,14 +106,7 @@
                         <div style="display: flex; padding:10px; align-content: flex-end; align-items: flex-end;" class="text-center">
                             <div>
                                 @if(request()->section=='gestion_usuario')
-                                    @if(!$persona->usuario)
-                                        <a href="{{route('usuario.crear',$persona)}}" id="btn-nuevo"><i class="fa fa-plus"></i> Crear usuario</a>
-                                    @else
-                                        <!---
-                                         <a href="#" id="btn-limpiar"><i class="fa fa-plus"></i> Resetear clave</a>
-                                         <a style="padding-left: 15px;" href="#" id="btn-limpiar"><i class="fa fa-plus"></i> Desactivar</a>
-                                         -->
-                                    @endif
+                                    @include('usuario.modals.usuario-info')
                                 @endif
 
                             </div>
@@ -151,8 +144,11 @@
         $("#main-section").fadeOut();
         $("#reporte").fadeIn();
         $("#txt-numero").focus();
-
+        $("#usuario-message").html("");
         params={};
         motivosArr={};
+        if($("#tbl-personas").length){
+            load_table();
+        }
     });
 </script>

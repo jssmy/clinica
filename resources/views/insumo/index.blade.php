@@ -1,10 +1,22 @@
 @extends('layouts.app')
 @section('title','Insumos')
 @section('content')
-
-    <div id="index-table" class="row">
-        @include('insumo.partials.insumo-table')
-    </div>
+    <section id="search-section">
+        <!-- title row -->
+        <div class="row">
+            <div style="padding-bottom: 24px" class="text-center">
+                <span class="page-header text-info" style="font-size: 37px; color: #337ab7;">
+                    <span class="fa  fa-flask"></span> Insumos
+                </span>
+            </div>
+        </div>
+        <!-- info row -->
+    </section>
+    <section>
+        <div id="index-table" class="row">
+            @include('insumo.partials.insumo-table')
+        </div>
+    </section>
 @endsection
 @section('scripts')
 
@@ -24,7 +36,7 @@
                 type : 'get',
                 success: function (view) {
                     var dialog = bootbox.dialog({
-                        title: "<b>Unidad de Medida</b>",
+                        title: "<b>Insumo</b>",
                         message: view,
                         size: 'medium',
                         buttons: {

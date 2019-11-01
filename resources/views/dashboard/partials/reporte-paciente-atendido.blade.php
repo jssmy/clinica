@@ -58,7 +58,6 @@
             <h4 class="box-title">
                 Reporte del paciente atendido
             </h4>
-
         </div>
         <div class="content-icon">
             <span class="collapse-icon fa fa-angle-up"></span>
@@ -67,6 +66,13 @@
     <div id="collapseContactabilidad" class="panel-collapse collapse in" aria-expanded="true" style="">
         <div class="box-body">
             <div class="mailbox-controls">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <a class="pull-right"  style="padding-top: 10px;" target="_blank" href="{{route('dashboard.mostrar-reporte',[$persona,$tipo_reporte,'download=true'])}}">
+                            <i class="fa fa-download"></i> Descargar reporte
+                        </a>
+                    </div>
+                </div>
             </div>
             <div class="table-responsive mailbox-messages">
                 <table class="table table-hover table-striped" style="font-size:13px;">

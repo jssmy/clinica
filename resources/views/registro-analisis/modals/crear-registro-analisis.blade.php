@@ -1,5 +1,10 @@
 <form id="form-store" action="{{route('registro-analisis.crear')}}">
     <input type="hidden" name="_token" value="{{csrf_token()}}" >
+    <div class="row">
+        <div id="error" class="col-sm-12">
+
+        </div>
+    </div>
     @if($persona->es_paciente)
         <input type="hidden" name="paciente_id"  value="{{$persona->id}}">
         <div class="row col-sm-12">
@@ -96,6 +101,7 @@
             },beforeSend: function () {
                 btn.html(btn.data('searching'));
                 btn.attr('disabled',true);
+                $("#error").html("")
             }, error: function (err) {
                 if(err.status==422){
                     console.log("error");
@@ -129,14 +135,12 @@
         var examen_det = $("select[name=examen_det_id]").val();
         var examen_cab_text = $("select[name=examen_cab_id]").find('option:selected').text();
         var examen_det_text =$("select[name=examen_det_id]").find('option:selected').text();
-
+        $("#error").html("");
         console.log(examen_det,examen_det_text,examen_cab,examen_cab_text);
         if(examen_det!="" && examen_cab!="" && $.inArray(examen_det,motivosArr)==-1){
             motivosArr.push(examen_det);
             console.log(motivosArr);
             var eliminar ="<td style='display: flex !important;text-align: center !important;justify-content: space-around !important;'><a id='"+examen_det+"' href='#' class='eliminar_tipo_examen'> <i class='fa fa-remove'></i></a></td>";
-            //var inputResultado="<input type='hidden' name='tipos_examen["+examen_cab+"]["+examen_det+"][resultado]' value='"+resultado+"'>";
-            //var inputComentario="<input type='hidden' name='tipos_examen["+examen_cab+"]["+examen_det+"][comentario]' value='"+comentario+"'>";
             var input="<input type='hidden' name='tipos_examen["+examen_cab+"][]' value='"+examen_det+"'>";
             var tr="<tr><td>"+input+examen_cab_text+"</td><td>"+examen_det_text+"</td><td>"+eliminar+"</tr>";
             $("#tbl-motivos").append(tr);

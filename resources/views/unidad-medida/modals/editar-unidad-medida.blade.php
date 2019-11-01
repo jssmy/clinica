@@ -32,7 +32,7 @@
                 <tr>
                     <td>{{$bitacora->nombre}}</td>
                     <td>{{$bitacora->descripcion}}</td>
-                    <td>#</td>
+                    <td>{{$bitacora->usuario_accion ? $bitacora->usuario_accion->usuario : ''}}</td>
                     <td>{{$bitacora->fecha_accion}}</td>
                 </tr>
             @empty

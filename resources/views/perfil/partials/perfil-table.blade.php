@@ -9,8 +9,11 @@
         <div class="box-body no-padding">
             <div class="mailbox-controls">
                 <!-- Check all button -->
-                <div class="btn-group">
-                    <button data-url="{{route('perfil.crear-form')}}" id="btn-nuevo" type="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> NUEVO</button>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a style="padding-top: 10px;" href="#"  data-url="{{route('perfil.crear-form')}}" id="btn-nuevo"> <i class="fa fa-plus"></i> Registrar nuevo perfil
+                        </a>
+                    </div>
                 </div>
                 <!-- /.pull-right -->
             </div>
@@ -23,7 +26,7 @@
                         <th>Estado</th>
                         <th>Usuario Registro</th>
                         <th>Fecha Registro</th>
-                        <td>Opciones</td>
+                        <th>Opciones</th>
                     </tr>
                     </thead>
                     <tbody>

@@ -8,12 +8,14 @@
         <!-- /.box-header -->
         <div class="box-body no-padding">
             <div class="mailbox-controls">
-                <!-- Check all button -->
-                <div class="btn-group">
-                    <button data-url="{{route('unidad-medida.crear-form')}}" id="btn-nuevo-unidad-medida"  type="button" class="btn btn-success btn-sm"><i class="fa fa-plus"></i> NUEVO</button>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <a style="padding-top: 10px;" href="#"  data-url="{{route('unidad-medida.crear-form')}}" id="btn-nuevo-unidad-medida"> <i class="fa fa-plus"></i> Registrar nueva unidad de medida
+                        </a>
+                    </div>
                 </div>
-                <!-- /.pull-right -->
             </div>
+
             <div class="table-responsive mailbox-messages">
                 <table class="table table-hover table-striped" style="font-size:13px;">
                     <thead style="background-color: #3c8dbc; color: white">

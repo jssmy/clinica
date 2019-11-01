@@ -7,17 +7,17 @@ namespace App\Http\Controllers\Traits;
 trait QueryPatologiaAnormal
 {
     public static function getPatologias(int $numero_dni, $fecha_inicio, $fecha_fin){
-
+            $bindings=[];
             $queryWhere = "";
-            if(!$numero_dni) return false;
-            else $queryWhere.=" and persona.numero_documento = ?";
+            if($numero_dni){
+                $queryWhere.=" and persona.numero_documento = ?";
+                array_push($bindings,$numero_dni);
+            }
 
-            if(!self::esFecha($fecha_fin) && !self::esFecha($fecha_fin)) return false;
-
-
-            if(!$fecha_fin && !$fecha_inicio) return false;
-            else $queryWhere.=" and resultado.fecha_registro BETWEEN ? and ? ";
-
+            if(self::esFecha($fecha_fin) && self::esFecha($fecha_fin)){
+                $queryWhere.=" and resultado.fecha_registro BETWEEN ? and ? ";
+                array_push($bindings,$fecha_inicio,$fecha_fin);
+            }
 
             return \DB::select("SELECT analisis.codigo,
                         CONCAT(if(ISNULL(persona.nombre),'',persona.nombre),' ',if(ISNULL(persona.apellido_paterno),'',persona.apellido_paterno),' ',if(ISNULL(persona.apellido_materno),' ',persona.apellido_materno)) AS paciente,
@@ -31,10 +31,8 @@ trait QueryPatologiaAnormal
                         INNER JOIN examen_cab AS tipo_examen ON tipo_examen.id=resultado.examen_cab_id
                         INNER JOIN examen_det AS sub_tipo_examen ON sub_tipo_examen.id=resultado.examen_det_id
                         WHERE  resultado.comentario IS NOT NULL and persona.tipo_persona='paciente' $queryWhere
-                        ORDER BY 2,3",[$numero_dni,$fecha_inicio,$fecha_fin]);
+                        ORDER BY 2,3",$bindings);
     }
 
-    private static function esFecha($fecha){
-        return preg_match('/\d{4}-\d{2}-\d{2}/', $fecha);
-    }
+
 }

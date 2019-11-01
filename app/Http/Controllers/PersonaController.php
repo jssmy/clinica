@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\EstadoCivil;
+use App\Models\Perfil;
+use App\Models\PerfilBitacora;
 use App\Models\Persona;
 use App\Models\TipoSeguro;
+use App\Services\ReniecService;
 use Illuminate\Auth\DatabaseUserProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -13,20 +16,9 @@ use function foo\func;
 class PersonaController extends Controller
 {
     //
-    public function index(Request $request,$tipo_persona){
+    public function index(Request $request,$tipo_persona=null){
 
-        if(!in_array($tipo_persona,['paciente','medico'])){
-            abort(404,'No encontrado');
-        }
-        $personas = Persona::with('estadoCivil','usuario')->paginate(12);
-        if($request->ajax()){
-            return view('persona.partials.persona-table',compact('personas','tipo_persona'));
-        }
-
-        $estados = EstadoCivil::activo()->get();
-        $tipo_seguros=TipoSeguro::activo()->get();
-
-        return view('persona.index',compact('personas','estados','tipo_seguros','tipo_persona'));
+        return view('persona.index');
     }
     public function crearForm($tipo_persona){
         $estados = EstadoCivil::activo()->get();
@@ -123,10 +115,38 @@ class PersonaController extends Controller
 
     public function datosPersonales (Request $request,$tipo_persona,$tipo_busqueda='numero_documento'){
         $tipo_persona =  in_array($tipo_persona,['medico','empleado']) ? 'empleado' : 'paciente';
-        $persona=Persona::where('numero_documento',$request->numero_documento)
-                        ->where('tipo_persona',$tipo_persona)
-                        ->first();
+        $persona=Persona::soloTecnologo()->where('numero_documento',$request->numero_documento)
+                        ->where('tipo_persona',$tipo_persona);
 
+        $persona = $persona->first();
         return view('layouts.main.load-sections',compact('persona','tipo_persona'));
+    }
+
+    public function personas(Request $request,$tipo_persona){
+
+        if(!in_array($tipo_persona,['paciente','empleado','medico'])){
+            abort(404);
+        }
+        $tipo_persona= $tipo_persona=='paciente' ? $tipo_persona : 'empleado';
+        $personas = Persona::with(['usuario_accion','estadoCivil'])->where('tipo_persona',$tipo_persona);
+        if($request->buscar_numero_documento){
+            $personas = $personas->where('numero_documento',$request->numero_documento);
+        }
+        $personas= $personas->paginate(12);
+        if($request->ajax()){
+
+            return view('persona.partials.persona-table',compact('personas'));
+        }
+
+        return view('persona.lista-persona',compact('tipo_persona','personas'));
+    }
+
+
+    public function validarPersona(Request $request,$numero_documento){
+            $persona = Persona::where('numero_documento',$numero_documento)->first();
+            if($persona){
+                return response()->json(['registrado'=>true]);
+            }
+             return ReniecService::getPersona($numero_documento);
     }
 }
