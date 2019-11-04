@@ -17,27 +17,37 @@
                     <td>{{$resultado->subTipoExamen ? $resultado->subTipoExamen->nombre : ''}}</td>
                     <td>{{$resultado->fec_resultado ? $resultado->fec_resultado->format('d/m/Y') : '' }}</td>
                     <td>
-                        @if($resultado->comentario)
+                        @if(auth()->user()->es_tecnologo)
+                            @if($resultado->comentario)
+                                {{$resultado->comentario}}
+                            @else
+                                <textarea maxlength="200"  id="comentario{{$resultado->id}}" class="required" name="comentario" style="width: 400px;"></textarea>
+                            @endif
+                        @else
                             {{$resultado->comentario}}
-                        @else
-                            <textarea maxlength="200"  id="comentario{{$resultado->id}}" class="required" name="comentario" style="width: 400px;"></textarea>
                         @endif
                     </td>
                     <td>
-                        @if($resultado->resultado)
+                        @if(auth()->user()->es_tecnologo)
+                            @if($resultado->resultado)
+                                {{$resultado->resultado}}
+                            @else
+                                <input id="resultado{{$resultado->id}}" style="width: 60px;" type="text" class="input-numeric form-control required" name="resultado">
+                            @endif
+                        @else
                             {{$resultado->resultado}}
-                        @else
-                            <input id="resultado{{$resultado->id}}" style="width: 60px;" type="text" class="input-numeric form-control required" name="resultado">
                         @endif
                     </td>
                     <td>
-                        @if(!$resultado->resultado && !$resultado->comentario)
-                            <button
-                                data-comentario="comentario{{$resultado->id}}"
-                                data-resultado="resultado{{$resultado->id}}"
-                                data-url="{{route('registro.analisis.guardar-resultado',$resultado)}}"
-                                data-form="form-guardar-resultado{{$resultado->id}}"
-                                class="btn  btn-sm btn-success btn-guardar-resultados"><i class="fa fa-save"></i> GUARDAR</button>
+                        @if(auth()->user()->es_tecnologo)
+                            @if(!$resultado->resultado && !$resultado->comentario)
+                                <button
+                                    data-comentario="comentario{{$resultado->id}}"
+                                    data-resultado="resultado{{$resultado->id}}"
+                                    data-url="{{route('registro.analisis.guardar-resultado',$resultado)}}"
+                                    data-form="form-guardar-resultado{{$resultado->id}}"
+                                    class="btn  btn-sm btn-success btn-guardar-resultados"><i class="fa fa-save"></i> GUARDAR</button>
+                            @endif
                         @endif
                     </td>
                 </tr>

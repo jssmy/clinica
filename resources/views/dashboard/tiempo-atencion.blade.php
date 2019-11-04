@@ -10,7 +10,7 @@
             <div style="padding-bottom: 24px" class="text-center">
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
                     <span class="fa  fa-hourglass-3"></span>
-                    Reporte de promedio antención
+                    Reporte Tiempo Promedio de Antención
                 </span>
             </div>
         </div>
@@ -28,7 +28,7 @@
                         <ul class="nav nav-pills nav-stacked" style="padding-top: 15px;">
                             <li><input  name="numero_documento_paciente" style="margin-top: 10px; margin-left: 5px; width: 90%" class="form-control input-digits" placeholder="Número de DNI paciente"></li>
                             <li><input  name="numero_documento_medico" style="margin-top: 10px; margin-left: 5px; width: 90%" class="form-control input-digits" placeholder="Número de DNI médico"></li>
-                            <li><input  name="fecha_registro" style="margin-top: 10px; margin-left: 5px; width: 90%;" class="form-control required input-digits" placeholder="Fecha inicio - Fecha fin"></li>
+                            <li><input  name="fecha_registro" style="margin-top: 10px; margin-left: 5px; width: 90%;" class="form-control input-digits" placeholder="Fecha inicio - Fecha fin"></li>
                         </ul>
                     </form>
                 </div>

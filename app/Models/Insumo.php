@@ -35,7 +35,7 @@ class Insumo extends Entity
     public function usuario(){
         return $this->hasOne(User::class,'id','usuario_id');
     }
-    public function tipo_examen(){
-        return $this->hasOne(ExamenCab::class,'id','examen_cab_id');
+    public function uso(){
+        return $this->hasOne(ExamenDet::class,'id','examen_det_id');
     }
 }

@@ -11,4 +11,8 @@ class Paciente extends Model
     public $incrementing=false;
     public $timestamps=false;
     protected $table='pacientes';
+
+    public function tipo_seguro(){
+        return $this->hasOne(TipoSeguro::class,'id','tipo_seguro_id');
+    }
 }

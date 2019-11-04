@@ -38,7 +38,7 @@
                             <td class='mailbox-name'>{{$insumo->nombre}}</td>
                             <td title="{{$insumo->descripcion}}" style="cursor:pointer;" >{{$insumo->descripcion}}</td>
                             <td>{{$insumo->medida? $insumo->medida->nombre : ''}}</td>
-                            <td>{{$insumo->tipo_examen ? $insumo->tipo_examen->nombre : '' }}</td>
+                            <td>{{$insumo->uso ? $insumo->uso->nombre : '' }}</td>
                             <td>{{$insumo->cantidad}}</td>
                             <td>
                                 <label class='label label-{{$insumo->es_activo ? "info" : "danger"}}'>{{$insumo->es_activo ? 'ACTIVO' : 'INACTIVO'}}</label>

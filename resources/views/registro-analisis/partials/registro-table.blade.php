@@ -15,10 +15,10 @@
                     <div class="mailbox-controls">
                         <div class="row">
                             <div class="col-sm-6">
-                                @if($persona->paciente)
+                                @if($persona->paciente && !auth()->user()->esTecnologo)
                                     <a style="padding-top: 10px;" href="#" data-url="{{route('registro-analisis.crear-form','persona_id')}}" id="btn-nuevo"> <i class="fa fa-plus"></i> Registrar nuevo análsis
                                     </a>
-                                @else
+                                @elseif(!$persona->paciente)
                                     <span style="cursor: pointer" title="Por favor registro el número de historia clínica del paciente" class="label label-warning">SIN HISTORIAL CLÍNICO</span>
                                 @endif
                             </div>
@@ -52,10 +52,14 @@
                                                 class="btn btn-xs btn-success btn-ver-resultados">
                                             <i class="fa fa-search-plus"></i>
                                         </button>
-                                        @if(!$registro->es_aprobado)
+                                        @if(!$registro->es_aprobado && !auth()->user()->esTecnologo)
                                             <button data-url="{{route('registro.analisis.cambiar',$registro->id)}}" title="Cambiar de paciente" class="btn btn-xs btn-info btn-cabiar-paciente"><i class="fa fa-share"></i></button>
                                         @endif
-                                        <a href="{{route('registro.analsis.imprimir',$registro)}}" target="_blank" title="Imprimir" class="btn btn-xs btn-default"><i class="fa fa-print"></i></a>
+                                        @if(auth()->user()->esTecnologo)
+                                            <a href="{{route('registro.analsis.imprimir',[$registro,'resultado=true'])}}" target="_blank" title="Imprimir registro de análisis con resultados" class="btn btn-xs btn-default"><i class="fa fa-print"></i></a>
+                                        @else
+                                            <a href="{{route('registro.analsis.imprimir',$registro)}}" target="_blank" title="Imprimir registro de análisis" class="btn btn-xs btn-default"><i class="fa fa-print"></i></a>
+                                        @endif
                                     </td>
                                 </tr>
                             @empty <tr class="text-center"><td colspan="7">No hay registrados</td></tr>

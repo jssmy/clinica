@@ -8,26 +8,6 @@
         </div>
     </div>
     <div class="row" style="margin-top: 15px;">
-        <div class="col-sm-12">
-            <label>Insumo</label>
-            @if(!$examen->tipo_examen)
-                <select name="insumo" class="form-control required">
-                    <option value="">[Seleccione]</option>
-                    @foreach($insumos as $insumo)
-                        <option {{$examen->insumo_id==$insumo->id ? 'selected' : ''}} value="{{$insumo->id}}">{{$insumo->nombre}}</option>
-                    @endforeach
-                </select>
-            @else
-                <select name="insumo" class="form-control required">
-                    <option value="">[Seleccione]</option>
-                    @foreach($examen->tipo_examen->insumos as $insumo)
-                        <option {{$examen->insumo_id==$insumo->id ? 'selected' : ''}} value="{{$insumo->id}}">{{$insumo->nombre}}</option>
-                    @endforeach
-                </select>
-            @endif
-        </div>
-    </div>
-    <div class="row" style="margin-top: 15px;">
         <div class="col-lg-12">
             <label for="nombre">Nombre</label>
             <input maxlength="100" id="nombre" name="nombre" class="form-control required" value="{{$examen->nombre}}">

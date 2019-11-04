@@ -22,7 +22,7 @@
 
                         </div>
                         <!-- /btn-group -->
-                        <input data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar {{$tipo_persona=='paciente' ? 'paciente' : 'médico'}}">
+                        <input maxlength="8" data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar {{$tipo_persona=='paciente' ? 'paciente' : 'médico'}}">
                         <div class="input-group-btn">
                             <button id="btn-consultar"
                                     data-search="<span class='fa fa-search' style='color: #fff;background: #31708f;'></span>"

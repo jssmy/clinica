@@ -2,13 +2,7 @@
 @section('title','Registros')
 @section('styles')
     <link rel="stylesheet" href="{{URL::asset('public/bower_components/Ionicons/css/ionicons.min.css')}}">
-    <style>
-        #chartdiv {
-            width: 100%;
-            height: 300px;
-        }
 
-    </style>
 @endsection
 @section('content')
 
@@ -17,15 +11,31 @@
         <div class="row">
             <div style="padding-bottom: 24px" class="text-center">
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
-                    </i> Reporte stock de insumos
+                    Reporte stock de insumos
                 </span>
             </div>
         </div>
-
     </section>
-
-    <div id="main-section"  style="padding-top: 0px; background: transparent; border: 0px;">
-        <div id="chartdiv"></div>
+    <section class="text-center">
+        <div style="width: 20%" class="panel box";>
+            <label>Semaforización</label>
+            <table class="table">
+                <tr>
+                    <td  style="background-color: green; width: 30px;"></td>
+                    <td  style="background-color: yellow; width: 30px;"></td>
+                    <td  style="background-color: red; width: 30px;"></td>
+                </tr>
+                <tr>
+                    <td >250 a más</td>
+                    <td >101 - 249</td>
+                    <td >0 - 100</td>
+                </tr>
+            </table>
+            <hr style="margin-bottom: 0px;">
+            <a style="margin-top: 0px;" href="{{route('dashboard.stock-insumo')}}">Limpiar filtro</a>
+        </div>
+    </section>
+    <section id="main-section"  style="padding-top: 0px; background: transparent; border: 0px;">
         <div class="panel box">
             <div class="box-header with-border" data-toggle="collapse" href="#" aria-expanded="true">
                 <div class="content-title">
@@ -42,7 +52,15 @@
                 <div class="box-body">
                     <div class="mailbox-controls">
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-6">
+                                <form id="form-search" method="get">
+                                    <div style="width: 200px; " class="input-group">
+                                        <input value="{{request()->stock}}" name="stock" class="pull-left form-control input-digits" placeholder="Ingrese cantidad">
+                                        <span id="btn-buscar" class="btn btn-default input-group-addon"><i class="fa fa-search"></i></span>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-sm-6">
                                 <a class="pull-right"  style="padding-top: 10px;" target="_blank" href="{{route('dashboard.stock-insumo','download=true')}}">
                                     <i class="fa fa-download"></i> Descargar reporte
                                 </a>
@@ -57,7 +75,7 @@
                                 <th>Cantidad actual</th>
                                 <th>Unidad de medida</th>
                                 <th>Uso</th>
-
+                                <th>SEMÁFORO</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -70,6 +88,15 @@
                                             <td rowspan="{{$usos->count()}}">{{$uso->unidad}}</td>
                                         @endif
                                         <td>{{$uso->uso}}</td>
+                                        <th style="background-color:
+                                        @if($uso->cantidad>=0 && $uso->cantidad<=100)
+                                            {{'red'}}
+                                        @elseif($uso->cantidad>=101 && $uso->cantidad<=249)
+                                            {{'yellow'}}
+                                        @else
+                                            {{'green'}}
+                                        @endif
+                                        "></th>
                                     </tr>
                                 @endforeach
                             @endforeach
@@ -84,7 +111,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
 @endsection
 @section('scripts')
@@ -154,5 +181,11 @@
             image.filters.push(new am4core.DropShadowFilter());
 
         }); // end am4core.ready()
+        $(document).ready(function () {
+            $("#btn-buscar").click(function () {
+                if(!$("input[name=stock]").val()) return false;
+                $("#form-search").submit();
+            });
+        })
     </script>
 @endsection

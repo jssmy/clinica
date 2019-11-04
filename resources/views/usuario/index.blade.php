@@ -19,7 +19,7 @@
                             <button style="color: #fff;background: #31708f;font-size: 14px;" class="btn btn-default" >Nro. documento</button>
                         </div>
                         <!-- /btn-group -->
-                        <input data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar usuario">
+                        <input maxlength="8" data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar usuario">
                         <div class="input-group-btn">
                             <button id="btn-consultar"
                                     data-search="<span class='fa fa-search' style='color: #fff;background: #31708f;'></span>"

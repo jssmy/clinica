@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Traits;
 
 trait QueryPatologiaAnormal
 {
-    public static function getPatologias(int $numero_dni, $fecha_inicio, $fecha_fin){
+    public static function getPatologias( $numero_dni, $fecha_inicio, $fecha_fin){
             $bindings=[];
             $queryWhere = "";
             if($numero_dni){

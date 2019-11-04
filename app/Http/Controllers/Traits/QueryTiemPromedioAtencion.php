@@ -11,8 +11,8 @@ namespace App\Http\Controllers\Traits;
 
 trait QueryTiemPromedioAtencion
 {
-        public static function getSolicitudes(int $numero_documento_paciente=0,
-                                              int $numero_documento_medico=0,
+        public static function getSolicitudes($numero_documento_paciente=0,
+                                              $numero_documento_medico=0,
                                               $fecha_inicio=null,
                                               $fecha_fin=null){
             $bindings=[];
@@ -36,7 +36,7 @@ trait QueryTiemPromedioAtencion
                                 sub_tipo_examen.nombre AS sub_tipo_examen,
                                 DATE_FORMAT(resultado.fecha_registro,'%d/%m/%Y') AS fecha_registro, 
                                 DATE_FORMAT(resultado.fecha_resultado,'%d/%m/%Y') AS fecha_resultado,
-                                ROUND(TIMESTAMPDIFF(minute,resultado.fecha_registro,resultado.fecha_resultado)/60,2) AS diferencia
+                                ROUND(TIMESTAMPDIFF(minute,resultado.fecha_registro,resultado.fecha_resultado),2) AS diferencia
                                 FROM registro_analisis AS analisis
                                 INNER JOIN personas as paciente on paciente.id=analisis.paciente_id
                                 INNER JOIN personas as medico on medico.id =analisis.empleado_id

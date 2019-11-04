@@ -35,7 +35,7 @@ class PersonaController extends Controller
                 'numero_documento'=>$request->numero_documento,
                 'direccion'=>$request->direccion,
                 'telefono'=>$request->telefono,
-                'fecha_nacimiento'=>date("Y-m-d"),
+                'fecha_nacimiento'=>$request->fecha_nacimiento,
                 'genero'=>$request->genero,
                 'estado_civil_id'=>$request->estado_civil,
                 'tipo_persona'=>strtolower($request->tipo_persona)=='medico' ? 'empleado' : 'paciente',
@@ -67,6 +67,7 @@ class PersonaController extends Controller
         return view('persona.modals.editar-persona',compact('persona','estados','tipo_seguros','tipo_persona'));
     }
     public function editar(Request $request,Persona $persona){
+
         \DB::transaction(function () use ($request,&$persona){
             $persona = $persona->load($persona->es_paciente ? 'paciente' : 'empleado');
             $persona->numero_documento = $request->numero_documento;
@@ -77,6 +78,7 @@ class PersonaController extends Controller
             $persona->direccion = $request->direccion;
             $persona->genero = $request->genero;
             $persona->estado_civil_id = $request->estado_civil;
+            $persona->fecha_nacimiento = $request->fecha_nacimiento;
             $persona->save();
 
             if($persona->es_paciente){
@@ -116,9 +118,8 @@ class PersonaController extends Controller
     public function datosPersonales (Request $request,$tipo_persona,$tipo_busqueda='numero_documento'){
         $tipo_persona =  in_array($tipo_persona,['medico','empleado']) ? 'empleado' : 'paciente';
         $persona=Persona::soloTecnologo()->where('numero_documento',$request->numero_documento)
-                        ->where('tipo_persona',$tipo_persona);
+                        ->where('tipo_persona',$tipo_persona)->first();
 
-        $persona = $persona->first();
         return view('layouts.main.load-sections',compact('persona','tipo_persona'));
     }
 

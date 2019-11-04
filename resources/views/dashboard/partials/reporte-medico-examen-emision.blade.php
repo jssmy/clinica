@@ -57,9 +57,7 @@
     <div class="box-header with-border" data-toggle="collapse" href="#" aria-expanded="true">
         <div class="content-title">
             <h4 class="box-title">
-                Reporte del pacientes atendidos
             </h4>
-
         </div>
         <div class="content-icon">
             <span class="collapse-icon fa fa-angle-up"></span>
@@ -83,7 +81,6 @@
                         <th>Tipo Examen</th>
                         <th>Sub-tipo examen</th>
                         <th>Cantidad</th>
-
                     </tr>
                     </thead>
                     <tbody>

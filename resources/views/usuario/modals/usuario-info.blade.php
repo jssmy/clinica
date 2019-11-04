@@ -1,7 +1,7 @@
 @if(!$persona->usuario)
     <a href="{{route('usuario.crear',$persona)}}" id="btn-nuevo"><i class="fa fa-plus"></i> Crear usuario</a>
 @else
-    @if($persona->usuario->estado)
+    @if($persona->usuario->estado && auth()->user()->es_administrador)
         <a data-url="{{route('usuario.resetear',$persona->usuario)}}"  href="#" id="btn-resetear"><i class="fa  fa-exclamation-triangle"></i> Resetear clave</a>
         <!--
         <a data-accion="inactivar" data-url="{{route('usuario.actualizar-estado',$persona->usuario)}}" style="padding-left: 15px;" href="#" class="btn-actualizar-estado"><i class="fa  fa-ban"></i> Inactivar</a>

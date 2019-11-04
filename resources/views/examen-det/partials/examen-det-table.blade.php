@@ -23,10 +23,10 @@
                 <table class="table table-hover table-striped" style="font-size:13px;">
                     <thead style="background-color: #3c8dbc; color: white">
                     <tr>
+                        <th>Tipo de examen</th>
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Estado</th>
-                        <th>Tipo de examen</th>
                         <th>Insumo</th>
                         <th>Usuario Registro</th>
                         <th>Fecha Registro</th>
@@ -36,11 +36,11 @@
                     <tbody>
                     @forelse($examenes as $examen)
                         <tr>
+                            <td>{{$examen->tipo_examen->nombre}}</td>
                             <td>{{$examen->nombre}}</td>
                             <td>{{$examen->descripcion}}</td>
                             <td><label class='label label-{{$examen->es_activo ? "info" : "danger"}}'>{{$examen->es_activo ? 'ACTIVO' : 'INACTIVO'}}</label></td>
-                            <td>{{$examen->tipo_examen->nombre}}</td>
-                            <td>{{$examen->insumo->nombre}}</td>
+                            <td>{{$examen->insumo ? $examen->insumo->nombre : ''}}</td>
                             <td>{{$examen->usuario? $examen->usuario->usuario : ''}}</td>
                             <td>{{$examen->fec_registro->format('d/m/Y')}}</td>
                             <td>

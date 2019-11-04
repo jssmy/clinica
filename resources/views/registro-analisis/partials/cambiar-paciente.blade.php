@@ -1,9 +1,12 @@
 <form id="form-cambiar-paciente" action="{{route('registro.analisis.cambiar.store',$analisis)}}">
     <input type="hidden" name="_token" value="{{csrf_token()}}">
     <div class="row">
+        <div id="error" class="col-sm-12"></div>
+    </div>
+    <div class="row">
         <div style="min-width: 300px; width: 50%" class="col-sm-12 invoice-col pull-right">
             <div class="input-group input-group-sm">
-                <input data-btn="btn-search-paciente" placeholder="Buscar paciente por DNI" id="dni-medico" data-span="btn-search-medico" name="numero_documento" type="text" class="form-control numero_documento input-submit input-digits">
+                <input maxlength="8" data-btn="btn-search-paciente" placeholder="Buscar paciente por DNI" id="dni-medico" data-span="btn-search-medico" name="numero_documento" type="text" class="form-control numero_documento input-submit input-digits">
                 <div class="input-group-btn">
                             <span
                                 id="btn-search-paciente"

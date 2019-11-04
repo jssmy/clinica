@@ -11,7 +11,7 @@
             <div style="min-width: 300px; width: 50%" class="invoice-col pull-right">
                 <div class="input-group input-group-sm">
                     <!-- /btn-group -->
-                    <input data-btn="btn-search-medico" placeholder="Buscar médico por DNI" id="dni-medico" data-span="btn-search-medico" name="numero_documento" type="text" class="form-control numero_documento input-submit input-digits">
+                    <input maxlength="8" data-btn="btn-search-medico" placeholder="Buscar médico por DNI" id="dni-medico" data-span="btn-search-medico" name="numero_documento" type="text" class="form-control numero_documento input-submit input-digits">
                     <div class="input-group-btn">
                             <span
                                 id="btn-search-medico"

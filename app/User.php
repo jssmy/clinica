@@ -49,4 +49,12 @@ class User extends Authenticatable
         return $this->hasOne(User::class,'id','usuario_id');
     }
 
+    public function getesAdministradorAttribute()
+    {
+        return strtolower($this->peril_id)=='adm';
+    }
+
+    public function getesTecnologoAttribute(){
+     return strtolower($this->perfil_id)=='tec';
+    }
 }

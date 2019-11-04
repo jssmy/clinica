@@ -137,7 +137,7 @@
 
             var url_search = "{{route('dashboard.patologia-anormal')}}";
             $("#btn-consultar").on('click',function () {
-                if(!($("input[name=numero_documento]").val() || $("input[name=fecha_resultado]").val())) return false;
+
                 $.ajax({
                     url : url_search,
                     type: 'get',

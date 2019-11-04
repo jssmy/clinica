@@ -11,7 +11,11 @@
             <div style="padding-bottom: 24px" class="text-center">
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
                     <span class="fa fa-search"></span>
-                    Buscar {{$tipo_persona=='paciente' ? 'paciente' : 'médico'}}
+                    @if($tipo_persona=='paciente')
+                        Reporte por paciente atendido
+                    @else
+                        Reporte por profesional médico
+                    @endif
                 </span>
             </div>
         </div>
@@ -24,7 +28,7 @@
                             <button class="btn btn-default" style="color: #fff;background: #31708f;font-size: 14px;">Nro. documento</button>
                         </div>
                         <!-- /btn-group -->
-                        <input data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar por número de documento">
+                        <input data-btn="btn-consultar" maxlength="8" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar por número de documento">
                         <div class="input-group-btn">
                             <button id="btn-consultar"
                                     data-search="<span class='fa fa-search' style='color: #fff;background: #31708f;'></span>"

@@ -26,7 +26,7 @@
                             -->
                         </div>
                         <!-- /btn-group -->
-                        <input data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar persona">
+                        <input maxlength="8" data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar persona">
                         <div class="input-group-btn">
                             <button id="btn-consultar"
                                     data-search="<span class='fa fa-search' style='color: #fff;background: #31708f;'></span>"
@@ -39,9 +39,9 @@
                         </div>
                     </div>
                     <div style="margin-top: 15px;">
-                        <a style="margin-top: 30px;" href="{{route('persona.crear-form','paciente')}}"  > <i class="fa fa-stethoscope"></i> Registrar nueva paciente
+                        <a style="margin-top: 30px;" href="{{route('persona.crear-form','paciente')}}"  > <i class="fa fa-stethoscope"></i> Registrar nuevo paciente
                         </a>
-                        <a style="margin-top: 30px; margin-left: 15px;" href="{{route('persona.crear-form','medico')}}"  > <i class="fa fa-user-md"></i> Registrar nueva médico
+                        <a style="margin-top: 30px; margin-left: 15px;" href="{{route('persona.crear-form','medico')}}"  > <i class="fa fa-user-md"></i> Registrar nuevo médico
                         </a>
                     </div>
                 </div>

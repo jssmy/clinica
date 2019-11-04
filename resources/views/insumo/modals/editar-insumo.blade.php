@@ -15,9 +15,9 @@
     <div class="row" style="padding-top: 15px;">
         <div class="col-lg-12">
             <label for="uso">Uso</label>
-            @if($insumo->tipo_examen)
-                <input type="hidden" name="uso" value="{{$insumo->examen_cab_id}}">
-                <input readonly type="text" class="form-control" value="{{$insumo->tipo_examen ? $insumo->tipo_examen->nombre : ''}}">
+            @if($insumo->uso)
+                <input type="hidden" name="uso" value="{{$insumo->examen_det_id}}">
+                <input readonly type="text" class="form-control" value="{{ $insumo->uso->nombre}}">
             @else
                 <select class="form-control required" name="uso">
                     <option value="">[Seleccione]</option>

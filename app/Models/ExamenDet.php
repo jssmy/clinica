@@ -22,7 +22,7 @@ class ExamenDet extends Entity
     }
 
     public function insumo(){
-        return $this->hasOne(Insumo::class,'id','insumo_id');
+        return $this->hasOne(Insumo::class,'examen_det_id','id');
     }
 
     public function usuario(){
@@ -39,6 +39,5 @@ class ExamenDet extends Entity
     public function tipo_examen(){
         return $this->hasOne(ExamenCab::class,'id','examen_cab_id');
     }
-
 
 }

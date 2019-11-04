@@ -6,16 +6,8 @@
             <select name="tipo_examen" class="form-control required">
                 <option value="">[Seleccione]</option>
                 @foreach($tipo_examenes as $tipo)
-                    <option data-insumos='{!! json_encode($tipo->insumos) !!}' value="{{$tipo->id}}">{{$tipo->nombre}}</option>
+                    <option value="{{$tipo->id}}">{{$tipo->nombre}}</option>
                 @endforeach
-            </select>
-        </div>
-    </div>
-    <div class="row" style="margin-top: 15px;">
-        <div class="col-sm-12">
-            <label>Insumo</label>
-            <select name="insumo" class="form-control required">
-                <option value="">[Seleccione]</option>
             </select>
         </div>
     </div>

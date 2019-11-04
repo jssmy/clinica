@@ -74,8 +74,11 @@ class RegistroAnalisisController extends Controller
                         'examen_det_id' => $exmanen_det_id,
                     ]);
                     $insumo = ExamenDet::find($exmanen_det_id)->insumo()->first();
-                    $insumo->cantidad = (int)$insumo->cantidad - 1;
-                    $insumo->save();
+                    if($insumo){
+                        $insumo->cantidad = (int)$insumo->cantidad - 1;
+                        $insumo->save();
+                    }
+
                 }
             }
         });
@@ -135,42 +138,115 @@ class RegistroAnalisisController extends Controller
         $pdf->SetFont('Arial','B',14);
         $pdf->MultiCell(70,5,utf8_decode('Laboratorio Clínico C.S Santa Rosa'),0,'C');
         $pdf->SetFont('Arial',NULL,8);
-        $pdf->SetXY(90,9);
-        $pdf->Cell(70,4,utf8_decode('Av. Guardia Civil 421 - 433 San Miguel'),0,'j');
-        $pdf->SetXY(90,10);
-        $pdf->cell(70,10,utf8_decode('Teléfono: 12345678'),0,'j');
-        $pdf->SetXY(90,14);
-        $pdf->cell(70,10,utf8_decode('Email: email@example.com'),0,'j');
-        $pdf->SetXY($pdf->GetX()-3,6);
-        $pdf->cell(70,10,utf8_decode('Nro.: '.$analisis->codigo),0,'j');
-        $pdf->Ln(20);
+        $pdf->SetXY(137,9);
+        $pdf->Cell(70,4,utf8_decode('Dirección: Mz c Lt 21-22 Canto Chico S.J.L'),0,'j');
+        $pdf->SetXY(137,10);
+        $pdf->cell(70,10,utf8_decode('Teléfono: (01) 3760431'),0,'j');
+        $pdf->SetXY(137,14);
+        $pdf->cell(70,10,utf8_decode('Email: cssantarosa@dirislimacentro.gob.pe'),0,'j');
+        $pdf->SetXY(137,18);
+        $pdf->cell(70,10,utf8_decode('RUC: 20602250602'),0,'j');
+        /* registro de analisi* */
+        $pdf->Ln(15);
         $pdf->SetTextColor(255,255,255);
         $pdf->SetFont('Arial','B',10);
         $pdf->SetX(16);
-        $pdf->Cell(177,7,utf8_decode('FORMULARIO DE EXÁMENES MÉDICOS'),1,0,'C',1);
-        $pdf->Ln(10);
-        $pdf->SetX(16);
+        $pdf->Cell(177,7,utf8_decode('REGISTRO DE ANÁLISIS'),1,0,'C',1);
         $pdf->SetTextColor(0,0,0);
-        $pdf->SetFont('Arial',null,9);
-        $pdf->Cell(177,9,utf8_decode("Nombre del paciente:  ".$analisis->paciente->nombre_completo));
-        $pdf->Line($pdf->GetPageWidth()-$pdf->GetX()+30,$pdf->GetY()+6,$pdf->GetPageWidth()-17.5,$pdf->GetY()+6);
-        $pdf->Ln(7);
-        $pdf->SetX(16);
-        $pdf->Cell(60,9,utf8_decode("Fecha de nacimiento:  ".$analisis->paciente->fec_nacimiento->format('d/m/Y')));
-        $pdf->Line($pdf->GetX()-28.5,$pdf->GetY()+6,$pdf->GetX()+20,$pdf->GetY()+6);
-        $pdf->SetX($pdf->GetX()+37);
-        $pdf->Cell(60,9,utf8_decode("Fecha de hoy:  ".date("d/m/Y")));
-        $pdf->Line($pdf->GetX()-39,$pdf->GetY()+6,$pdf->GetX()+20,$pdf->GetY()+6);
-        $pdf->Ln(7);
-        $pdf->SetX(16);
-        $pdf->Cell(177,9,utf8_decode("Nombre del médico  :  ".$analisis->medico->nombre_completo));
-        $pdf->Line($pdf->GetPageWidth()-$pdf->GetX()+30,$pdf->GetY()+6,$pdf->GetPageWidth()-17.5,$pdf->GetY()+6);
+        /* datos generales  */
         $pdf->Ln(10);
+        $pdf->SetX(16);
+        $pdf->Cell(177,6,utf8_decode('DATOS GENERALES'),1,0,'C');
+        $pdf->Ln(7);
+        $pdf->SetX(16);
+        $pdf->SetFont('Arial','B',9);
+        $pdf->Cell(15,9,utf8_decode("CÓDIGO:"));
+        $pdf->SetFont('Arial',null,9);
+        $pdf->Cell(80,9,$analisis->codigo);
+        $pdf->SetFont('Arial','B',9);
+        $pdf->Cell(15,9,utf8_decode("FECHA DE REGISTRO:"));
+        $pdf->SetFont('Arial',null,9);
+        $pdf->SetX($pdf->GetX()+25);
+        $pdf->Cell(15,9,date("d/m/Y h:i",strtotime($analisis->fecha_registro)));
+        /* usuario registro */
+        $pdf->Ln(5);
+        $pdf->SetX(16);
+        $pdf->SetFont('Arial','B',9);
+        $pdf->Cell(15,9,"REGISTRADO POR: ");
+        $pdf->SetX($pdf->GetX()+16);
+        $pdf->SetFont('Arial',null,9);
+        $pdf->Cell(80,9,utf8_decode($analisis->usuario->persona->nombre_completo));
+        /* datos del paciente*/
+        $pdf->Ln(7);
+        $pdf->SetX(16);
+        $pdf->SetFont('Arial','B',9);
+        $pdf->Cell(177,6,utf8_decode('DATOS DEL PACIENTE'),1,0,'C');
+        /* nombre del paciente  */
+        $pdf->Ln(7);
+        $pdf->SetX(16);
+        $pdf->SetFont('Arial','B',9);
+        $pdf->Cell(18,9,"NOMBRE:");
+        $pdf->SetFont('Arial',null,9);
+        $pdf->Cell(100,9,utf8_decode($analisis->paciente->nombre_completo));
+        /* dni paciente */
+        $pdf->Ln(5);
+        $pdf->SetX(16);
+        $pdf->SetFont('Arial','B',9);
+        $pdf->Cell(10,9,"DNI:");
+        $pdf->SetFont('Arial',null,9);
+        $pdf->Cell(55,9,utf8_decode($analisis->paciente->numero_documento));
+        $pdf->SetFont('Arial','B',9);
+        $pdf->Cell(17,9,utf8_decode("GÉNERO:"));
+        $pdf->SetFont('Arial',null,9);
+        $pdf->Cell(30,9,utf8_decode(strtolower($analisis->paciente->genero)=='m' ? 'Hombre' : 'Mujer'));
+        $pdf->SetFont('Arial','B',9);
+        $pdf->Cell(40,9,utf8_decode("FECHA DE NACIMIENTO:"));
+        $pdf->SetFont('Arial',null,9);
+        $pdf->Cell(55,9,date("d/m/Y",strtotime($analisis->paciente->fecha_nacimiento)));
+        /**historia cinica */
+        $pdf->Ln(5);
+        $pdf->SetX(16);
+        $pdf->SetFont('Arial','B',9);
+        $pdf->Cell(45,9,utf8_decode("NRO. HISTORIAL CLÍNICA:"));
+        $pdf->SetFont('Arial',null,9);
+        $pdf->Cell(55,9,utf8_decode($analisis->paciente->paciente ? $analisis->paciente->paciente->numero_historia_clinica : '-'));
+        $pdf->SetFont('Arial','B',9);
+        $pdf->Cell(30,9,utf8_decode("TIPO DE SEGURO: "));
+        $pdf->SetFont('Arial',null,9);
+        $pdf->Cell(55,9,utf8_decode($analisis->paciente->paciente ? $analisis->paciente->paciente->tipo_seguro->nombre : '-'));
+        /* datos generales  */
+        $pdf->Ln(7);
+        $pdf->SetX(16);
+        $pdf->SetFont('Arial','B',9);
+        $pdf->Cell(177,6,utf8_decode('DATOS DEL EXAMEN'),1,0,'C');
+        $pdf->Ln(7);
+        $pdf->SetX(16);
+        $pdf->SetFont('Arial','B',9);
+        $pdf->Cell(38,9,utf8_decode("NOMBRE DEL MÉDICO: "));
+        $pdf->SetFont('Arial',null,9);
+        $pdf->Cell(55,9,utf8_decode($analisis->medico ? $analisis->medico->nombre_completo : '-'));
+        $pdf->Ln(7);
+        $pdf->SetX(16);
         $pdf->SetX(16);
         $pdf->SetFont('Arial','B',9);
         $pdf->Cell(177,9,utf8_decode("EXÁMENES REALIZADOS"));
-        $pdf->Ln(7);
-        $pdf->SetX(16);
+        $pdf->Ln(5);
+
+        if(\request()->resultado){
+            $this->conResultadoPdf($pdf,$analisis);
+        }else {
+            $this->sinResultadoPdf($pdf,$analisis);
+        }
+        $pdf->SetY($pdf->GetPageHeight()-30);
+        $pdf->Line($pdf->GetPageWidth()-125,$pdf->GetPageHeight()-30,$pdf->GetPageWidth()-85,$pdf->GetPageHeight()-30);
+        $pdf->SetFont('Arial',null,9);
+        $pdf->SetX(55);
+        $pdf->Cell(100,9,utf8_decode($analisis->medico ? $analisis->medico->nombre_completo : '-'),0,0,'C');
+        $pdf->Output();
+        exit;
+    }
+
+    private function conResultadoPdf($pdf,$analisis){
         $examenes = $analisis->resultados->load('tipoExamen','subTipoExamen');
         $examenCab =collect();
         foreach ($examenes  as $index =>  $examen) {
@@ -216,19 +292,28 @@ class RegistroAnalisisController extends Controller
                 }
             }
         }
-
-
-        /*
-        $pdf->SetFillColor(206, 206, 208); // establece el color del fondo de la celda (en este caso es AZUL
-        $header=['EXAMEN','DETALLE','FECHA DE RESULTADO','RESULTADO'];
-        foreach($header as $col){
-            $pdf->Cell(44.2,7,$col,1,0,'C',true);
-        }*/
-
-
-        $pdf->Output();
-        exit;
     }
-
+    private function sinResultadoPdf($pdf,$analisis){
+        $examenes = $analisis->resultados->load('tipoExamen','subTipoExamen');
+        $examenCab =collect();
+        foreach ($examenes  as $index =>  $examen) {
+            $examenFounded = $examenes->where('examen_cab_id',$examen->examen_cab_id);
+            if($examenFounded->isNotEmpty() && !$examenCab->where('examen_cab_id',$examen->examen_cab_id)->count()){
+                $pdf->Ln(5);
+                $pdf->SetX(16);
+                $pdf->SetFont('Arial','B',9);
+                $pdf->Cell(30,9,utf8_decode("Tipo de examen: "));
+                $pdf->SetFont('Arial',null,9);
+                $pdf->Cell(60,9,strtoupper($examen->tipoExamen->nombre));
+                $order = 1;
+                foreach ($examenFounded as $index =>$found){
+                    $pdf->Ln(6);
+                    $pdf->SetX(20);
+                    $pdf->Cell(70,4,$order.". ".utf8_decode(strtoupper($found->subTipoExamen->nombre)));
+                    $order++;
+                }
+            }
+        }
+    }
 
 }

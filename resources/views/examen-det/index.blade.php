@@ -182,15 +182,5 @@
                 }
             });
         }
-        $(document).on('change',"select[name=tipo_examen]",function () {
-            console.log($(this).find('option:selected').data('insumos'));
-            var insumos =$(this).find('option:selected').data('insumos');
-
-            var html ="<option value=''>[Seleccione]</option>";
-            insumos.forEach(function (insumo) {
-                html+="<option value='"+insumo.id+"' >"+insumo.nombre+"</option>";
-            });
-            $("select[name=insumo]").html(html);
-        });
     </script>
 @endsection

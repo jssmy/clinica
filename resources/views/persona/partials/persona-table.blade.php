@@ -32,7 +32,7 @@
                             <tr>
                                 <td>{{$persona->numero_documento}}</td>
                                 <td>{{$persona->nombre_completo}}</td>
-                                <td>{{$persona->fecha_nacimiento}}</td>
+                                <td>{{date("d/m/Y",strtotime($persona->fecha_nacimiento))}}</td>
                                 <td>{{$persona->direccion}}</td>
                                 <td>{{$persona->genero_completo}}</td>
                                 <td>{{$persona->estadoCivil ? $persona->estadoCivil->nombre : ''}}</td>

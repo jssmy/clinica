@@ -133,10 +133,12 @@ class DashboardController extends Controller
 
     public function reporteStockInsumo(Request $request){
         $insumos = Insumo::join(UnidadMedida::getTableName().' as medida','medida.id','unidad_medida_id')
-                    ->join(ExamenDet::getTableName().' as sub_tipo_examen','sub_tipo_examen.insumo_id',Insumo::getTableName().'.id')
-                    ->selectRaw(Insumo::getTableName().".nombre AS insumo,".Insumo::getTableName().".cantidad,medida.nombre as unidad,sub_tipo_examen.nombre as uso")
-                    ->get();
+                    ->join(ExamenDet::getTableName().' as sub_tipo_examen','sub_tipo_examen.id',Insumo::getTableName().'.examen_det_id')
+                    ->selectRaw(Insumo::getTableName().".nombre AS insumo,".Insumo::getTableName().".cantidad,medida.nombre as unidad,sub_tipo_examen.nombre as uso");
 
+        if($request->stock) $insumos = $insumos->where(Insumo::getTableName().".cantidad","<=",$request->stock);
+
+        $insumos = $insumos->get();
         if($request->download){
             ExcelService::create(array_keys($insumos->first()->toArray()),$insumos->toArray());
             exit;
@@ -188,6 +190,7 @@ class DashboardController extends Controller
     private function promediosAtencion(Request $request){
         $numero_documente_paciente  = (int)$request->numero_documento_paciente;
         $numero_documente_medico = (int)$request->numero_documento_medico;
+        if(!$request->fecha_registro) $request->fecha_registro="0hasta0";
         list($fecha_inicio,$fecha_fin) = explode('hasta',str_replace(' ','',$request->fecha_registro));
         return $promedios = self::getSolicitudes($numero_documente_paciente,$numero_documente_medico,$fecha_inicio,$fecha_fin);
     }

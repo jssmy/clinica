@@ -13,7 +13,7 @@ class ReniecService
 {
     const API_URL="http://api.ateneaperu.com/api/Reniec/Dni?sNroDocumento=";
 
-    public static function getPersona(int $numero_documento){
+    public static function getPersona( $numero_documento){
         return api::get(SELF::API_URL.$numero_documento);
     }
 

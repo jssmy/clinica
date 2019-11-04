@@ -67,6 +67,18 @@
                                     </div>
                                 </div>
                                 <div class="row" style="margin-top: 15px;">
+                                    <div class="col-sm-6">
+                                        <label>Fecha de nacimiento</label>
+                                        <div class="input-group date">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input name="fecha_nacimiento" type="text" class="form-control" value="{{$persona->fec_nacimiento->format('Y-m-d')}}">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row" style="margin-top: 15px;">
                                     <div class="col-sm-12">
                                         <label>Dirección</label>
                                         <input type="text" name="direccion" class="form-control required" value="{{$persona->direccion}}">
@@ -117,6 +129,7 @@
 @section('scripts')
 
     <script>
+        $('input[name=fecha_nacimiento]').inputmask('yyyy-mm-dd', { 'placeholder': 'aaaa-mm-dd' })
         $(document).on('click',".btn-registrar-persona",function () {
             $(".btn-registrar-persona").removeClass('selected');
             $(this).addClass('selected');

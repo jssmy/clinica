@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title','Registar nueva persona')
-@section('content')
 
+@section('content')
     <style>
         .selected{
             background-color: #3c8dbc;
@@ -80,6 +80,18 @@
                                     </div>
                                 </div>
                                 <div class="row" style="margin-top: 15px;">
+                                    <div class="col-sm-6">
+                                        <label>Fecha de nacimiento</label>
+                                        <div class="input-group date">
+                                            <div class="input-group-addon">
+                                                <i class="fa fa-calendar"></i>
+                                            </div>
+                                            <input disabled name="fecha_nacimiento" type="text" class="form-control">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row" style="margin-top: 15px;">
                                     <div class="col-sm-12">
                                         <label>Dirección</label>
                                         <input disabled type="text" name="direccion" class="form-control required">
@@ -131,6 +143,7 @@
 
     <script>
         $(document).ready(function () {
+            $('input[name=fecha_nacimiento]').inputmask('yyyy-mm-dd', { 'placeholder': 'aaaa-mm-dd' })
             $(document).on('click',".btn-registrar-persona",function () {
                 $(".btn-registrar-persona").removeClass('selected');
                 $(this).addClass('selected');
@@ -197,6 +210,8 @@
                 $("input[name=numero_historia]").val("");
                 $("input[name=numero_colegiatura]").val("");
                 $("input[name=numero_colegiatura]").attr('disabled',true);
+                $("input[name=fecha_nacimiento]").val("");
+                $("input[name=fecha_nacimiento]").attr('disabled',true);
                 $("#btn-nuevo").attr('disabled',true);
 
             }
@@ -211,6 +226,8 @@
                 $("input[name=numero_historia]").removeAttr('disabled');
                 $("input[name=direccion]").removeAttr('disabled');
                 $("input[name=numero_colegiatura]").removeAttr('disabled');
+                $("input[name=fecha_nacimiento]").val("");
+                $("input[name=fecha_nacimiento]").removeAttr('disabled');
             }
 
             var url_renic= "{{route('persona.validar','numero_documento')}}";
@@ -243,9 +260,11 @@
                                     toastr["success"]('Se ha validado los datos de la persona en la RENIEC');
                                     return true;
                                 }
-                                limpiarFormulario();
+                                habilitarFormulario();
+                                toastr["warning"]('Por favor, asegúrese que el número de documento de identidad sea correcto');
+                                $("#btn-nuevo").removeAttr('disabled');
                                 btn.html(btn.data('btn_no_encontrado'));
-                                toastr["warning"]('Asegúrese que escribir correctamente el documento de indentidad');
+
                                 return true;
                             }, beforeSend: function () {
                                 btn.html(btn.data('btn_validando'));
@@ -273,9 +292,8 @@
                 }
             });
         });
-
-
     </script>
+
 @endsection
 
 

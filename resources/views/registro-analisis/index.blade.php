@@ -5,11 +5,10 @@
 
     <section id="search-section" >
         <!-- title row -->
-
         <div class="row">
             <div style="padding-bottom: 24px" class="text-center">
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
-                    <i class="fa  fa-heartbeat"></i> Registro de análsis
+                    <i class="fa  fa-heartbeat"></i> Registro de {{request()->resultado ? 'resultados' : 'análasis'}}
                 </span>
             </div>
         </div>
@@ -22,7 +21,7 @@
                             <button class="btn btn-default" style="color: #fff;background: #31708f;font-size: 14px;">Nro. documento</button>
                         </div>
                         <!-- /btn-group -->
-                        <input data-btn="btn-consultar" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar paciente">
+                        <input data-btn="btn-consultar"  maxlength="8" id="txt-numero" type="text" name="numero" class="input-submit form-control input-digits" placeholder="buscar paciente">
                         <div class="input-group-btn">
                             <button id="btn-consultar"
                                     data-search="<span class='fa fa-search' style='color: #fff;background: #31708f;'></span>"
@@ -335,7 +334,11 @@
                             callback: function () {
 
                                 var form = $("#form-cambiar-paciente");
-                                if(!$("#form-cambiar-paciente input[name=paciente_id]").val()) return false;
+                                if(!$("#form-cambiar-paciente input[name=paciente_id]").val()){
+                                    $("#error").html(msg_200('Por favor indique el médico responsable'))
+                                    return false;
+                                }
+
                                 var url = form.attr('action');
                                 $.ajax({
                                     url : url,
