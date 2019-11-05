@@ -15,10 +15,10 @@
             @foreach($usuarios as $usuario)
                 <tr>
                     <td>{{$usuario->usuario}}</td>
-                    <td>{{$usuario->perfil->descripcion}}</td>
-                    <td>{{$usuario->persona->numero_documento}}</td>
-                    <td>{{$usuario->persona->nombre_completo}}</td>
-                    <td>{{$usuario->usuario_registro->usuario}}</td>
+                    <td>{{$usuario->perfil ? $usuario->perfil->descripcion : ''}}</td>
+                    <td>{{$usuario->persona? $usuario->persona->numero_documento :''}}</td>
+                    <td>{{$usuario->persona? $usuario->persona->nombre_completo : ''}}</td>
+                    <td>{{$usuario->usuario_registro? $usuario->usuario_registro->usuario : ''}}</td>
                     <td>{{$usuario->fecha_registro}}</td>
                 </tr>
             @endforeach
