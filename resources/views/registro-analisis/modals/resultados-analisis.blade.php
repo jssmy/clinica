@@ -1,59 +1,65 @@
-<div class="tab-content" style="background: white; margin-top: 0px;">
-    <table style="font-size: 11px;" class="table">
-        <thead style="background-color: #3c8dbc; color: white;">
-        <tr>
-            <td>Tipo</td>
-            <td>Sub-tipo</td>
-            <td>Fecha resultado</td>
-            <td>Comentario</td>
-            <td>Resultado</td>
-            <td>Opciones</td>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach($resultados as $resultado)
+<style>
+    .fixed_header{
+
+        table-layout: fixed;
+        border-collapse: collapse;
+    }
+
+    .fixed_header tbody{
+        display:block;
+        width: 100%;
+        overflow: auto;
+        max-height: 400px;
+    }
+
+    .fixed_header thead tr {
+        display: block;
+    }
+
+    .fixed_header th, .fixed_header td {
+        padding: 5px;
+        text-align: left;
+
+    }
+</style>
+<div class="row">
+    <div id="error" class="col-sm-12">
+    </div>
+</div>
+<div class="tab-content " style="background: white; margin-top: 0px;">
+    <form id="form-resultados" action="{{route('registro.analisis.guardar-resultado',$analisis)}}">
+        <input type="hidden" name="_token" value="{{csrf_token()}}">
+        <table style="font-size: 11px;" class="table fixed_header">
+            <thead style="background-color: #3c8dbc; color: white;">
+            <tr>
+                <td style="width: 180px;">Tipo</td>
+                <td style="width: 100px">Sub-tipo</td>
+                <td style="width: 70px">Fecha resultado</td>
+                <td style="width: 420px">Comentario</td>
+                <td>Resultado</td>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach($analisis->resultados as $resultado)
                 <tr>
-                    <td>{{$resultado->tipoExamen ? $resultado->tipoExamen->nombre : ''}}</td>
-                    <td>{{$resultado->subTipoExamen ? $resultado->subTipoExamen->nombre : ''}}</td>
-                    <td>{{$resultado->fec_resultado ? $resultado->fec_resultado->format('d/m/Y') : '' }}</td>
-                    <td>
-                        @if(auth()->user()->es_tecnologo)
-                            @if($resultado->comentario)
-                                {{$resultado->comentario}}
-                            @else
-                                <textarea maxlength="200"  id="comentario{{$resultado->id}}" class="required" name="comentario" style="width: 400px;"></textarea>
-                            @endif
-                        @else
-                            {{$resultado->comentario}}
-                        @endif
-                    </td>
-                    <td>
-                        @if(auth()->user()->es_tecnologo)
-                            @if($resultado->resultado)
-                                {{$resultado->resultado}}
-                            @else
-                                <input id="resultado{{$resultado->id}}" style="width: 60px;" type="text" class="input-numeric form-control required" name="resultado">
-                            @endif
-                        @else
-                            {{$resultado->resultado}}
-                        @endif
-                    </td>
-                    <td>
-                        @if(auth()->user()->es_tecnologo)
-                            @if(!$resultado->resultado && !$resultado->comentario)
-                                <button
-                                    data-comentario="comentario{{$resultado->id}}"
-                                    data-resultado="resultado{{$resultado->id}}"
-                                    data-url="{{route('registro.analisis.guardar-resultado',$resultado)}}"
-                                    data-form="form-guardar-resultado{{$resultado->id}}"
-                                    class="btn  btn-sm btn-success btn-guardar-resultados"><i class="fa fa-save"></i> GUARDAR</button>
-                            @endif
-                        @endif
-                    </td>
+                    <td style="width: 180px;">{{$resultado->tipoExamen ? $resultado->tipoExamen->nombre : ''}}</td>
+                    <td style="width: 100px">{{$resultado->subTipoExamen ? $resultado->subTipoExamen->nombre : ''}}</td>
+                    <td style="width: 60px">{{$resultado->fec_resultado ? $resultado->fec_resultado->format('d/m/Y') : '' }}</td>
+                    @if(auth()->user()->es_tecnologo)
+                        <td style="width: 400px">
+                            <textarea maxlength="200"  rows="3" id="comentario{{$resultado->id}}" class="form-control" name="resultado[{{$resultado->id}}][comentario]" style="width: 400px;">{{$resultado->comentario}}</textarea>
+                        </td>
+                        <td>
+                            <input {{$resultado->resultado ? 'readonly' : ''}} value="{{$resultado->resultado}}" style="width: 60px;height: 51px;" type="text" class="input-numeric form-control required" name="resultado[{{$resultado->id}}][valor]">
+                        </td>
+                    @else
+
+                    @endif
                 </tr>
-        @endforeach
-        </tbody>
-    </table>
+            @endforeach
+            </tbody>
+        </table>
+    </form>
 </div>
 <script>
     $('.btn-guardar-resultados').on('click',function () {

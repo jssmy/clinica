@@ -11,10 +11,11 @@ class ExamenDetController extends Controller
 {
     //
     public function index(Request $request){
-        $examenes = ExamenDet::with(['usuario','tipo_examen'])
-                    ->orderBy('examen_cab_id')
-                    ->orderBy('id')
+        $examenes = ExamenDet::with(['usuario','tipo_examen'=>function($query){
+                    $query->orderBy('nombre');
+                    }])
                     ->paginate(12);
+
         $tipo_examenes = ExamenCab::activo()->get();
         if($request->ajax()){
             return view('examen-det.partials.examen-det-table',compact('examenes'));

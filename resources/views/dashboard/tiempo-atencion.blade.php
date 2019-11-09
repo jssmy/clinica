@@ -10,7 +10,7 @@
             <div style="padding-bottom: 24px" class="text-center">
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
                     <span class="fa  fa-hourglass-3"></span>
-                    Reporte Tiempo Promedio de Antención
+                    Reporte de Tiempo promedio de Atención
                 </span>
             </div>
         </div>

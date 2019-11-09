@@ -12,9 +12,9 @@
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
                     <span class="fa fa-search"></span>
                     @if($tipo_persona=='paciente')
-                        Reporte por paciente atendido
+                        Reporte de Pacientes Atendidos
                     @else
-                        Reporte por profesional médico
+                        Reporte de Profesional Medico
                     @endif
                 </span>
             </div>

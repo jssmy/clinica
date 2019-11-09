@@ -404,6 +404,9 @@
     function format_text_digits(value) {
         return /^[a-zA-Z0-9-_]*\s*$/.test(value);
     }
+    function format_date(value) {
+        return /^([1-9]{4})+-+([0-9]{2})+([0-9]{2})$/.test(value);
+    }
 
 
     var datePickerRangeOption = {
@@ -552,6 +555,7 @@
         jQuery.validator.addMethod("length", function (value, element, params) {
             return $(element).val().length == params;
         }, "Por favor, ingresar un valor de {0} de longitud.");
+
 
         jQuery.validator.addMethod("minlength", function (value, element, params) {
             return $(element).val().length >= params;

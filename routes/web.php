@@ -245,6 +245,9 @@ Route::group(['middleware' => 'auth.session'], function () {
 
     Route::group(['prefix' => 'registro-analisis'], function() {
         Route::get('/', 'RegistroAnalisisController@index')->name('registro-analisis.index');
+        Route::get('/resultado',function (){
+            return redirect()->route('registro-analisis.index','resultado=true');
+        })->name('registro.resultado');
 
         /**
          *Rutas para crear analisis
@@ -277,7 +280,7 @@ Route::group(['middleware' => 'auth.session'], function () {
         Route::put('/{analisis}/cambiar/store','RegistroAnalisisController@cambiarPacienteStore')->name('registro.analisis.cambiar.store');
 
         /** gurdar resultados**/
-        Route::put('/guardar-resultados/{resultadoAnalisis}','RegistroAnalisisController@guardarResultadoAnalisis')->name('registro.analisis.guardar-resultado');
+        Route::put('/guardar-resultados/{analisis}','RegistroAnalisisController@guardarResultadoAnalisis')->name('registro.analisis.guardar-resultado');
 
         Route::get('imprimir-documento/{analisis}','RegistroAnalisisController@imprimir')->name('registro.analsis.imprimir');
 

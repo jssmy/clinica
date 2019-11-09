@@ -306,6 +306,26 @@
                                 return true;
                             }
                         },
+                        @if(auth()->user()->es_tecnologo)
+                        ok: {
+                            label : 'GUARDAR',
+                            className: 'btn btn-sm btn-info',
+                            callback: function () {
+                                var form = $("#form-resultados");
+                                if(!form.valid()) {
+                                    $("#error").html(msg_200("Por favor ingrese todos los resultados"));
+                                    return false;
+                                }
+                                var url = form.attr('action');
+                                $.ajax({
+                                    url : url,
+                                    type : 'put',
+                                    data: form.serializeArray()
+                                });
+
+                            }
+                        }
+                        @endif
                     }
                 });
                 $(".input-numeric").inputFilter(function (value) {
@@ -335,7 +355,7 @@
 
                                 var form = $("#form-cambiar-paciente");
                                 if(!$("#form-cambiar-paciente input[name=paciente_id]").val()){
-                                    $("#error").html(msg_200('Por favor indique el médico responsable'))
+                                    $("#error").html(msg_200('Por favor indique el paciente'))
                                     return false;
                                 }
 

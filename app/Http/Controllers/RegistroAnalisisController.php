@@ -96,11 +96,9 @@ class RegistroAnalisisController extends Controller
     }
 
     public function resultadosAnalisis($analisis_id){
-                $resultados = RestultadoAnalisis::with('tipoExamen','subTipoExamen')
-                        ->where('analisis_id',$analisis_id)
-                        ->get();
+                $analisis = RegistroAnalisis::with(['resultados.tipoExamen','resultados.subTipoExamen'])->find($analisis_id);
 
-        return view('registro-analisis.modals.resultados-analisis',compact('resultados'));
+        return view('registro-analisis.modals.resultados-analisis',compact('analisis'));
     }
 
     public function cambiarPacienteForm(RegistroAnalisis $analisis){
@@ -114,20 +112,25 @@ class RegistroAnalisisController extends Controller
         return response()->json(['message'=>'El análisis fue movido a otro paciente']);
     }
 
-    public function guardarResultadoAnalisis(Request $request, RestultadoAnalisis $resultadoAnalisis){
-        \DB::transaction(function () use ($request,&$resultadoAnalisis){
-            $resultadoAnalisis->comentario = $request->comentario;
-            $resultadoAnalisis->resultado = $request->resultado;
-            $resultadoAnalisis->fecha_resultado=date("Y-m-d H:i:s");
-            $analisis = $resultadoAnalisis->analisis;
-            $resultadoAnalisis->save();
-            if($analisis->aprobado) {
-                $analisis->estado = 'AP';
+    public function guardarResultadoAnalisis(Request $request, RegistroAnalisis $analisis){
+
+        \DB::transaction(function () use ($request,$analisis){
+            $resultados = $request->resultado;
+            foreach ($resultados as $resultado => $item){
+                RestultadoAnalisis::where('id',$resultado)->update([
+                    'comentario'=>$item['comentario'],
+                    'resultado'=>$item['valor']
+                ]);
+            }
+            if(!$analisis->es_aprobado){
+                $analisis->estado='AP';
+                $analisis->usuario_resultado_id = auth()->id();
+                $analisis->fecha_resultado = date("Y-m-d h:i:s");
                 $analisis->save();
             }
-        });
 
-        return response()->json(['message'=>'Se ha guarado el resultado del examen','resultado_analisis'=>$resultadoAnalisis]);
+        });
+        return response()->json(['message'=>'Se ha guardado correctamente','resultado_analisis'=>$analisis]);
     }
 
     public function imprimir(RegistroAnalisis $analisis){

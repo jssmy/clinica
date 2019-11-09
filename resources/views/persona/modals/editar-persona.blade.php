@@ -69,12 +69,7 @@
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-sm-6">
                                         <label>Fecha de nacimiento</label>
-                                        <div class="input-group date">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input name="fecha_nacimiento" type="text" class="form-control" value="{{$persona->fec_nacimiento->format('Y-m-d')}}">
-                                        </div>
+                                        <input name="fecha_nacimiento" type="text" class="form-control required" value="{{$persona->fec_nacimiento->format('Y-m-d')}}">
                                     </div>
 
                                 </div>
