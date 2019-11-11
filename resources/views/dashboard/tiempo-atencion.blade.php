@@ -66,7 +66,7 @@
                                     </tr>
                                     </thead>
                                     <tbody data-empty='<tr><td colspan="7" class="text-center">No hay registros para mostrar</td></tr>' id="registros-body">
-                                    <tr><td colspan="7" class="text-center">No hay registros para mostrar</td></tr>
+                                        @include('dashboard.partials.reporte-promedio-atencion-table')
                                     </tbody>
                                 </table>
                                 <!-- /.table -->
@@ -159,7 +159,7 @@
         $("input[name=daterangepicker_end]").val();
         $("input[name=fecha_registro]").val($("input[name=daterangepicker_start]").val() + " hasta "+$("input[name=daterangepicker_end]").val());
     });
-    var url_download="{{route('dashboard.tiempo-atencion')}}";
+    var url_download="{{route('dashboard.download-tiempo-atencion')}}";
     $("#btn-descargar").click(function () {
         if(!$("#form-search").valid()) return false;
         window.open(url_download+"?download=true&"+$("#form-search").serialize());

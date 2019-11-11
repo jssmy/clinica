@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\QueryExamenEmision;
+use App\Http\Controllers\Traits\QueryPacienteAtendido;
 use App\Http\Controllers\Traits\QueryPatologiaAnormal;
 use App\Http\Controllers\Traits\QueryProduccionMensual;
+use App\Http\Controllers\Traits\QueryProfesionalMedico;
+use App\Http\Controllers\Traits\QueryStockInsumo;
 use App\Http\Controllers\Traits\QueryTiemPromedioAtencion;
 use App\Models\Entity;
 use App\Models\ExamenCab;
@@ -27,7 +31,10 @@ class DashboardController extends Controller
     use QueryPatologiaAnormal;
     use QueryTiemPromedioAtencion;
     use QueryProduccionMensual;
-
+    use QueryPacienteAtendido;
+    use QueryProfesionalMedico;
+    use QueryExamenEmision;
+    use QueryStockInsumo;
     private  static function esFecha($fecha){
         return preg_match('/\d{4}-\d{2}-\d{2}/', $fecha);
     }
@@ -85,23 +92,19 @@ class DashboardController extends Controller
         return view('dashboard.paciente-atendido');
     }
 
+    public static function downloadReportePacienteAtendido($paciente_id){
+            $analisis = self::getAtencion($paciente_id);
+            $header = ['ID','TIPO DE EXAMEN','SUB-TIPO DE EXAMEN','FECHA DE RESULTADO','RESULTADO','ESTADO'];
+            $title=["REPORTE DE PACIENTE ATENDIDO","PACIENTE: ".Persona::find($paciente_id)->nombre_completo];
+            ExcelService::create($title,$header,$analisis->flatten()->toArray());
+            exit;
+    }
+
+
     public function reportePacienteAtendido(){
         $persona = \request()->paciente;
-        $analisis = RegistroAnalisis::where('paciente_id',\request()->paciente)
-                                    ->join(RestultadoAnalisis::getTableName().' as resultado','resultado.analisis_id',RegistroAnalisis::getTableName().'.id')
-                                    ->join(ExamenCab::getTableName().' as tipo_examen','tipo_examen.id','resultado.examen_cab_id')
-                                    ->join(ExamenDet::getTableName().' as sub_tipo_examen','sub_tipo_examen.id','resultado.examen_det_id')
-                                    ->selectRaw("resultado.id,tipo_examen.nombre as tipo_examen,
-                                                sub_tipo_examen.nombre as sub_tipo_examen,
-                                                date_format(resultado.fecha_resultado,'%d/%m/%Y') as fecha_resultado,
-                                                resultado.resultado as resultado,".RegistroAnalisis::getTableName().'.estado')
-                                                ->get()->groupBy('tipo_examen');
+        $analisis = self::getAtencion(\request()->paciente);
 
-        if(\request()->download){
-            $header = array_keys($analisis->flatten()->first()->toArray());
-            ExcelService::create($header,$analisis->flatten()->toArray());
-            exit;
-        }
         $analisis = $analisis->map(function ($registros){
             return $registros->groupBy('sub_tipo_examen');
         });
@@ -117,31 +120,25 @@ class DashboardController extends Controller
     }
 
 
-    public function profesionalMedico(){
-        $colum = \request()->tecnologo ? 'usuario_resultado_id' :'empleado_id';
-        $personas = (new Persona());
-        if(\request()->tecnologo){
-            $personas = $personas->join((new User())->getTable()." as usuario",'usuario.persona_id',Persona::getTableName().".id")
-                        ->join(RegistroAnalisis::getTableName().' as analisis',"analisis.usuario_resultado_id",'usuario.id');
-        }else{
-            $personas=$personas->join(RegistroAnalisis::getTableName().' as analisis',"analisis.empleado_id",Persona::getTableName().'.id');
-        }
 
-        $personas = $personas->join(RestultadoAnalisis::getTableName().' as resultado','resultado.analisis_id','analisis.id')
-                    ->selectRaw("genero,numero_documento,nombre,apellido_paterno,apellido_materno,resultado.id as examen");
-        if(\request()->ajax() && !\request()->numero_documento && \request()->fecha_registro){
+    public function downloadPrefesionalMedico(Persona $persona){
 
-            list($fecha_inicio,$fecha_fin) = explode('/',str_replace([' ','hasta'],['','/'],\request()->fecha_registro));
-            if(\request()->tecnologo){
-                $personas = $personas->whereRaw('analisis.fecha_resultado >= ? and analisis.fecha_resultado <= ?',[$fecha_inicio,$fecha_fin]);
-            }else {
-                $personas = $personas->whereRaw('analisis.fecha_registro >= ? and analisis.fecha_registro <= ?',[$fecha_inicio,$fecha_fin]);
+            $resultados = self::getEmision($persona);
+            $header = ["TIPO DE EXAMEN","SUB-TIPO DE EXAMEN","CANTIDAD"];
+            $title=["REPORTE DE PROFESIONAL MÉDICO","MÉDICO: ".$persona->nombre_completo];
+            if(\request()->fecha_registro){
+                list($fecha_inicio,$fecha_fin) = explode('/',str_replace([' ','hasta'],['','/'],\request()->fecha_registro));
+                $fecha_inicio = str_replace("-","/",$fecha_inicio);
+                $fecha_fin = str_replace("-","/",$fecha_fin);
+                array_push($title,"FECHA DESDE -HASTA: $fecha_inicio - $fecha_fin");
             }
+            ExcelService::create($title,$header,$resultados->toArray());
+            exit;
+    }
 
-        }
+    public function profesionalMedico(){
 
-
-        $personas = $personas->get();
+        $personas = self::getProfesional();
         $endPersonas = collect();
         $charData= $personas;
         $endBarData=[];
@@ -160,7 +157,6 @@ class DashboardController extends Controller
                 }
             }
         }
-
         if(\request()->ajax()){
 
             return view('dashboard.partials.main-reporte-examen-medico',compact('endPersonas','endBarData'));
@@ -169,38 +165,10 @@ class DashboardController extends Controller
     }
 
     public function reporteMedicoExamenesEmitidos(Request $request ,Persona $persona){
-        $persona_id= $persona->id;
-        $column=RegistroAnalisis::getTableName().".empleado_id";
-        if($request->tecnologo){
-            $analisis = $persona->analisisTecnologo;
-            $persona_id = $persona->usuario->id;
-            $column=RegistroAnalisis::getTableName().".usuario_resultado_id";
-        }else {
-            $analisis = $persona->analisis;
-        }
 
+        $resultados = self::getEmision($persona);
+        $analisis = self::getAnalisis($persona);
 
-        $resultados=RegistroAnalisis::join(RestultadoAnalisis::getTableName().' as resultado','resultado.analisis_id',RegistroAnalisis::getTableName().'.id')
-            ->join(ExamenCab::getTableName().' as tipo_examen','tipo_examen.id','resultado.examen_cab_id')
-            ->join(ExamenDet::getTableName().' as sub_tipo_examen','sub_tipo_examen.id','resultado.examen_det_id')
-            ->whereRaw("$column=?",[$persona_id])
-            ->selectRaw('tipo_examen.nombre as examen_tipo,sub_tipo_examen.nombre as examen_sub_tipo,count(1) as cantidad_sub_tipo')
-            ->groupBy(['tipo_examen.nombre','sub_tipo_examen.nombre']);
-
-
-        if($request->fecha_registro){
-            list($fecha_inicio,$fecha_fin) = explode('/',str_replace([' ','hasta'],['','/'],\request()->fecha_registro));
-            $resultados = $resultados->whereRaw('registro_analisis.fecha_registro>= ? and registro_analisis.fecha_registro <= ?',[$fecha_inicio,$fecha_fin]);
-            $analisis = $analisis->where('fecha_registro','>=',$fecha_inicio)->where('fecha_registro','<=',$fecha_fin);
-        }
-        $resultados = $resultados->get();
-
-
-        if(\request()->download){
-            $header = array_keys($resultados->first()->toArray());
-            ExcelService::create($header,$resultados->toArray());
-            exit;
-        }
             $resultados =$resultados->groupBy('examen_tipo');
             $piedaData = $resultados->flatten();
             $endPieData=[];
@@ -210,21 +178,17 @@ class DashboardController extends Controller
 
         return view('dashboard.partials.reporte-medico-examen-emision',compact('persona','resultados','analisis','endPieData'));
     }
+    public function donwloadStockInsumo(Request $request){
+        $insumos = self::getStock($request);
+        $header=["INSUMO",'CANTIDAD','UNIDAD','USO'];
+        $title=["REPORTE DE STOCK DE INSUMOS"];
+        ExcelService::create($title,$header,$insumos->toArray());
 
+    }
     public function reporteStockInsumo(Request $request){
         $semaforizacion = Semaforizacion::all();
+        $insumos = self::getStock($request);
 
-        $insumos = Insumo::join(UnidadMedida::getTableName().' as medida','medida.id','unidad_medida_id')
-                    ->leftJoin(ExamenDet::getTableName().' as sub_tipo_examen','sub_tipo_examen.id',Insumo::getTableName().'.examen_det_id')
-                    ->selectRaw(Insumo::getTableName().".nombre AS insumo,".Insumo::getTableName().".cantidad,medida.nombre as unidad,sub_tipo_examen.nombre as uso");
-
-        if($request->stock) $insumos = $insumos->where(Insumo::getTableName().".cantidad","<=",$request->stock);
-
-        $insumos = $insumos->get();
-        if($request->download){
-            ExcelService::create(array_keys($insumos->first()->toArray()),$insumos->toArray());
-            exit;
-        }
         $insumos=$insumos->groupBy('insumo');
         $allInsumos = Insumo::activo()->get();
         $endBarData=[];
@@ -257,24 +221,45 @@ class DashboardController extends Controller
         return  self::getPatologias((int)$request->numero_documento,$fecha_inicio,$fecha_fin);
     }
 
-    public function reportePromedioAtencion(Request $request){
-        if($request->ajax()){
+    public function downloadPromedioAtencion(Request $request){
             $promedios = $this->promediosAtencion($request);
+
+
+            $title=["REPORTE DE TIEMPO PROMEDIO DE ATENCIÓN"];
+            if($request->numero_documento_paciente){
+                    $paciente = Persona::SoloPaciente()->where('numero_documento',$request->numero_documento_paciente)->first();
+                    array_push($title,"PACIENTE: ".$paciente->nombre_completo);
+            }
+            if($request->numero_documento_medico){
+                $medico = Persona::SoloMedico()->where('numero_documento',$request->numero_documento_medico)->first();
+                array_push($title,"MÉDICO: ".$medico->nombre_completo);
+            }
+            if($request->fecha_registro){
+                list($fecha_inicio,$fecha_fin) = explode('hasta',str_replace(' ','',$request->fecha_registro));
+                $fecha_inicio = str_replace("-","/",$fecha_inicio);
+                $fecha_fin = str_replace("-","/",$fecha_fin);
+                array_push($title,"FECHA DESDE -  HASTA: $fecha_inicio - $fecha_fin");
+            }
+        $header=["CÓDIGO","TIPO DE EXAMEN","SUB TIPO DE EXAMEN","FECHA DE REGISTRO","FECHA DE RESULTADO","DIFERENCIA (min)"];
+
+            ExcelService::create($title,$header,$promedios->toArray());
+            exit;
+    }
+    public function reportePromedioAtencion(Request $request){
+        $promedios = $this->promediosAtencion($request);
+        if($request->ajax()){
             return view('dashboard.partials.reporte-promedio-atencion-table',compact('promedios'));
         }
-        if($request->download){
-            $promedios = $this->promediosAtencion($request);
-            ExcelService::create(array_keys((array)collect($promedios)->first()),$promedios);
-            exit;
-        }
-        return view('dashboard.tiempo-atencion');
+
+        return view('dashboard.tiempo-atencion',compact('promedios'));
     }
 
     private function promediosAtencion(Request $request){
         $numero_documente_paciente  = (int)$request->numero_documento_paciente;
         $numero_documente_medico = (int)$request->numero_documento_medico;
-        if(!$request->fecha_registro) $request->fecha_registro="0hasta0";
-        list($fecha_inicio,$fecha_fin) = explode('hasta',str_replace(' ','',$request->fecha_registro));
+        $fecha_registro = $request->fecha_registro;
+        if(!$fecha_registro) $fecha_registro="0hasta0";
+        list($fecha_inicio,$fecha_fin) = explode('hasta',str_replace(' ','',$fecha_registro));
         return $promedios = self::getSolicitudes($numero_documente_paciente,$numero_documente_medico,$fecha_inicio,$fecha_fin);
     }
 

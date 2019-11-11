@@ -68,7 +68,7 @@
             <div class="mailbox-controls">
                 <div class="row">
                     <div class="col-sm-12">
-                        <a class="pull-right"  style="padding-top: 10px;" target="_blank" href="#">
+                        <a class="pull-right"  id="btn-descargar-reporte" style="padding-top: 10px;" target="_blank" href="{{route('dashboard.download-profesional-medico',$persona)}}">
                             <i class="fa fa-download"></i> Descargar reporte
                         </a>
                     </div>
@@ -143,4 +143,16 @@
         pieSeries.hiddenState.properties.startAngle = -90;
 
     }); // end am4core.ready()
+
+    $(document).ready(function () {
+        $("#btn-descargar-reporte").click(function (e) {
+            e.preventDefault();
+            var data = {fecha_registro : params.fecha_registro};
+            if($("#tecnologo").val()=="SI") data.tecnologo=true;
+            var url = $(this).attr('href')+"?"+serialiseObject(data);
+            window.open(url);
+        });
+
+
+    });
 </script>
