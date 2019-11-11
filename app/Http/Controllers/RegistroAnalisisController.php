@@ -12,9 +12,11 @@ use App\Models\Persona;
 use App\Models\RegistroAnalisis;
 use App\Models\RestultadoAnalisis;
 
+use App\Models\Semaforizacion;
 use App\Utils\fpdf\FPDF;
 use App\Utils\FPDF\PDF;
 use Illuminate\Http\Request;
+use function foo\func;
 
 class RegistroAnalisisController extends Controller
 {
@@ -123,14 +125,31 @@ class RegistroAnalisisController extends Controller
                 ]);
             }
             if(!$analisis->es_aprobado){
+                $analisis->resultados()->update([
+                    'usuario_resultado_id'=>auth()->id(),
+                    'fecha_resultado'=>date("Y-m-d h:i:s")
+                ]);
                 $analisis->estado='AP';
                 $analisis->usuario_resultado_id = auth()->id();
                 $analisis->fecha_resultado = date("Y-m-d h:i:s");
                 $analisis->save();
             }
-
         });
         return response()->json(['message'=>'Se ha guardado correctamente','resultado_analisis'=>$analisis]);
+    }
+
+    public function semoforizacionForm(){
+        $semaforizacion = Semaforizacion::all();
+        return view('registro-analisis.modals.semaforizacion',compact('semaforizacion'));
+    }
+
+    public function semoforizacionStore(Request $request){
+        \DB::transaction(function () use ($request){
+
+            Semaforizacion::whereIn('id',array_keys($request->semaforo))->delete();
+            Semaforizacion::insert($request->semaforo);
+        });
+        return response()->json(['message'=>'Se ha actualizado la semaforización']);
     }
 
     public function imprimir(RegistroAnalisis $analisis){
@@ -154,7 +173,11 @@ class RegistroAnalisisController extends Controller
         $pdf->SetTextColor(255,255,255);
         $pdf->SetFont('Arial','B',10);
         $pdf->SetX(16);
-        $pdf->Cell(177,7,utf8_decode('REGISTRO DE ANÁLISIS'),1,0,'C',1);
+        $title=utf8_decode('REGISTRO DE ANÁLISIS');
+        if(\request()->resultado){
+            $title = utf8_decode("RESULTADO DE ANÁLISIS");
+        }
+        $pdf->Cell(177,7,$title,1,0,'C',1);
         $pdf->SetTextColor(0,0,0);
         /* datos generales  */
         $pdf->Ln(10);
@@ -166,11 +189,18 @@ class RegistroAnalisisController extends Controller
         $pdf->Cell(15,9,utf8_decode("CÓDIGO:"));
         $pdf->SetFont('Arial',null,9);
         $pdf->Cell(80,9,$analisis->codigo);
+        $title_fecha_registro=utf8_decode('FECHA DE REGISTRO:');
+        $fecha_registr=date("d/m/Y h:i",strtotime($analisis->fecha_registro));
+        if(\request()->resultado){
+            $title_fecha_registro = utf8_decode("FECHA DE RESULTADO:");
+            $fecha_registr = $analisis->fecha_resultado? date("d/m/Y h:i",strtotime($analisis->fecha_resultado)) : '';
+
+        }
         $pdf->SetFont('Arial','B',9);
-        $pdf->Cell(15,9,utf8_decode("FECHA DE REGISTRO:"));
+        $pdf->Cell(15,9,$title_fecha_registro);
         $pdf->SetFont('Arial',null,9);
         $pdf->SetX($pdf->GetX()+25);
-        $pdf->Cell(15,9,date("d/m/Y h:i",strtotime($analisis->fecha_registro)));
+        $pdf->Cell(15,9,$fecha_registr);
         /* usuario registro */
         $pdf->Ln(5);
         $pdf->SetX(16);
@@ -265,9 +295,9 @@ class RegistroAnalisisController extends Controller
                 $pdf->SetX(16);
                 $pdf->SetFont('Arial',null,8);
                 $pdf->SetFillColor(235, 236, 236); // establece el color del fondo de la celda (en este caso es AZUL
-                $pdf->Cell(70,5,'DETALLE DE EXAMEN',1,0,'J',true);
-                $pdf->Cell(70,5,'OBSERVACIONES',1,0,'J',true);
-                $pdf->Cell(27,5,'FEC. RESULTADO',1,0,'J',true);
+                $pdf->Cell(70,5,'SUB TIPO DE EXAMEN',1,0,'J',true);
+                $pdf->Cell(70+27,5,'OBSERVACIONES',1,0,'J',true);
+
                 $pdf->Cell(10,5,'Rtdo.',1,0,'J',true);
                 $pdf->Ln(5);
                 foreach ($examenFounded as $found){
@@ -279,13 +309,11 @@ class RegistroAnalisisController extends Controller
                     $pdf->SetX(16);
                     $pdf->MultiCell(70,4,utf8_decode(strtoupper($found->subTipoExamen->nombre)));
                     $pdf->SetXY($x,$y);
-                    $pdf->Cell(70,20,'',1,0,'J',true);
+                    $pdf->Cell(70+27,20,'',1,0,'J',true);
                     $pdf->SetXY($x,$y);
-                    $pdf->MultiCell(70,5,utf8_decode($found->comentario));
-                    $pdf->SetXY($x+70,$y);
-                    $pdf->Cell(27,20,'',1,0,'J',true);
-                    $pdf->SetXY($x+70,$y);
-                    $pdf->MultiCell(27,5,$found->fec_resultado ? $found->fec_resultado->format('d/m/Y') : '');;
+                    $pdf->MultiCell(70+27,5,utf8_decode($found->comentario));
+
+
 
                     $pdf->SetXY($x+70+27,$y);
                     $pdf->Cell(10,20,'',1,0,'J',true);

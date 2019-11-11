@@ -57,6 +57,10 @@ class Persona extends Entity
         return $this->hasMany(RegistroAnalisis::class,'empleado_id','id');
     }
 
+    public function getanalisisTecnologoAttribute(){
+        return RegistroAnalisis::where('usuario_resultado_id',$this->usuario->id)->get();
+    }
+
     public function estadoCivil(){
         return$this->hasOne(EstadoCivil::class,'id','estado_civil_id');
     }

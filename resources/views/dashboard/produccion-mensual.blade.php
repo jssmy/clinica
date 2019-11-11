@@ -2,23 +2,15 @@
 @section('title','Registros')
 @section('styles')
     <link rel="stylesheet" href="{{URL::asset('public/bower_components/Ionicons/css/ionicons.min.css')}}">
-
-    <style>
-        #chartdiv {
-            width: 100%;
-            height: 300px;
-        }
-
-    </style>
 @endsection
 @section('content')
-    <section id="search-section" >
+    <section id="search-section">
         <!-- title row -->
         <div class="row">
             <div style="padding-bottom: 24px" class="text-center">
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
-                    <span class="fa fa-medkit"></span>
-                    Reporte de patologías anormales
+                    <span class="fa  fa-hourglass-3"></span>
+                    Reporte de Producción Mensual
                 </span>
             </div>
         </div>
@@ -27,16 +19,19 @@
     <div class="row">
         <div class="col-md-3">
             <button id="btn-consultar" class="btn btn-warning btn-block margin-bottom">Buscar</button>
-
-            <div class="box box-solid" style="height: 300px;">
+            <div class="box box-solid" style="height: 200px;">
                 <div class="box-header with-border">
                     <h3 class="box-title">Filtros</h3>
                 </div>
                 <div  class="box-body no-padding">
                     <form id="form-search">
                         <ul class="nav nav-pills nav-stacked" style="padding-top: 15px;">
-                            <li><input  name="numero_documento" style="margin-top: 10px; margin-left: 5px; width: 90%" class="form-control input-digits" placeholder="Número de DNI"></li>
-                            <li><input  name="fecha_resultado" style="margin-top: 10px; margin-left: 5px; width: 90%;" class="form-control input-digits required" placeholder="Fecha inicio - Fecha fin"></li>
+                            <li><select name="tipo_examen" class="form-control">
+                                    <option value="">[Seleccione]</option>
+                                    @foreach($examenes  as $examen)
+                                        <option value="{{$examen->id}}">{{$examen->nombre}}</option>
+                                    @endforeach
+                                </select></li>
                         </ul>
                     </form>
                 </div>
@@ -61,22 +56,23 @@
                             </div>
                         </div>
                         <div class="table-responsive mailbox-messages">
-                            <table class="table table-hover table-striped" style="font-size:12px;">
-                                <thead style="background-color: #3c8dbc; color: white">
-                                <tr>
-                                    <th style="width: 120px;">Cód. registro</th>
-                                    <th style="width: 150px;">Nombre del paciente</th>
-                                    <th>Tipo de examen</th>
-                                    <th>Sub-tipo de examen</th>
-                                    <th>Resultado</th>
-                                    <th style="width: 250px;">Observación</th>
-                                </tr>
-                                </thead>
-                                <tbody data-empty='<tr><td colspan="6" class="text-center">No hay registros para mostrar</td></tr>' id="registros-body">
-                                <tr><td colspan="6" class="text-center">No hay registros para mostrar</td></tr>
-                                </tbody>
-                            </table>
-                            <!-- /.table -->
+                            <div class="table-responsive mailbox-messages">
+                                <table class="table table-hover table-striped" style="font-size:12px;">
+                                    <thead style="background-color: #3c8dbc; color: white">
+                                    <tr>
+                                        <th style="width: 120px;">Mes</th>
+                                        <th>Tipo de examen</th>
+                                        <th>Sub-tipo de examen</th>
+                                        <th>Pagantes</th>
+                                        <th>SIS</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody data-empty='<tr><td colspan="5" class="text-center">No hay registros para mostrar</td></tr>' id="registros-body">
+                                        @include('dashboard.partials.reporte-produccion-mensual')
+                                    </tbody>
+                                </table>
+                                <!-- /.table -->
+                            </div>
                         </div>
                     </div>
                     <div class="box-footer no-padding">
@@ -91,14 +87,16 @@
         </div>
         <!-- /.col -->
     </div>
+
 @endsection
 @section('scripts')
     <script src="{{URL::asset('/public/bower_components/moment/min/moment.min.js')}}"></script>
     <script src="{{URL::asset('/public/bower_components/bootstrap-daterangepicker/daterangepicker.js')}}"></script>
-
     <script>
         $(document).ready(function () {
-            $('input[name=fecha_resultado]').daterangepicker({
+            var url_search = "{{route('dashboard.produccion-mensual')}}";
+
+            $('input[name=fecha_registro]').daterangepicker({
                 autoUpdateInput: false,
                 "locale": {
                     format: "YYYY-MM-DD",
@@ -135,40 +133,41 @@
                 }
             });
 
-            var url_search = "{{route('dashboard.patologia-anormal')}}";
             $("#btn-consultar").on('click',function () {
 
+                if(!$("#form-search").valid()) return false;
                 $.ajax({
                     url : url_search,
                     type: 'get',
                     data: $("#form-search").serialize(),
                     success: function (view) {
-
                         $("#registros-body").html(view);
                     }
                 });
             });
-
-            $("#btn-limpiar").click(function () {
-                $("input[name=numero_documento]").val("");
-                $("input[name=fecha_resultado]").val("")
-                $("#fecha_registro").val("");
-                $("#registros-body").html($("#registros-body").data('empty'));
-            });
-            $(document).on('click',".cancelBtn",function () {
-                $("input[name=fecha_resultado]").val("")
-            });
-            $(document).on('click','.applyBtn',function () {
-                $("input[name=daterangepicker_start]").val();
-                $("input[name=daterangepicker_end]").val();
-                $("input[name=fecha_resultado]").val($("input[name=daterangepicker_start]").val() + " hasta "+$("input[name=daterangepicker_end]").val());
-            });
-
-            var url_download="{{route('dashboard.patologia-anormal')}}";
-            $("#btn-descargar").click(function () {
-                if(!$("#form-search").valid()) return false;
-                window.open(url_download+"?download=true&"+$("#form-search").serialize());
-            });
         });
+
+        $("#btn-limpiar").click(function () {
+            $("input[name=numero_documento_paciente]").val("");
+            $("input[name=numero_documento_medico]").val("");
+            $("input[name=fecha_registro]").val("")
+            $("select[name=tipo_examen]").val("").trigger('change');
+            $("#btn-consultar").trigger('click')
+            $("#registros-body").html($("#registros-body").data('empty'));
+        });
+        $(document).on('click',".cancelBtn",function () {
+            $("input[name=fecha_registro]").val("")
+        });
+        $(document).on('click','.applyBtn',function () {
+            $("input[name=daterangepicker_start]").val();
+            $("input[name=daterangepicker_end]").val();
+            $("input[name=fecha_registro]").val($("input[name=daterangepicker_start]").val() + " hasta "+$("input[name=daterangepicker_end]").val());
+        });
+        var url_download="{{route('dashboard.tiempo-atencion')}}";
+        $("#btn-descargar").click(function () {
+            if(!$("#form-search").valid()) return false;
+            window.open(url_download+"?download=true&"+$("#form-search").serialize());
+        });
+
     </script>
 @endsection

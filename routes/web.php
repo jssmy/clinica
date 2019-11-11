@@ -284,24 +284,31 @@ Route::group(['middleware' => 'auth.session'], function () {
 
         Route::get('imprimir-documento/{analisis}','RegistroAnalisisController@imprimir')->name('registro.analsis.imprimir');
 
+        Route::get('semaforo-form','RegistroAnalisisController@semoforizacionForm')->name('registro.analisis.semaforo-form');
+
+        Route::put('semaforo-store','RegistroAnalisisController@semoforizacionStore')->name('registro.analisis.semaforo-store');
+
+
+
     });
 
     Route::group(['prefix' => 'dashboard'], function() {
-        Route::get('/main/{tipo_reporte}/{tipo_persona?}','DashboardController@index')->name('dashboard.index');
+        //Route::get('/main/{tipo_reporte}/{tipo_persona?}','DashboardController@index')->name('dashboard.index');
+
         Route::get('/mostrar-reporte/{persona}/{tipo_reporte}','DashboardController@mostrarReporte')->name('dashboard.mostrar-reporte');
         Route::get('stock-insumo','DashboardController@reporteStockInsumo')->name('dashboard.stock-insumo');
         Route::get('tiempo-atencion','DashboardController@reportePromedioAtencion')->name('dashboard.tiempo-atencion');
         Route::get('patologia-anormal','DashboardController@reportePatologiaAnormal')->name('dashboard.patologia-anormal');
-        Route::get('paciente-atendido',function (){
-            return redirect()->route('dashboard.index',['paciente-atendido','paciente']);
-        })->name('dashboard.paciente-atendido');
-        Route::get('profesional-medico',function (){
-            return redirect()->route('dashboard.index',['medico-examen-emision','empleado']);
-        })->name('dashboard.profesional-medico');
 
+        Route::get('paciente-atendido','DashboardController@pacienteAtendido')->name('dashboard.paciente-atendido');
+
+        Route::get('profesional-medico','DashboardController@profesionalMedico')->name('dashboard.profesional-medico');
+        Route::get('prefesional-medico-reporte/{persona}','DashboardController@reporteMedicoExamenesEmitidos')->name('dashboard.profesional-medico-reporte');
         Route::get('profesional-medico-tecnologo',function (){
-            return redirect()->route('dashboard.index',['medico-examen-emision','empleado','tipo=tecnologo']);
+            return redirect()->route('dashboard.profesional-medico',['tecnologo=true']);
         })->name('dashboard.profesional-medico-tecnologo');
+
+        Route::get('produccion-mensual','DashboardController@produccionMensual')->name('dashboard.produccion-mensual');
     });
 
     Route::group(['prefix'=>'mail'],function (){

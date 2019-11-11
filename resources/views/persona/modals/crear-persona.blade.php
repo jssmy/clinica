@@ -82,7 +82,7 @@
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-sm-6">
                                         <label>Fecha de nacimiento</label>
-                                        <input disabled name="fecha_nacimiento" type="text" class=" date form-control required">
+                                        <input disabled name="fecha_nacimiento" type="text" class=" dateISO form-control required">
                                     </div>
 
                                 </div>
@@ -159,11 +159,7 @@
                 if($(this).is(":disabled")) return false;
 
                 var form = $("#form-store");
-                form.validate({
-                    fecha_nacimiento : function (value) {
-                        console.log(value);
-                    }
-                });
+
                 if(!form.valid()) return false;
 
                 var url = form.attr('action');

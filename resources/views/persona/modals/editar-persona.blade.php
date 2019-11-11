@@ -69,7 +69,7 @@
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-sm-6">
                                         <label>Fecha de nacimiento</label>
-                                        <input name="fecha_nacimiento" type="text" class="form-control required" value="{{$persona->fec_nacimiento->format('Y-m-d')}}">
+                                        <input name="fecha_nacimiento" type="text" class="form-control required dateISO" value="{{$persona->fec_nacimiento->format('Y-m-d')}}">
                                     </div>
 
                                 </div>
@@ -155,6 +155,7 @@
                 data : form.serializeArray(),
                 success: function (message) {
                     toastr["success"](message.message);
+                    window.location="{{url()->previous()}}";
                 }
                 ,beforeSend: function () {
                     btn.html("<i class='fa  fa-circle-o-notch fa-spin'> </i> GUARDANDO");

@@ -68,7 +68,7 @@
             <div class="mailbox-controls">
                 <div class="row">
                     <div class="col-sm-12">
-                        <a class="pull-right"  style="padding-top: 10px;" target="_blank" href="{{route('dashboard.mostrar-reporte',[$persona,$tipo_reporte,'download=true'])}}">
+                        <a class="pull-right"  style="padding-top: 10px;" target="_blank" href="#">
                             <i class="fa fa-download"></i> Descargar reporte
                         </a>
                     </div>

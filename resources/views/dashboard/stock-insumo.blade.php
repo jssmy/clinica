@@ -16,25 +16,70 @@
             </div>
         </div>
     </section>
+    <!--
     <section class="text-center">
-        <div style="width: 20%" class="panel box";>
+        <div style="width: 40%" class="panel box";>
             <label>Semaforización</label>
             <table class="table">
                 <tr>
-                    <td  style="background-color: green; width: 30px;"></td>
-                    <td  style="background-color: yellow; width: 30px;"></td>
-                    <td  style="background-color: red; width: 30px;"></td>
+                    @foreach($semaforizacion as $semaforo)
+                        <td  style="background-color: {{$semaforo->color}}; width: 100px;"></td>
+                    @endforeach
+                    @if(auth()->user()->es_administrador)
+                    <td>Opciones</td>
+                    @endif
                 </tr>
                 <tr>
-                    <td >250 a más</td>
-                    <td >101 - 249</td>
-                    <td >0 - 100</td>
+                    @foreach($semaforizacion as $semaforo)
+                        <td >{{$semaforo->descripcion}}</td>
+                    @endforeach
+                    <td>
+                    @if(auth()->user()->es_administrador)
+                        <button id="btn-editar-semaforo" data-url="{{route('registro.analisis.semaforo-form')}}" class="btn btn-default btn-xs"><i class="fa fa-pencil"></i></button></td>
+                    @endif
                 </tr>
             </table>
             <hr style="margin-bottom: 0px;">
-            <a style="margin-top: 0px;" href="{{route('dashboard.stock-insumo')}}">Limpiar filtro</a>
+
+        </div>
+        <div style="width: 40%">
+            <div  id="chartdiv" style="height: 150px; width: 300px; font-size: 10px;"  height="233"></div>
         </div>
     </section>
+    --->
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">% Insumos</h3>
+                </div>
+                <div class="box-body">
+                    <div id="chartdiv" style="height: 233px; width: 700px; font-size: 10px; position: relative;" height="233" width="467"></div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Semaforización</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table">
+                        @foreach($semaforizacion as $semafor)
+                            <tr>
+                                <td style=" width: 120px;background-color: {{$semafor->color}}"></td>
+                                <td>{{$semafor->descripcion}}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+                <br>
+                <a style="margin-top: 0px;" href="{{route('dashboard.stock-insumo')}}"><i class="fa fa-refresh"></i> Limpiar filtro</a>
+            </div>
+        </div>
+    </div>
+
     <section id="main-section"  style="padding-top: 0px; background: transparent; border: 0px;">
         <div class="panel box">
             <div class="box-header with-border" data-toggle="collapse" href="#" aria-expanded="true">
@@ -88,15 +133,7 @@
                                             <td rowspan="{{$usos->count()}}">{{$uso->unidad}}</td>
                                         @endif
                                         <td>{{$uso->uso}}</td>
-                                        <th style="background-color:
-                                        @if($uso->cantidad>=0 && $uso->cantidad<=100)
-                                            {{'red'}}
-                                        @elseif($uso->cantidad>=101 && $uso->cantidad<=249)
-                                            {{'yellow'}}
-                                        @else
-                                            {{'green'}}
-                                        @endif
-                                        "></th>
+                                        <th title="Cantidad {{$uso->cantidad}}" style="background-color: {{$semaforizacion->where('rango_inicio','<=',$uso->cantidad)->where('rango_fin','>=',$uso->cantidad)->first()->color}}"></th>
                                     </tr>
                                 @endforeach
                             @endforeach
@@ -119,72 +156,85 @@
     <script src="https://www.amcharts.com/lib/4/charts.js"></script>
     <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
     <script src="{{URL::asset('public/plugins/bootbox/bootbox.min.js')}}"></script>
+
+
     <script>
+
+        // Create chart instance
+
+
         am4core.ready(function() {
 
-// Themes begin
+
             am4core.useTheme(am4themes_animated);
-// Themes end
 
-// Create chart instance
-            var chart = am4core.create("chartdiv", am4charts.XYChart);
-
-// Add data
+            var chart = am4core.create("chartdiv", am4charts.PieChart);
             var data= JSON.parse('{!! json_encode($endBarData) !!}');
-            data.map(function (element) {
-                return element.color =chart.colors.next();
+            data.forEach(function (item) {
+                return item.color  =   am4core.color(item.color);
             });
+            // Add data
+            chart.data =data;
+            chart.innerRadius = am4core.percent(50);
+            // Add and configure Series
+            var pieSeries = chart.series.push(new am4charts.PieSeries());
+            pieSeries.dataFields.value = "litres";
+            pieSeries.dataFields.category = "country";
+            pieSeries.slices.template.propertyFields.fill = "color";
+            chart.legend = new am4charts.Legend();
+            chart.innerRadius = am4core.percent(50);
+            pieSeries.dataFields.value = "litres";
+            pieSeries.dataFields.category = "country";
+            pieSeries.slices.template.stroke = am4core.color("#fff");
+            pieSeries.slices.template.strokeWidth = 2;
+            pieSeries.slices.template.strokeOpacity = 1;
 
-            chart.data = data;
 
-// Create axes
-            var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
-            categoryAxis.dataFields.category = "name";
-            //categoryAxis.renderer.grid.template.disabled = true;
-            categoryAxis.renderer.minGridDistance = 30;
-            //categoryAxis.renderer.inside = true;
-            categoryAxis.renderer.outside = false;
-            categoryAxis.renderer.labels.template.fill = am4core.color("#0a0a0a");
-            categoryAxis.renderer.labels.template.fontSize = 10;
-
-            var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
-            valueAxis.renderer.grid.template.strokeDasharray = "4,4";
-            //valueAxis.renderer.labels.template.disabled = true;
-            valueAxis.min = 0;
-
-// Do not crop bullets
-            chart.maskBullets = false;
-
-// Remove padding
-            chart.paddingBottom = 0;
-
-// Create series
-            var series = chart.series.push(new am4charts.ColumnSeries());
-            series.dataFields.valueY = "points";
-            series.dataFields.categoryX = "name";
-            series.columns.template.propertyFields.fill = "color";
-            series.columns.template.propertyFields.stroke = "color";
-            //series.columns.template.column.cornerRadiusTopLeft = 50;
-            //series.columns.template.column.cornerRadiusTopRight = 50;
-            series.columns.template.tooltipText = "{categoryX}: [bold]{valueY}[/b]";
-
-// Add bullets
-            var bullet = series.bullets.push(new am4charts.Bullet());
-            var image = bullet.createChild(am4core.Image);
-            image.horizontalCenter = "middle";
-            image.verticalCenter = "bottom";
-            image.dy = 10;
-            image.y = am4core.percent(60);
-            //image.propertyFields.href = "bullet";
-            image.tooltipText = series.columns.template.tooltipText;
-            image.propertyFields.fill = "color";
-            image.filters.push(new am4core.DropShadowFilter());
+            pieSeries.hiddenState.properties.opacity = 1;
+            pieSeries.hiddenState.properties.endAngle = -90;
+            pieSeries.hiddenState.properties.startAngle = -90;
 
         }); // end am4core.ready()
+
+
         $(document).ready(function () {
             $("#btn-buscar").click(function () {
                 if(!$("input[name=stock]").val()) return false;
                 $("#form-search").submit();
+            });
+
+            $(document).on('click','#btn-editar-semaforo',function () {
+                var url = $(this).data('url');
+                $.get(url,function (view) {
+                    var dialog = bootbox.dialog({
+                        title: "<b>Semaforización</b>",
+                        message: view,
+                        size: 'large',
+                        buttons: {
+                            cancel: {
+                                label: "CERRAR",
+                                className: 'btn btn-sm btn-default',
+                                callback: function(){
+                                    return true;
+                                }
+                            },
+                            ok:  {
+                                label: 'GUARDAR',
+                                className: 'btn btn-sm btn-info',
+                                callback: function () {
+                                    var form = $("#form-store");
+                                    if(!form.valid()) return false;
+                                    console.log(form.serializeArray());
+                                    $.ajax({
+                                        url : form.attr('action'),
+                                        type :'put',
+                                        data: form.serializeArray()
+                                        });
+                                }
+                            }
+                        }
+                    });
+                });
             });
         })
     </script>

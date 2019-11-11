@@ -18,7 +18,7 @@
             <div class="box-body">
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3>{{round(($analisis->where('estado','PR')->count()/$analisis->count())*100,2)}}%</h3>
+                        <h3>{{$analisis->count() ?  round(($analisis->where('estado','PR')->count()/$analisis->count())*100,2) : 0}}%</h3>
                         <p>Exámenes sin resultado</p>
                     </div>
                     <div class="icon">
@@ -27,7 +27,7 @@
                 </div>
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3>{{round(($analisis->where('estado','AP')->count()/$analisis->count())*100,2)}}%</h3>
+                        <h3>{{$analisis->count() ?  round(($analisis->where('estado','AP')->count()/$analisis->count())*100,2) : 0}}%</h3>
                         <p>Exámenes con resultado</p>
                     </div>
                     <div class="icon">
@@ -68,7 +68,7 @@
             <div class="mailbox-controls">
                 <div class="row">
                     <div class="col-sm-12">
-                        <a class="pull-right"  style="padding-top: 10px;" target="_blank" href="{{route('dashboard.mostrar-reporte',[$persona,$tipo_reporte,'download=true'])}}">
+                        <a class="pull-right"  style="padding-top: 10px;" target="_blank" href="#">
                             <i class="fa fa-download"></i> Descargar reporte
                         </a>
                     </div>
@@ -122,6 +122,8 @@
 // Add data
 
         var data= JSON.parse('{!! json_encode($endPieData) !!}');
+
+
         chart.data = data;
 
 // Set inner radius

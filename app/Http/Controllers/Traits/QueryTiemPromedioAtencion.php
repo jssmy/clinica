@@ -31,7 +31,7 @@ trait QueryTiemPromedioAtencion
                 array_push($bindings,$fecha_fin);
             }
 
-            return \DB::select("SELECT analisis.codigo,
+            $result = \DB::select("SELECT analisis.codigo,
                                 tipo_examen.nombre AS tipo_examen,
                                 sub_tipo_examen.nombre AS sub_tipo_examen,
                                 DATE_FORMAT(resultado.fecha_registro,'%d/%m/%Y') AS fecha_registro, 
@@ -45,6 +45,9 @@ trait QueryTiemPromedioAtencion
                                 INNER JOIN examen_det AS sub_tipo_examen ON sub_tipo_examen.id=resultado.examen_det_id
                                 WHERE analisis.estado='AP' $where                    
                                 ORDER BY 1,2,3",$bindings);
+            return collect($result)->map(function ($item){
+                return (object)$item;
+            });
         }
 
 
