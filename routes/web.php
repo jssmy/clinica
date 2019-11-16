@@ -308,7 +308,11 @@ Route::group(['middleware' => 'auth.session'], function () {
             return redirect()->route('dashboard.profesional-medico',['tecnologo=true']);
         })->name('dashboard.profesional-medico-tecnologo');
 
-        Route::get('produccion-mensual','DashboardController@produccionMensual')->name('dashboard.produccion-mensual');
+        Route::get('produccion-mensual','@produccionMensual')->name('dashboard.produccion-mensual');
+        Route::get('download-paciente-atendido/{paciente_id}','DashboardController@downloadReportePacienteAtendido')->name('dashboard.download-paciente-atendido');
+        Route::get('download-prefesional-medico/{persona}','DashboardController@downloadPrefesionalMedico')->name('dashboard.download-profesional-medico');
+        Route::get('download-stock-insumo','DashboardController@donwloadStockInsumo')->name('dashboard.download-stock-insumo');
+        Route::get('download-tiempo-atencion','DashboardController@downloadPromedioAtencion')->name('dashboard.download-tiempo-atencion');
     });
 
     Route::group(['prefix'=>'mail'],function (){

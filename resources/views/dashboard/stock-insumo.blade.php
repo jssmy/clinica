@@ -16,37 +16,7 @@
             </div>
         </div>
     </section>
-    <!--
-    <section class="text-center">
-        <div style="width: 40%" class="panel box";>
-            <label>Semaforización</label>
-            <table class="table">
-                <tr>
-                    @foreach($semaforizacion as $semaforo)
-                        <td  style="background-color: {{$semaforo->color}}; width: 100px;"></td>
-                    @endforeach
-                    @if(auth()->user()->es_administrador)
-                    <td>Opciones</td>
-                    @endif
-                </tr>
-                <tr>
-                    @foreach($semaforizacion as $semaforo)
-                        <td >{{$semaforo->descripcion}}</td>
-                    @endforeach
-                    <td>
-                    @if(auth()->user()->es_administrador)
-                        <button id="btn-editar-semaforo" data-url="{{route('registro.analisis.semaforo-form')}}" class="btn btn-default btn-xs"><i class="fa fa-pencil"></i></button></td>
-                    @endif
-                </tr>
-            </table>
-            <hr style="margin-bottom: 0px;">
 
-        </div>
-        <div style="width: 40%">
-            <div  id="chartdiv" style="height: 150px; width: 300px; font-size: 10px;"  height="233"></div>
-        </div>
-    </section>
-    --->
     <div class="row">
         <div class="col-sm-8">
             <div class="box box-danger">
@@ -106,7 +76,7 @@
                                 </form>
                             </div>
                             <div class="col-sm-6">
-                                <a class="pull-right"  style="padding-top: 10px;" target="_blank" href="{{route('dashboard.stock-insumo','download=true')}}">
+                                <a class="pull-right" id="btn-descargar-reporte" style="padding-top: 10px;" target="_blank" href="{{route('dashboard.download-stock-insumo')}}">
                                     <i class="fa fa-download"></i> Descargar reporte
                                 </a>
                             </div>
@@ -198,6 +168,14 @@
 
 
         $(document).ready(function () {
+            $("#btn-descargar-reporte").click(function (e) {
+                e.preventDefault();
+                var data = {stock: $("input[name=stock]").val()};
+
+                var url = $(this).attr('href')+"?"+serialiseObject(data);
+                window.open(url);
+            });
+
             $("#btn-buscar").click(function () {
                 if(!$("input[name=stock]").val()) return false;
                 $("#form-search").submit();

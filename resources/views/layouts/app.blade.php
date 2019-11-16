@@ -371,6 +371,21 @@
         "maxOpened": 4
     }
 
+    var serialiseObject = function(obj) {
+        var pairs = [];
+        for (var prop in obj) {
+            if (!obj.hasOwnProperty(prop)) {
+                continue;
+            }
+            if (Object.prototype.toString.call(obj[prop]) == '[object Object]') {
+                pairs.push(serialiseObject(obj[prop]));
+                continue;
+            }
+            pairs.push(prop + '=' + obj[prop]);
+        }
+        return pairs.join('&');
+    };
+
     function msg_alert_422(msg){
 
         var msgs = '';

@@ -11,23 +11,88 @@ require_once __DIR__."/../Utils/PHPExcel.php";
 use PHPExcel;
 class ExcelService
 {
-    public static function create($header=null,$content=null){
+    public static function create($title=[],$header=null,$content=null){
         error_reporting(E_ALL);
         ini_set('display_errors', TRUE);
         ini_set('display_startup_errors', TRUE);
         date_default_timezone_set('Europe/London');
-        $startIndex=1;
+        $startIndex=2;
         $objPHPExcel = new PHPExcel();
+        if(!empty($title)){
+            foreach ($title as $index => $detalle){
+                if($index==0){
+                    $objPHPExcel->setActiveSheetIndex(0)
+                        ->setCellValue("B$startIndex", $detalle);
+                    $styleArray = array(
+                        'font'  => array(
+                            'bold'  => true,
+                            'color' => array('rgb' => 'FF0000'),
+                            'size'  => 14,
+                            'name'  => 'Verdana'
+                        ),
+                        'alignment' => array(
+                            'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                        ));
 
+                    $objPHPExcel->setActiveSheetIndex(0)
+                        ->getStyle("B$startIndex")
+                       ->applyFromArray($styleArray);
+                    $startIndex++;
+                } else {
+                    $startIndex++;
+                    $objPHPExcel->setActiveSheetIndex(0)
+                        ->setCellValue("B$startIndex", $detalle);
+                    $styleArray = array(
+                        'font'  => array(
+                            'bold'  => true,
+                            'color' => array('rgb' => '000000'),
+                            'size'  => 11,
+                            'name'  => 'Verdana'
+                        ),
+                        'alignment' => array(
+                            'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
+                        ));
 
+                    $objPHPExcel->setActiveSheetIndex(0)
+                        ->getStyle("B$startIndex")
+                        ->applyFromArray($styleArray);
+
+                }
+
+            }
+            $startIndex = $startIndex+count($title) + 1;
+        }
+
+        $objPHPExcel->setActiveSheetIndex(0)->getActiveCell();
 
         if($header && is_array($header)){
             foreach ($header as $index => $head){
                 $cell =  self::CHARS($index).$startIndex;
                 $objPHPExcel->setActiveSheetIndex(0)
                             ->setCellValue($cell, $head);
+
+
+                $styleArray = array(
+                    'font'  => array(
+                        'bold'  => true,
+                        'color' => array('rgb' => 'FF0000'),
+                        'size'  => 11,
+                        'name'  => 'Verdana'
+                    ),
+                    'alignment' => array(
+                        'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                    ));
+
+                $objPHPExcel->setActiveSheetIndex(0)
+                            ->getStyle($cell)
+                            ->applyFromArray($styleArray)
+                            ->getFill()
+                            ->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)
+                            ->getStartColor()
+                            ->setARGB('FFDBE2F1');
+
             }
-            $startIndex=2;
+            $startIndex++;
         }
         if($content && is_array($content)){
             foreach ($content as $index => $cont){
@@ -36,6 +101,22 @@ class ExcelService
                     $cell =  self::CHARS($i).$startIndex;
                     $objPHPExcel->setActiveSheetIndex(0)
                         ->setCellValue($cell, $value);
+
+                    $styleArray = array(
+                        'font'  => array(
+                            'bold'  => false,
+                            'color' => array('rgb' => '000000'),
+                            'size'  => 10,
+                            'name'  => 'Verdana',
+                        ),
+                        'alignment' => array(
+                            'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
+                        ));
+
+                    $objPHPExcel->setActiveSheetIndex(0)
+                        ->getStyle($cell)
+                        ->applyFromArray($styleArray);
+
                     $i++;
                 }
                 $startIndex++;
