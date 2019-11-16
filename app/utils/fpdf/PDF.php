@@ -863,6 +863,7 @@ function Ln($h=null)
 
 function Image($file, $x=null, $y=null, $w=0, $h=0, $type='', $link='')
 {
+
 	// Put an image on the page
 	if($file=='')
 		$this->Error('Image file name is empty');
@@ -871,18 +872,23 @@ function Image($file, $x=null, $y=null, $w=0, $h=0, $type='', $link='')
 		// First use of this image, get info
 		if($type=='')
 		{
+
 			$pos = strrpos($file,'.');
 			if(!$pos)
 				$this->Error('Image file has no extension and no type was specified: '.$file);
 			$type = substr($file,$pos+1);
+
 		}
 		$type = strtolower($type);
 		if($type=='jpeg')
 			$type = 'jpg';
 		$mtd = '_parse'.$type;
+
 		if(!method_exists($this,$mtd))
 			$this->Error('Unsupported image type: '.$type);
+        //dd($mtd);
 		$info = $this->$mtd($file);
+		;
 		$info['i'] = count($this->images)+1;
 		$this->images[$file] = $info;
 	}
@@ -1257,15 +1263,18 @@ protected function _parsepng($file)
 {
 	// Extract info from a PNG file
 	$f = fopen($file,'rb');
+
 	if(!$f)
 		$this->Error('Can\'t open image file: '.$file);
 	$info = $this->_parsepngstream($f,$file);
+
 	fclose($f);
 	return $info;
 }
 
 protected function _parsepngstream($f, $file)
 {
+
 	// Check signature
 	if($this->_readstream($f,8)!=chr(137).'PNG'.chr(13).chr(10).chr(26).chr(10))
 		$this->Error('Not a PNG file: '.$file);
@@ -1277,6 +1286,7 @@ protected function _parsepngstream($f, $file)
 	$w = $this->_readint($f);
 	$h = $this->_readint($f);
 	$bpc = ord($this->_readstream($f,1));
+
 	if($bpc>8)
 		$this->Error('16-bit depth not supported: '.$file);
 	$ct = ord($this->_readstream($f,1));
@@ -1288,8 +1298,10 @@ protected function _parsepngstream($f, $file)
 		$colspace = 'Indexed';
 	else
 		$this->Error('Unknown color type: '.$file);
+
 	if(ord($this->_readstream($f,1))!=0)
 		$this->Error('Unknown compression method: '.$file);
+
 	if(ord($this->_readstream($f,1))!=0)
 		$this->Error('Unknown filter method: '.$file);
 	if(ord($this->_readstream($f,1))!=0)
@@ -1301,6 +1313,7 @@ protected function _parsepngstream($f, $file)
 	$pal = '';
 	$trns = '';
 	$data = '';
+
 	do
 	{
 		$n = $this->_readint($f);

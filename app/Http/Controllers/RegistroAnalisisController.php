@@ -16,6 +16,7 @@ use App\Models\Semaforizacion;
 use App\Utils\fpdf\FPDF;
 use App\Utils\FPDF\PDF;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use function foo\func;
 
 class RegistroAnalisisController extends Controller
@@ -127,11 +128,11 @@ class RegistroAnalisisController extends Controller
             if(!$analisis->es_aprobado){
                 $analisis->resultados()->update([
                     'usuario_resultado_id'=>auth()->id(),
-                    'fecha_resultado'=>date("Y-m-d h:i:s")
+                    'fecha_resultado'=>date("Y-m-d h:i:s",strtotime( '-1 days' ))
                 ]);
                 $analisis->estado='AP';
                 $analisis->usuario_resultado_id = auth()->id();
-                $analisis->fecha_resultado = date("Y-m-d h:i:s");
+                $analisis->fecha_resultado = date("Y-m-d h:i:s",strtotime( '-1 days' ));
                 $analisis->save();
             }
         });
@@ -157,8 +158,8 @@ class RegistroAnalisisController extends Controller
 
         $pdf = new PDF();
         $pdf->AddPage();
-        $pdf->SetFont('Arial','B',14);
-        $pdf->MultiCell(70,5,utf8_decode('Laboratorio Clínico C.S Santa Rosa'),0,'C');
+
+        $pdf->Image(\URL::asset('/public/dist/img/logo.jpg'),19,8,20,18);
         $pdf->SetFont('Arial',NULL,8);
         $pdf->SetXY(137,9);
         $pdf->Cell(70,4,utf8_decode('Dirección: Mz c Lt 21-22 Canto Chico S.J.L'),0,'j');
