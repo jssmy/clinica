@@ -34,12 +34,25 @@ class UsuarioController extends Controller
     }
 
     public function crear(Request $request,Persona $persona){
+        $default = "/public/dist/img/clinica.jpg";
+        if($request->hasFile('image')){
+            $dirFile = public_path()."/dist/img/perfil/";
+            if(!file_exists($dirFile)){
+                mkdir($dirFile);
+            }
+
+            $fileName = "perfil_".substr(microtime(),0,60).auth()->user()->id.".".$request->file('image')->clientExtension();
+            $default="public/dist/img/perfil/".$fileName;
+            $request->file('image')->move($dirFile,$fileName);
+
+        }
 
         $persona->usuario()->create([
             'usuario'=>$request->usuario,
             'contrasena'=>md5($request->contrasena),
             'perfil_id'=>$request->perfil,
-            'usuario_id'=>auth()->id()
+            'usuario_id'=>auth()->id(),
+            'imagen_url'=>$default
         ]);
         return response()->json(['message'=>'Se ha registrado el usuario']);
     }
@@ -68,6 +81,7 @@ class UsuarioController extends Controller
     public function resetear(Request $request,User $usuario){
             $nueva_contrasena = $this->generateRandomString(8);
             $usuario->contrasena = md5($nueva_contrasena);
+            $usuario->nuevo=1;
             $usuario->save();
             return view('usuario.partials.nueva-contrasena',compact('usuario','nueva_contrasena'));
     }

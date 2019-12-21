@@ -1,6 +1,6 @@
 @forelse($produccion as $prod)
     <tr>
-        <td>{{{$prod->MES}}}</td>
+        <td>@lang("month.".strtolower($prod->MES))</td>
         <td>{{{$prod->TipoExamen}}}</td>
         <td>{{{$prod->SubTipoExamen}}}</td>
         <td>{{{$prod->PAGANTES}}}</td>

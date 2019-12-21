@@ -125,7 +125,7 @@ class DashboardController extends Controller
 
             $resultados = self::getEmision($persona);
             $header = ["TIPO DE EXAMEN","SUB-TIPO DE EXAMEN","CANTIDAD"];
-            $title=["REPORTE DE PROFESIONAL MÉDICO","MÉDICO: ".$persona->nombre_completo];
+            $title=[!\request()->tecnologo ? "REPORTE DE PROFESIONAL MÉDICO" : "REPORTE DE PROFESIONAL DE LABORATORIO","MÉDICO: ".$persona->nombre_completo];
             if(\request()->fecha_registro){
                 list($fecha_inicio,$fecha_fin) = explode('/',str_replace([' ','hasta'],['','/'],\request()->fecha_registro));
                 $fecha_inicio = str_replace("-","/",$fecha_inicio);
@@ -182,6 +182,9 @@ class DashboardController extends Controller
         $insumos = self::getStock($request);
         $header=["INSUMO",'CANTIDAD','UNIDAD','USO'];
         $title=["REPORTE DE STOCK DE INSUMOS"];
+        if($request->stock>0){
+            array_push($title,"STOCK: ".$request->stock);
+        }
         ExcelService::create($title,$header,$insumos->toArray());
 
     }
@@ -190,7 +193,8 @@ class DashboardController extends Controller
         $insumos = self::getStock($request);
 
         $insumos=$insumos->groupBy('insumo');
-        $allInsumos = Insumo::activo()->get();
+
+        $allInsumos = $insumos->flatten();
         $endBarData=[];
         foreach ($semaforizacion as $semaforo){
             $items = $allInsumos->where('cantidad','>=',$semaforo->rango_inicio)
@@ -203,27 +207,51 @@ class DashboardController extends Controller
 
     public function reportePatologiaAnormal(Request $request){
 
+        $fecha_fin=0;
+        $fecha_inicio=0;
+        if(!$request->fecha_resultado) {
+            $request->fecha_resultado="-hasta-";
+            list($fecha_inicio,$fecha_fin) = explode('hasta',str_replace(" ","",$request->fecha_resultado));
+        }
+
+        $patologias=  self::getPatologias((int)$request->numero_documento,$fecha_inicio,$fecha_fin);
+
         if($request->ajax()){
-            $patologias = $this->patologias($request);
             return view('dashboard.partials.reporte-patologia-anormal-table',compact('patologias'));
         }
-        if($request->download){
-            $patologias = $this->patologias($request);
-            ExcelService::create(array_keys((array)collect($patologias)->first()),$patologias);
-            exit;
-        }
-        return view('dashboard.patologia-anormal');
+
+        return view('dashboard.patologia-anormal',compact('patologias'));
     }
 
-    private function patologias(Request $request){
-        if(!$request->fecha_resultado) $request->fecha_resultado="-hasta-";
-        list($fecha_inicio,$fecha_fin) = explode('hasta',str_replace(" ","",$request->fecha_resultado));
-        return  self::getPatologias((int)$request->numero_documento,$fecha_inicio,$fecha_fin);
+    public function downloadPatologiaAnormal(Request $request){
+        $fecha_fin=0;
+        $fecha_inicio=0;
+        if($request->fecha_resultado) {
+            list($fecha_inicio,$fecha_fin) = explode('hasta',str_replace(" ","",$request->fecha_resultado));
+        }
+
+        $patologias=  self::getPatologias((int)$request->numero_documento,$fecha_inicio,$fecha_fin);
+        $header=["CÓDIGO",'PACIENTE','TIPO DE EXAMEN','SUB-TIPO DE EXAMEN','RESULTADO','OBSERVACIÓN'];
+        $title=["REPORTE DE PATOLOGÍAS ANORMALES"];
+        if($request->numero_documento){
+            $paciente = Persona::SoloPaciente()->where('numero_documento',$request->numero_documento)->first();
+            array_push($title,"PACIENTE: ".($paciente ? $paciente->nombre_completo : null));
+        }
+
+        if($fecha_inicio && $fecha_fin){
+            array_push($title,"FECHA DESDE -HASTA: $fecha_inicio - $fecha_fin");
+        }
+        ExcelService::create($title,$header,$patologias->toArray());
+        exit;
+
+
+
     }
+
+
 
     public function downloadPromedioAtencion(Request $request){
             $promedios = $this->promediosAtencion($request);
-
 
             $title=["REPORTE DE TIEMPO PROMEDIO DE ATENCIÓN"];
             if($request->numero_documento_paciente){
@@ -261,6 +289,20 @@ class DashboardController extends Controller
         if(!$fecha_registro) $fecha_registro="0hasta0";
         list($fecha_inicio,$fecha_fin) = explode('hasta',str_replace(' ','',$fecha_registro));
         return $promedios = self::getSolicitudes($numero_documente_paciente,$numero_documente_medico,$fecha_inicio,$fecha_fin);
+    }
+
+    public function downloadProduccionMensual(Request $request){
+        $produccion = self::getProduccion($request->tipo_examen);
+        $title=["REPORTE DE PRODUCCIÓN MENSUAL"];
+        if($request->tipo_examen){
+            $tipo_examen = ExamenCab::find($request->tipo_examen);
+            array_push($title,"TIPO DE EXAMEN: ".$tipo_examen->nombre);
+        }
+
+        $header=["MES","TIPO DE EXAMEN","SUB-TIPO DE EXAMEN","PAGANTES","SIS"];
+
+        ExcelService::create($title,$header,$produccion->toArray());
+        exit;
     }
 
     public function produccionMensual(Request $request){

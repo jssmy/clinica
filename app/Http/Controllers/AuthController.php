@@ -24,7 +24,11 @@ class AuthController extends Controller
     public function login(Request $request){
         $usuario = $this->user();
 
-        if(!$usuario) return redirect()->route('login-form');
+        if(!$usuario) return redirect()->route('login-form')->with(['invalid'=>'Las credenciales son incorrectas']);
+
+        if($usuario->nuevo){
+            return redirect()->route('login.lockscreen',$usuario);
+        }
 
         auth()->guard()->login($usuario);
 
@@ -33,15 +37,28 @@ class AuthController extends Controller
 
     protected function user()
     {
-
         return User::where('usuario',\request()->usuario)
                     ->where('contrasena',md5(\request()->contrasena))->first();
 
     }
 
     public function logout(Request $request){
-        \auth()->logout();
+        if(\auth()->check()){
+            \auth()->logout();
+        }
+        $request->session()->flush();
         return redirect()->route('login-form');
+    }
+
+    public function lockscreen(User $usuario){
+        return view('layouts.lockscreen',compact('usuario'));
+    }
+
+    public function nuevaContrasena(Request $request,User $usuario){
+        $usuario->contrasena = md5($request->contrasena);
+        $usuario->nuevo =0;
+        $usuario->save();
+        return response()->json(['message'=>"Se ha cambiado la contraseña"]);
     }
 
 

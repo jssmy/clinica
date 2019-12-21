@@ -118,8 +118,9 @@ class PersonaController extends Controller
     public function datosPersonales (Request $request,$tipo_persona,$tipo_busqueda='numero_documento'){
 
         $tipo_persona =  in_array($tipo_persona,['medico','empleado']) ? 'empleado' : 'paciente';
-        $persona=Persona::soloTecnologo()->where('numero_documento',$request->numero_documento)
+        $persona=Persona::soloTecnologo()->where('numero_documento',trim($request->numero_documento," "))
                         ->where('tipo_persona',$tipo_persona)->first();
+        ///dd($persona,$tipo_persona,$tipo_busqueda,$request->all());
 
         return view('layouts.main.load-sections',compact('persona','tipo_persona'));
     }

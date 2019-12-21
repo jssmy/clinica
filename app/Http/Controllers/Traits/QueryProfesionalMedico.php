@@ -38,7 +38,9 @@ trait QueryProfesionalMedico
             }
 
         }
-        return $personas->get();
+        return  $personas->get();
+
+
     }
 
 }

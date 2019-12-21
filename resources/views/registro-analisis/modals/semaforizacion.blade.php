@@ -18,8 +18,8 @@
                                 <input type="hidden" name="semaforo[{{$semaforo->id}}][color]" value="{{$semaforo->color}}">
                             </td>
                             <td><input class="form-control required" name="semaforo[{{$semaforo->id}}][descripcion]" value="{{$semaforo->descripcion}}"></td>
-                            <td><input class="form-control required input-digits" name="semaforo[{{$semaforo->id}}][rango_inicio]" value="{{$semaforo->rango_inicio}}"></td>
-                            <td><input class="form-control required input-digits" name="semaforo[{{$semaforo->id}}][rango_fin]" value="{{$semaforo->rango_fin}}"></td>
+                            <td><input maxlength="9" class="form-control required input-digits" name="semaforo[{{$semaforo->id}}][rango_inicio]" value="{{$semaforo->rango_inicio}}"></td>
+                            <td><input maxlength="9" class="form-control required input-digits" name="semaforo[{{$semaforo->id}}][rango_fin]" value="{{$semaforo->rango_fin}}"></td>
                         </tr>
                     @endforeach
                 </tbody>

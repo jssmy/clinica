@@ -18,17 +18,6 @@
     </section>
 
     <div class="row">
-        <div class="col-sm-8">
-            <div class="box box-danger">
-                <div class="box-header with-border">
-                    <h3 class="box-title">% Insumos</h3>
-                </div>
-                <div class="box-body">
-                    <div id="chartdiv" style="height: 233px; width: 700px; font-size: 10px; position: relative;" height="233" width="467"></div>
-                </div>
-                <!-- /.box-body -->
-            </div>
-        </div>
         <div class="col-sm-4">
             <div class="box box-danger">
                 <div class="box-header with-border">
@@ -44,10 +33,27 @@
                         @endforeach
                     </table>
                 </div>
+                <div class="box-footer">
+                    <button data-url="{{route('registro.analisis.semaforo-form')}}" id="btn-editar-semaforo" class="btn btn-xs btn-default">Editar</button>
+                </div>
                 <br>
-                <a style="margin-top: 0px;" href="{{route('dashboard.stock-insumo')}}"><i class="fa fa-refresh"></i> Limpiar filtro</a>
+            </div>
+            <a  id="limpiar" href="{{route('dashboard.stock-insumo')}}" class="btn btn-default btn-block margin-bottom">Limpiar filtro</a>
+
+        </div>
+
+        <div class="col-sm-8">
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">% Insumos</h3>
+                </div>
+                <div class="box-body">
+                    <div id="chartdiv" style="height: 233px; width: 700px; font-size: 10px; position: relative;" height="233" width="467"></div>
+                </div>
+                <!-- /.box-body -->
             </div>
         </div>
+
     </div>
 
     <section id="main-section"  style="padding-top: 0px; background: transparent; border: 0px;">
@@ -208,6 +214,7 @@
                                         type :'put',
                                         data: form.serializeArray()
                                         });
+                                $("#limpiar").trigger('click');
                                 }
                             }
                         }

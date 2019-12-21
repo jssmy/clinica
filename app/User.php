@@ -57,4 +57,9 @@ class User extends Authenticatable
     public function getesTecnologoAttribute(){
      return strtolower($this->perfil_id)=='tec';
     }
+
+    public function getesMedicoJefeAttribute()
+    {
+        return strtolower($this->perfil_id)=='med';
+    }
 }

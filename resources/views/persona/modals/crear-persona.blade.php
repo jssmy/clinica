@@ -132,7 +132,7 @@
             </div>
         </div>
         <div class="col-sm-"></div>
-    </div>P
+    </div>
 @endsection
 @section('scripts')
 
@@ -188,7 +188,6 @@
                 $("input[name=nombre]").val("");
                 $("input[name=apellido_paterno]").val("");
                 $("input[name=apellido_materno]").val("");
-                $("input[name=genero]").val("");
                 $("select[name=estado_civil]").val("").trigger("change");
                 $("select[name=tipo_seguro]").val("").trigger("change");
                 $("input[name=numero_historia]").removeAttr('disabled');
@@ -276,8 +275,6 @@
                     return true;
                 }
                 return false;
-
-
 
             });
 

@@ -34,9 +34,9 @@ trait QueryTiemPromedioAtencion
             $result = \DB::select("SELECT analisis.codigo,
                                 tipo_examen.nombre AS tipo_examen,
                                 sub_tipo_examen.nombre AS sub_tipo_examen,
-                                DATE_FORMAT(resultado.fecha_registro,'%d/%m/%Y') AS fecha_registro, 
-                                DATE_FORMAT(resultado.fecha_resultado,'%d/%m/%Y') AS fecha_resultado,
-                                ROUND(TIMESTAMPDIFF(minute,resultado.fecha_registro,resultado.fecha_resultado),2) AS diferencia
+                                resultado.fecha_registro AS fecha_registro, 
+                                resultado.fecha_resultado AS fecha_resultado,
+                                round(TIMESTAMPDIFF(second,resultado.fecha_registro,resultado.fecha_resultado)/60) AS diferencia
                                 FROM registro_analisis AS analisis
                                 INNER JOIN personas as paciente on paciente.id=analisis.paciente_id
                                 INNER JOIN personas as medico on medico.id =analisis.empleado_id
@@ -45,8 +45,13 @@ trait QueryTiemPromedioAtencion
                                 INNER JOIN examen_det AS sub_tipo_examen ON sub_tipo_examen.id=resultado.examen_det_id
                                 WHERE analisis.estado='AP' $where                    
                                 ORDER BY 1,2,3",$bindings);
+
             return collect($result)->map(function ($item){
-                return (object)$item;
+                $temp=[];
+                foreach ($item as $index => $value){
+                    if(is_string($index)) $temp[$index] =$value;
+                }
+                return (object)$temp;
             });
         }
 

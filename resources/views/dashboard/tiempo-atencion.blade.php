@@ -46,7 +46,7 @@
                         <div class="mailbox-controls">
                             <div class="row">
                                 <div class="col-sm-12">
-                                    <a id="btn-descargar" class="pull-right"  style="padding-top: 10px;" href="#">
+                                    <a id="btn-descargar" class="pull-right"  style="padding-top: 10px;" href="{{route('dashboard.download-tiempo-atencion')}}">
                                         <i class="fa fa-download"></i> Descargar reporte
                                     </a>
                                 </div>
@@ -163,6 +163,7 @@
     $("#btn-descargar").click(function () {
         if(!$("#form-search").valid()) return false;
         window.open(url_download+"?download=true&"+$("#form-search").serialize());
+        return  false;
     });
 
 </script>

@@ -4,6 +4,8 @@
 namespace App\Http\Controllers\Traits;
 
 
+use function foo\func;
+
 trait QueryPatologiaAnormal
 {
     public static function getPatologias( $numero_dni, $fecha_inicio, $fecha_fin){
@@ -19,7 +21,7 @@ trait QueryPatologiaAnormal
                 array_push($bindings,$fecha_inicio,$fecha_fin);
             }
 
-            return \DB::select("SELECT analisis.codigo,
+            $patologias =  \DB::select("SELECT analisis.codigo,
                         CONCAT(if(ISNULL(persona.nombre),'',persona.nombre),' ',if(ISNULL(persona.apellido_paterno),'',persona.apellido_paterno),' ',if(ISNULL(persona.apellido_materno),' ',persona.apellido_materno)) AS paciente,
                         tipo_examen.nombre AS tipo_examen,
                         sub_tipo_examen.nombre AS sub_tipo_examen,
@@ -30,8 +32,16 @@ trait QueryPatologiaAnormal
                         INNER JOIN analisis_tipo_examen AS resultado ON resultado.analisis_id=analisis.id
                         INNER JOIN examen_cab AS tipo_examen ON tipo_examen.id=resultado.examen_cab_id
                         INNER JOIN examen_det AS sub_tipo_examen ON sub_tipo_examen.id=resultado.examen_det_id
-                        WHERE  resultado.comentario IS NOT NULL and persona.tipo_persona='paciente' $queryWhere
+                        WHERE  (resultado.comentario IS NOT NULL and resultado.comentario<>'') and persona.tipo_persona='paciente' $queryWhere
                         ORDER BY 2,3",$bindings);
+
+            return collect($patologias)->map(function ($item){
+                $temp=[];
+                foreach ($item as $index =>$value){
+                    if(is_string($index)) $temp[$index] =$value;
+                }
+                return (object)$temp;
+            });
     }
 
 

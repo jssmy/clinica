@@ -21,7 +21,16 @@ trait QueryStockInsumo
             ->selectRaw(Insumo::getTableName().".nombre AS insumo,".Insumo::getTableName().".cantidad,medida.nombre as unidad,sub_tipo_examen.nombre as uso");
 
         if($request->stock) $insumos = $insumos->where(Insumo::getTableName().".cantidad","<=",$request->stock);
-
-        return $insumos->get();
+        $insumos = $insumos->get();
+        return collect($insumos)->map(function ($item){
+            $temp = $item->toArray();
+            $endTemp = [];
+            foreach ($temp as $index =>$value){
+                if(is_string($index)){
+                    $endTemp[$index] = $value;
+                }
+            }
+            return (object)$endTemp;
+        });
     }
 }

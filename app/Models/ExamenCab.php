@@ -15,7 +15,12 @@ class ExamenCab extends Entity
     public function getesActivoAttribute()  {
         return  !! $this->estado;
     }
-
+    public function scopeporPerfil($query){
+        if(!auth()->user()->EsAdministrador && !auth()->user()->esMedicoJefe){
+            return $query->where('id',1);
+        }
+        return $query;
+    }
     public function scopeActivo($query){
         return $query->where('estado',1);
     }

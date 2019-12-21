@@ -187,7 +187,7 @@
 
   <header class="main-header">
     <!-- Logo -->
-    <a href="index2.html" class="logo">
+    <a href="{{route('clinica.index')}}" class="logo">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>Snt</b>R</span>
       <!-- logo for regular state and mobile devices -->
@@ -206,13 +206,13 @@
           <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="{{URL::asset('/public/dist/img/clinica.jpg')}}" class="user-image" alt="User Image">
+              <img src="{{URL::asset(auth()->user()->imagen_url)}}" class="user-image" alt="User Image">
               <span class="hidden-xs">{{auth()->user()->persona->nombre}}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="{{URL::asset('/public/dist/img/clinica.jpg')}}" class="img-circle" alt="User Image">
+                <img src="{{URL::asset(auth()->user()->imagen_url)}}" class="img-circle" alt="User Image">
 
                 <p>
                   {{auth()->user()->usuario}}
@@ -247,10 +247,10 @@
       <!-- Sidebar user panel -->
       <div class="user-panel" style="margin-bottom: 30px;">
         <div class="pull-left image">
-          <img src="{{URL::asset('/public/dist/img/clinica.jpg')}}" class="img-circle" alt="User Image">
+          <img src="{{URL::asset(auth()->user()->imagen_url)}}" style="width: 50px !important;height: 50px !important;" class="img-circle" alt="User Image">
         </div>
         <div  class="pull-left info">
-          <p style="font-size: 16px;mar">{{auth()->user()->usuario}}</p>
+          <p style="font-size: 16px;">{{auth()->user()->usuario}}</p>
             <label style="font-size: 11px;">{{auth()->user()->perfil->descripcion}}</label>
         </div>
       </div>

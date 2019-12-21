@@ -8,7 +8,7 @@
         <div class="row">
             <div style="padding-bottom: 24px" class="text-center">
                 <span class="page-header text-info"  style="font-size: 37px; color: #337ab7;">
-                    <i class="fa  fa-heartbeat"></i> Registro de {{request()->resultado ? 'resultados' : 'análasis'}}
+                    <i class="fa  fa-heartbeat"></i> Registro de {{request()->resultado ? 'Resultados' : 'Análisis'}}
                 </span>
             </div>
         </div>

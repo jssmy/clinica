@@ -53,7 +53,12 @@
                             <input {{$resultado->resultado ? 'readonly' : ''}} value="{{$resultado->resultado}}" style="width: 60px;height: 51px;" type="text" class="input-numeric form-control required" name="resultado[{{$resultado->id}}][valor]">
                         </td>
                     @else
-
+                        <td style="width: 400px">
+                            {{$resultado->comentario}}
+                        </td>
+                        <td>
+                            {{$resultado->resultado}}
+                        </td>
                     @endif
                 </tr>
             @endforeach

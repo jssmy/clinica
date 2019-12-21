@@ -20,6 +20,7 @@ class AuthSession
         if(!Auth::check()){
             return redirect()->route('login-form');
         }
+
         return $next($request);
     }
 }

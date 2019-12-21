@@ -31,7 +31,7 @@
                         <td>{{$bitacora->nombre}}</td>
                         <td>{{$bitacora->descripcion}}</td>
                         <td>{{$bitacora->estado ? 'ACTIVO' : 'INACTIVO'}}</td>
-                        <td>{{$bitacora->usuario_accion->usuario}}</td>
+                        <td>{{$bitacora->usuario_accion ? $bitacora->usuario_accion->usuario : ''}}</td>
                         <td>{{$bitacora->fecha_accion}}</td>
                     </tr>
                 @endforeach

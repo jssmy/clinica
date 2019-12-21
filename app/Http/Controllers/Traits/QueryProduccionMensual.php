@@ -34,7 +34,11 @@ trait QueryProduccionMensual
                             where 1=1 $where
                             ORDER BY cab.nombre, det.nombre",$params);
         return collect($results)->map(function ($item){
-            return (object)$item;
+            $temp = [];
+            foreach ($item as $index =>$value){
+                if(is_string($index)) $temp[$index] = $value;
+            }
+            return (object)$temp;
         });
 
     }

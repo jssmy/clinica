@@ -213,7 +213,7 @@
             var dialog = bootbox.dialog({
                 title: "<b>Nuevo usuario</b>",
                 message: $("#tpl-crear-nuevo").html(),
-                size: 'small',
+                size: 'medium',
                 buttons: {
                     cancel: {
                         label: "CANCELAR",
@@ -228,14 +228,25 @@
                         callback: function(){
 
                             var form = $("#form-store");
-
                             if(!form.valid()) return false;
+
+                            var data = form.serializeArray();
+                            var formData = new FormData();
+                            var img = $("#userImage")[0].files[0];
+
+                            formData.append('image',img);
+                            data.forEach(function (item) {
+                                console.log(item);
+                                formData.append(item.name,item.value);
+                            });
 
                             var btn = $(".btn-actualizar");
                             $.ajax({
                                 url : url,
                                 type : 'post',
-                                data : form.serializeArray(),
+                                processData: false,  // tell jQuery not to process the data
+                                contentType: false,   // tell jQuery not to set contentType
+                                data : formData,
                                 success: function(message){
                                     toastr['success'](message.message);
                                     $("#btn-consultar").trigger('click');

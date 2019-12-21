@@ -15,6 +15,7 @@ use App\Models\RestultadoAnalisis;
 use App\Models\Semaforizacion;
 use App\Utils\fpdf\FPDF;
 use App\Utils\FPDF\PDF;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
 use function foo\func;
@@ -29,7 +30,7 @@ class RegistroAnalisisController extends Controller
     }
 
     public function crearForm(Persona $persona){
-        $tiposExamen  = ExamenCab::activo()->get();
+        $tiposExamen  = ExamenCab::activo()->porPerfil()->get();
         return view('registro-analisis.modals.crear-registro-analisis',compact('tiposExamen','persona'));
     }
 
@@ -128,11 +129,11 @@ class RegistroAnalisisController extends Controller
             if(!$analisis->es_aprobado){
                 $analisis->resultados()->update([
                     'usuario_resultado_id'=>auth()->id(),
-                    'fecha_resultado'=>date("Y-m-d h:i:s",strtotime( '-1 days' ))
+                    'fecha_resultado'=>Carbon::now()
                 ]);
                 $analisis->estado='AP';
                 $analisis->usuario_resultado_id = auth()->id();
-                $analisis->fecha_resultado = date("Y-m-d h:i:s",strtotime( '-1 days' ));
+                $analisis->fecha_resultado = Carbon::now();
                 $analisis->save();
             }
         });
@@ -191,10 +192,10 @@ class RegistroAnalisisController extends Controller
         $pdf->SetFont('Arial',null,9);
         $pdf->Cell(80,9,$analisis->codigo);
         $title_fecha_registro=utf8_decode('FECHA DE REGISTRO:');
-        $fecha_registr=date("d/m/Y h:i",strtotime($analisis->fecha_registro));
+        $fecha_registr=Carbon::parse($analisis->fecha_registro)->format('d/m/Y h:i a');
         if(\request()->resultado){
             $title_fecha_registro = utf8_decode("FECHA DE RESULTADO:");
-            $fecha_registr = $analisis->fecha_resultado? date("d/m/Y h:i",strtotime($analisis->fecha_resultado)) : '';
+            $fecha_registr = $analisis->fecha_resultado? Carbon::parse($analisis->fecha_resultado)->format('d/m/Y h:i a') : '';
 
         }
         $pdf->SetFont('Arial','B',9);

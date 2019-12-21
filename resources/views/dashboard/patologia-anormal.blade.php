@@ -73,7 +73,8 @@
                                 </tr>
                                 </thead>
                                 <tbody data-empty='<tr><td colspan="6" class="text-center">No hay registros para mostrar</td></tr>' id="registros-body">
-                                <tr><td colspan="6" class="text-center">No hay registros para mostrar</td></tr>
+                                <tr>
+                                    @include('dashboard.partials.reporte-patologia-anormal-table')
                                 </tbody>
                             </table>
                             <!-- /.table -->
@@ -153,7 +154,7 @@
                 $("input[name=numero_documento]").val("");
                 $("input[name=fecha_resultado]").val("")
                 $("#fecha_registro").val("");
-                $("#registros-body").html($("#registros-body").data('empty'));
+                $("#btn-consultar").trigger('click');
             });
             $(document).on('click',".cancelBtn",function () {
                 $("input[name=fecha_resultado]").val("")
@@ -164,9 +165,9 @@
                 $("input[name=fecha_resultado]").val($("input[name=daterangepicker_start]").val() + " hasta "+$("input[name=daterangepicker_end]").val());
             });
 
-            var url_download="{{route('dashboard.patologia-anormal')}}";
+            var url_download="{{route('dashboard.download-patologia-anormal')}}";
             $("#btn-descargar").click(function () {
-                if(!$("#form-search").valid()) return false;
+
                 window.open(url_download+"?download=true&"+$("#form-search").serialize());
             });
         });

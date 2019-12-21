@@ -293,8 +293,6 @@ Route::group(['middleware' => 'auth.session'], function () {
     });
 
     Route::group(['prefix' => 'dashboard'], function() {
-        //Route::get('/main/{tipo_reporte}/{tipo_persona?}','DashboardController@index')->name('dashboard.index');
-
         Route::get('/mostrar-reporte/{persona}/{tipo_reporte}','DashboardController@mostrarReporte')->name('dashboard.mostrar-reporte');
         Route::get('stock-insumo','DashboardController@reporteStockInsumo')->name('dashboard.stock-insumo');
         Route::get('tiempo-atencion','DashboardController@reportePromedioAtencion')->name('dashboard.tiempo-atencion');
@@ -308,15 +306,24 @@ Route::group(['middleware' => 'auth.session'], function () {
             return redirect()->route('dashboard.profesional-medico',['tecnologo=true']);
         })->name('dashboard.profesional-medico-tecnologo');
 
-        Route::get('produccion-mensual','@produccionMensual')->name('dashboard.produccion-mensual');
+        Route::get('produccion-mensual','DashboardController@produccionMensual')->name('dashboard.produccion-mensual');
+
         Route::get('download-paciente-atendido/{paciente_id}','DashboardController@downloadReportePacienteAtendido')->name('dashboard.download-paciente-atendido');
         Route::get('download-prefesional-medico/{persona}','DashboardController@downloadPrefesionalMedico')->name('dashboard.download-profesional-medico');
         Route::get('download-stock-insumo','DashboardController@donwloadStockInsumo')->name('dashboard.download-stock-insumo');
         Route::get('download-tiempo-atencion','DashboardController@downloadPromedioAtencion')->name('dashboard.download-tiempo-atencion');
+        Route::get('download-produccion-mensual','DashboardController@downloadProduccionMensual')->name('dashboard.download-produccion-mensual');
+        Route::get('download-patologia-anormal','DashboardController@downloadPatologiaAnormal')->name('dashboard.download-patologia-anormal');
+
     });
 
     Route::group(['prefix'=>'mail'],function (){
         Route::get('envio-automatico/recuperar-contrasena','MailController@send');
+    });
+
+    Route::group(['prefix'=>'indicador'], function (){
+        Route::get('uno','IndicadorController@indicadorUno')->name('indicador.uno');
+        Route::get('dos','IndicadorController@indicadorDos')->name('indicador.dos');
     });
 
 });
@@ -326,3 +333,6 @@ Route::get('iniciar-sesion','AuthController@loginForm')->name('login-form');
 Route::post('iniciar-sesion-store','AuthController@login')->name('login.store');
 
 Route::post('cerrar-sesion','AuthController@logout')->name('logout.store');
+
+Route::get('lockscreen/{usuario}','AuthController@lockscreen')->name('login.lockscreen');
+Route::post('nueva-pass/{usuario}','AuthController@nuevaContrasena')->name('login.nueva-contrasena');

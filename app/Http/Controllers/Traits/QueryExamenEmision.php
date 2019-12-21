@@ -37,7 +37,15 @@ trait QueryExamenEmision
             list($fecha_inicio,$fecha_fin) = explode('/',str_replace([' ','hasta'],['','/'],\request()->fecha_registro));
             $resultados = $resultados->whereRaw('registro_analisis.fecha_registro>= ? and registro_analisis.fecha_registro <= ?',[$fecha_inicio,$fecha_fin]);
         }
-        return $resultados->get();
+        $resultados= $resultados->get();
+        return collect($resultados)->map(function ($item){
+            $item=$item->toArray();
+            $temp=[];
+            foreach ($item as $index => $value){
+                if(is_string($index)) $temp[$index] =$value;
+            }
+            return (object)$temp;
+        });
     }
 
     public static function getAnalisis($persona){

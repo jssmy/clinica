@@ -163,7 +163,7 @@
             $("input[name=daterangepicker_end]").val();
             $("input[name=fecha_registro]").val($("input[name=daterangepicker_start]").val() + " hasta "+$("input[name=daterangepicker_end]").val());
         });
-        var url_download="{{route('dashboard.tiempo-atencion')}}";
+        var url_download="{{route('dashboard.download-produccion-mensual')}}";
         $("#btn-descargar").click(function () {
             if(!$("#form-search").valid()) return false;
             window.open(url_download+"?download=true&"+$("#form-search").serialize());
